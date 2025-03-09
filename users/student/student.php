@@ -43,7 +43,6 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
           </div>
           <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); pointer-events: none;">Welcome to GCC Website!</div>
             </div>
-          </div>
       <div id="motto" class="motto" style="background-color: #F1F1F1; padding: 80px 0 80px;">
        <p style="margin: 0 20px; text-align: center; font-size: 28px; font-weight: 500;">The <span style="color: #095D36; font-weight: 600;">Guidance and Counseling Center</span> at Western Mindanao State University offers free, 
        confidential counseling, student assessments, and support for the shifting exam, along with workshops for academic and personal growth.</p>
@@ -52,7 +51,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
        <div class="image-gallery">
             <div class="image-item">
                    <img src="/gcc/img/counseling-img.png" alt="Image 1">
-                   <p style="margin: 15px 5px 20px; cursor: pointer;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Counseling</p>
+                   <p style="margin: 15px 5px 20px; cursor: pointer;"><a href="counseling.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Counseling</a></p>
                    <span class="description"> Counseling services are available for both students and outside clients. Appointments are required for consultations, which include the completion of the Personal Data Form and Counseling Form before sessions.</span>
             </div>
             <div class="image-item">

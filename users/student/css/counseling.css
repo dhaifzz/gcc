@@ -1,0 +1,72 @@
+body {
+       font-family: "Instrument Sans", sans-serif;
+       margin: 0;
+       padding: 0;
+       overflow-x: hidden;
+   }
+   .website {
+       font-size: 22px;
+       font-weight: 600;
+   }
+   .navbar {
+       background-color: #11AD64;
+       color: white;
+       padding: 12px 12px;
+       position: sticky;
+       height: 52px;
+       top: 0;
+       z-index: 1000;
+   }
+   
+   .navbar a {
+       color: white;
+       text-decoration: none;
+       padding: 0 5px;
+   }
+   
+   .navbar a:hover {
+       text-decoration: underline;
+   }
+   .btn-re-view {
+       background-color: #11AD64; 
+       transition: background-color 0.3s, transform 0.3s;
+}
+   .btn-re-view:hover {
+       background-image: linear-gradient(to top, rgb(27, 156, 98) 10%, transparent 30%);
+       transform: scale(1.03); 
+ }
+#contact.contact {
+       color: rgb(0, 0, 0);
+       font-weight: 700; 
+       text-decoration: underline;
+       cursor: pointer;
+}
+#contact.contact:hover {
+       color: #16633F;
+       text-decoration: underline;
+}
+.gcc-pages {
+    background-color: #F1F1F1;
+    padding: 70px;
+}
+
+@media (max-width: 768px) {
+    .image-gallery {
+        display: flex; 
+        flex-direction: column;
+        align-items: center; 
+    }
+    .image-gallery img {
+        flex: 1 1 100%; 
+    }
+}
+
+@media (max-width: 480px) {
+    .image-gallery {
+        flex-direction: column; 
+        align-items: center; 
+    }
+    .image-gallery img {
+        flex: 1 1 100%; /* Full width for each image */
+    }
+}
