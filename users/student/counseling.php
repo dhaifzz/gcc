@@ -42,8 +42,12 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
               <div style="width: 30%; height: 300px; background-color: white; border: 1px solid #ccc; border-radius: 7px; display: flex; flex-direction: column; justify-content: center; padding: 0px 20px 0px; text-align: center; gap: 50px;">
                 <div style="font-size: 30px; font-weight: 600;">Meet our Counsellors</div>
                 <div style="font-size: 20px;">Meet the GCC's team director, coordinators and staff.</div>
-                <button class="btn-re-view" style="background-color: #11AD64; color: white; border: 2px solid rgb(14, 121, 73); padding: 15px 0; margin-bottom: -20px; border-radius: 5px; cursor: pointer; font-size: 22px; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
-                  <i class="fas fa-arrow-right" style="margin-right: 10px;"></i>View
+                <button class="btn-re-view" 
+                        onclick="window.location.href='../student/sub-pages/our-team.php'"
+                        style="background-color: #11AD64; color: white; border: 2px solid rgb(14, 121, 73); 
+                               padding: 15px 0; margin-bottom: -20px; border-radius: 5px; cursor: pointer; 
+                               font-size: 22px; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
+                    <i class="fas fa-arrow-right" style="margin-right: 10px;"></i>View
                 </button>
               </div>
             </div>
@@ -67,5 +71,3 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
   </div>
 </body>
 </html>
-
-<script src="js/carousel.js"></script>

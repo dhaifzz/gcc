@@ -56,12 +56,12 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
             </div>
             <div class="image-item">
                    <img src="/gcc/img/assessment-img.png" alt="Image 2">
-                   <p style="margin: 15px 5px 20px; cursor: pointer;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Assessment for Students</p>
+                   <p style="margin: 15px 5px 20px; cursor: pointer;"><a href="assessment.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Assessment for Students</a></p>
                    <span class="description"> Conducts assessments for students taking the DASS-21 Test (College) and DASS-Y Test (High School). Students must schedule an appointment and complete the required forms before the assessment.</span>
             </div>
             <div class="image-item">
                    <img src="/gcc/img/shifting-img.png" alt="Image 3">
-                   <p style="margin: 15px 5px 20px; cursor: pointer;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Shifting Exam</p>
+                   <p style="margin: 15px 5px 20px; cursor: pointer;"><a href="shifting.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Shifting Exam</a></p>
                    <span class="description"> Students changing programs. Applicants must schedule an appointment and complete the required forms before taking the exam.</span>
             </div>
         </div>
