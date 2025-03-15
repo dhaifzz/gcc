@@ -1,0 +1,135 @@
+* {
+    font-family: 'Instrument Sans', sans-serif;
+    color: white;
+    box-sizing: border-box;
+}
+
+body {
+    background: url('../img/gcc-bg.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+
+form {
+    background-color: rgba(17, 137, 81, 0.88); 
+    padding: 30px; 
+    border-radius: 7px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 900px;
+    text-align: center; 
+    border-left: 8px solid #DC143C;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-align: left; 
+}
+
+option {
+    color: black;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select {
+    width: 100%;
+    color: black;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4.41px;
+    font-size: 12px;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+img#gcc-logo {
+    width: 120px;
+    height: 120px;
+    margin-right: 20px;
+}
+
+.text {
+    font-size: 20px;
+    font-weight: 500;
+    text-align: left;
+    margin: 0;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #064728;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #16633F;
+}
+
+.signin-text {
+    text-align: center;
+    font-size: 13px;
+}
+
+.signin-text p {
+    font-weight: normal;
+}
+
+.signin-text a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signin-text a:hover {
+    text-decoration: underline;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+    gap: 15px;
+}
+
+.flex-container > .form-group {
+    flex: 1;
+}
+
+.password {
+    position: relative;
+}
+
+.toggle-password {
+    position: absolute;
+    right: 10px;
+    top: 70%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #000;
+    font-size: 1.2em;
+}
