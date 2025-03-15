@@ -51,7 +51,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
 </div>
        
       <div style="background-color:rgb(255, 255, 255); padding: 60px 0 60px;"> </div>
-      <div style="background-image: url('/gcc/img/contact-bg.png'); background-size: cover; width: 100%; height: 700px; border-top: solid 1px rgba(124, 124, 124, 0.91)"></div>
+      <div style="background-image: url('/gcc/img/contact-bg.png'); background-size: cover; width: 100%; height: 600px; border-top: solid 1px rgba(124, 124, 124, 0.91)"></div>
          <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
             <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
             <div style="margin-right: 20px;"><img src="/gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>

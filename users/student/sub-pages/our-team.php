@@ -296,12 +296,4 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
 </html>
 
 <script src="../js/descDropdown.js"></script>
-
-<script>
-    function showPage(pageId) {
-        document.querySelectorAll('.page').forEach(page => {
-            page.classList.remove('active');
-        });
-        document.getElementById(pageId).classList.add('active');
-    }
-</script>
+<script src="../js/page2page.js"></script>

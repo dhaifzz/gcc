@@ -41,7 +41,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
                  <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">
              </div>
           </div>
-          <div style="position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); color: white; font-size: 32px; font-weight: bold; text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); pointer-events: none;">Welcome to GCC Website!</div>
+          <div class="welcome-text">Welcome to GCC Website!</div>
             </div>
       <div id="motto" class="motto" style="background-color: #F1F1F1; padding: 80px 0 80px;">
        <p style="margin: 0 20px; text-align: center; font-size: 28px; font-weight: 500;">The <span style="color: #095D36; font-weight: 600;">Guidance and Counseling Center</span> at Western Mindanao State University offers free, 

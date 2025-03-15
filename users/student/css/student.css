@@ -27,6 +27,33 @@ body {
    .navbar a:hover {
        text-decoration: underline;
    }
+   .welcome-text {
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    text-align: center;
+    transform: translate(-50%, -50%); 
+    color: white; 
+    font-size: 32px; 
+    font-weight: bold;
+    overflow: hidden; 
+    white-space: nowrap;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5); 
+    pointer-events: none;
+    border-right: 3px solid rgb(53, 255, 181);
+    animation: 
+    typing 2s steps(20, end) forwards, /* Slower typing effect */
+    blink-caret 0.75s step-end infinite;
+    }
+    @keyframes typing {
+        from { width: 0; }
+        to { width: 25%; } 
+    }
+    
+    @keyframes blink-caret {
+        from, to { border-color: transparent; }
+        50% { border-color: rgb(0, 255, 136); }
+    }
 
    .carousel {
        position: relative;

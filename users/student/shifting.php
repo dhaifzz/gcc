@@ -22,7 +22,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'student') {
            <i class="fas fa-bars" style="font-size: 35px;"></i>
        </div>
     </div>    
-      <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Shifting Exams </div>
+      <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Shifting Exam Form </div>
     <div class="shift-form" style="padding: 70px 50px 70px 50px;">
         <!-- <form action="submit_shift_form.php" method="post" enctype="multipart/form-data"> -->
             <div style="display: flex; width: 100%; gap: 20px;">
