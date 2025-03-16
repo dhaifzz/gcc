@@ -46,28 +46,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($existing_user) {
         $error = 'Email already exists';
     } else {
-        $stmt = $pdo->prepare("INSERT INTO users (first_name, middle_name, last_name, contact_number, civil_status, grade_level_course, wmsu_id, role, address, sex, age, occupation, email, password) VALUES (:first_name, :middle_name, :last_name, :contact_number, :civil_status, :course_grade, :wmsu_id, :role, :address, :sex, :age, :occupation, :email, :password)");
-        $stmt->execute([
-            'first_name' => $first_name,
-            'middle_name' => $middle_name,
-            'last_name' => $last_name,
-            'contact_number' => $contact_number,
-            'civil_status' => $civil_status,
-            'course_grade' => $course_grade,
-            'wmsu_id' => $wmsu_id,
-            'role' => $role,
-            'address' => $address,
-            'sex' => $sex,
-            'age' => $age,
-            'occupation' => $occupation,
-            'email' => $email,
-            'password' => $password
-        ]);
+        $stmt = $pdo->prepare("SELECT * FROM users WHERE wmsu_id = :wmsu_id");
+        $stmt->execute(['wmsu_id' => $wmsu_id]);
+        $existing_wmsu_id = $stmt->fetch(PDO::FETCH_ASSOC);
 
-        header("Location: sign-in.php");
-        exit();
+        if ($existing_wmsu_id) {
+            $error = 'WMSU ID already exists';
+            } else {
+                $stmt = $pdo->prepare("INSERT INTO users (first_name, middle_name, last_name, contact_number, civil_status, grade_level_course, wmsu_id, role, address, sex, age, occupation, email, password) VALUES (:first_name, :middle_name, :last_name, :contact_number, :civil_status, :course_grade, :wmsu_id, :role, :address, :sex, :age, :occupation, :email, :password)");
+                $stmt->execute([
+                    'first_name' => $first_name,
+                    'middle_name' => $middle_name,
+                    'last_name' => $last_name,
+                    'contact_number' => $contact_number,
+                    'civil_status' => $civil_status,
+                    'course_grade' => $course_grade,
+                    'wmsu_id' => $wmsu_id,
+                    'role' => $role,
+                    'address' => $address,
+                    'sex' => $sex,
+                    'age' => $age,
+                    'occupation' => $occupation,
+                    'email' => $email,
+                    'password' => $password
+                ]);
+    
+                header("Location: sign-in.php");
+                exit();
+            }
+        }
     }
-}
 ?>
 <!DOCTYPE html>
 <html>
@@ -122,8 +130,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 </select>
             </div>
             <div class="form-group">
-                <label for="wmsu-id">WMSU Student/Employee ID (optional)</label>
-                <input type="text" id="wmsu-id" name="wmsu_id" maxlength="9" placeholder="6 or 9 digits">
+                <label for="wmsu-id">WMSU ID NUMBER (optional)</label>
+                <input type="text" id="wmsu-id" name="wmsu_id">
             </div>
         </div>
         <div class="flex-container">
