@@ -1,0 +1,57 @@
+html, body {
+    font-family: "Instrument Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100%; 
+    height: 100%;
+}
+
+body {
+ display: flex;
+ flex-direction: column;
+ min-height: 100vh; 
+}
+   .content {
+       background-color: rgba(17, 137, 81, 0.93) ;
+   }
+   .website {
+       font-size: 22px;
+       font-weight: 600;
+   }
+   .navbar {
+       background-color: #11AD64;
+       color: white;
+       padding: 12px 12px;
+       position: sticky;
+       height: 52px;
+       top: 0;
+       z-index: 1000;
+   }
+   
+   .navbar a {
+       color: white;
+       text-decoration: none;
+       padding: 0 5px;
+   }
+   
+   .navbar a:hover {
+       text-decoration: underline;
+   }
+.container {
+       padding: 25px;
+}
+.info-box {
+       background-color: white;
+       padding: 10px 15px;
+       border-radius: 10px;
+       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+   }
+
+   .info-box span {
+       color: green;
+   }
+
+   .info-wide {
+       grid-column: span 2;
+   }

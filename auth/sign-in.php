@@ -1,7 +1,45 @@
 <?php
 require_once '../font/font.php';
-require_once 'database.php';
+require_once '../database/database.php';
+session_start();
+
+$error = isset($_SESSION['error']) ? $_SESSION['error'] : ''; 
+unset($_SESSION['error']); 
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $email = $_POST['email'];
+    $password = $_POST['password'];
+
+    $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
+    $stmt->execute(['email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($user) {
+        if ($user['status'] === 'Inactive') { 
+            $_SESSION['error'] = 'Your account is currently inactive. Please contact the admin.';
+            header("Location: sign-in.php");
+            exit();
+        }
+        
+        if (password_verify($password, $user['password'])) { 
+            $_SESSION['email'] = $email;
+            $_SESSION['role'] = $user['role'];
+            header("Location: backend/redirect.php");
+            exit();
+        } else {
+            $_SESSION['error'] = 'Incorrect password / email or Account does not exist.'; 
+            header("Location: sign-in.php"); 
+            exit();
+        }
+    } else {
+        $_SESSION['error'] = 'Incorrect password / email or Account does not exist.'; 
+        header("Location: sign-in.php"); 
+        exit();
+    }
+}
 ?>
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -9,31 +47,9 @@ require_once 'database.php';
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
-    <link rel="stylesheet" type="text/css" href="sign-in.css">
+    <link rel="stylesheet" type="text/css" href="css/sign-in.css">
 </head>
 <body>
-    <?php
-    session_start();
-    $error = '';
-
-    if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-        $email = $_POST['email'];
-        $password = $_POST['password'];
-        $stmt = $pdo->prepare("SELECT role FROM users WHERE email = :email AND password = :password");
-        $stmt->execute(['email' => $email, 'password' => $password]);
-        $user = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        if ($user) {
-            $_SESSION['email'] = $email;
-            $_SESSION['role'] = $user['role'];
-
-            header("Location: redirect.php");
-            exit();
-        } else {
-            $error = 'Invalid email or password';
-        }
-    }
-    ?>
     <form method="POST" action="">
         <div>
             <img src="../img/gcc-logo.png" alt="GCC Logo" id="gcc-logo" style="display: block; margin: 0 auto;">
@@ -46,7 +62,9 @@ require_once 'database.php';
         <div class="password">
             <label for="password">Password</label>
             <input type="password" id="password" name="password" required>
-            <span class="toggle-password" onclick="togglePassword('password', 'toggle-password')"><i class="fas fa-eye-slash" style="color: #16633F;"></i></span>
+            <span class="toggle-password" onclick="togglePassword('password', this)">
+             <i class="fas fa-eye-slash" style="color: #16633F;"></i>
+            </span>
         </div>
         <div>
             <button type="submit">Sign In</button>
@@ -55,9 +73,9 @@ require_once 'database.php';
             <p>Don't have an account? <a href="../auth/sign-up.php" class="signup">Sign Up</a></p>
         </div>
         <?php if ($error): ?>
-            <p style="color: red;"><?php echo $error; ?></p>
+            <p style="color: red; font-weight: 600;"><?php echo $error; ?></p>
         <?php endif; ?>
     </form>
-    <script src="js/eye-icon.js"></script>
+    <script src="/gcc/js/eye-icon.js"></script>
 </body>
 </html>

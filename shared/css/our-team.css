@@ -1,0 +1,141 @@
+html, body {
+    font-family: "Instrument Sans", sans-serif;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+    width: 100%; 
+    height: 100%;
+}
+
+   .website {
+       font-size: 22px;
+       font-weight: 600;
+   }
+   .navbar {
+       background-color: #11AD64;
+       color: white;
+       padding: 12px 12px;
+       position: sticky;
+       height: 52px;
+       top: 0;
+       z-index: 1000;
+   }
+   
+   .navbar a {
+       color: white;
+       text-decoration: none;
+       padding: 0 5px;
+   }
+   
+   .navbar a:hover {
+       text-decoration: underline;
+   }
+   .profile-container {
+       display: flex;
+       align-items: center;
+       padding: 0 30px 30px 30px;
+       width: fit-content; 
+       gap: 10px;
+   }
+   .profile-text {
+       flex: 1;
+       text-align: left;
+   }
+  
+   .status {
+       margin: 0;
+       font-size: 20px;
+       font-weight: 500;
+       color: #333;
+   }
+   .name {
+       font-weight: 550;
+       margin: 0;
+       font-size: 30px;
+       color: black;
+   }
+   .title {
+       color: #065f38;
+       font-size: 18px;
+       margin: 7px 0 0 0;
+   }
+   .role {
+       font-size: 35px; 
+       color: #16633F; 
+       margin: 0;
+       font-weight: 600; 
+       text-decoration: underline; 
+       display: flex;
+       justify-content: center; 
+       align-items: center;
+   }
+   .profile-img {
+       width: 200px;
+       height: 200px;
+       border-radius: 50%;
+       object-fit: cover;
+   }
+   /* Guidance Counselors Section */
+.guidance-counselors, .staff, .coords {
+       display: flex;
+       justify-content: center;
+       align-items: center;
+       gap: 50px;
+       flex-wrap: wrap;
+       padding: 30px;
+       align-items: baseline; 
+
+   }
+   
+   .profile-card {
+       text-align: center;
+       width: fit-content; 
+   }
+   
+   .profile-card .profile-img {
+       width: 180px;
+       height: 180px;
+       border-radius: 50%;
+       object-fit: cover;
+       margin-bottom: 10px;
+   }
+   .button-container {
+    display: flex;
+    justify-content: center;  
+    align-items: center;
+   }
+   .go-to-page {
+    justify-content: space-between;
+    align-items: center;
+    display: flex;
+    gap: 15px;
+    width: 80%;
+    background: linear-gradient(to right, #046F3D 0%, #11AD64 100%);
+    color: white;
+    border: none;
+    padding: 15px 35px;
+    font-size: 27px;
+    font-weight: 500;
+    border-radius: 7px; 
+    cursor: pointer;
+    transition: background 0.5s ease-in-out, transform 0.5s ease, font-size 0.15s ease;
+    font-family: "Instrument Sans";
+}
+   .go-to-page:hover {
+    background: linear-gradient(to right, #11AD64 0%, #046F3D 100%);
+    font-size: 29px;
+}
+.go-to-page i {
+    font-size: 40px;
+}
+.text-esu {
+    margin: 0 40px 0 0; 
+    transition: font-size 0.15s ease;
+}
+.page {
+    display: none;
+}
+.active {
+    display: block;
+}
+

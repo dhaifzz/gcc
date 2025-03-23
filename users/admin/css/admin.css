@@ -1,0 +1,224 @@
+body {
+       margin: 0;
+       padding: 0;
+       overflow-x: hidden;
+       font-family: "Instrument Sans", sans-serif;
+   }
+   .website {
+       font-size: 22px;
+       font-weight: 600;
+   }
+   .navbar {
+       background-color: #11AD64;
+       color: white;
+       padding: 12px 12px;
+       position: sticky;
+       height: 52px;
+       top: 0;
+       z-index: 1000;
+   }
+   
+   .navbar a {
+       color: white;
+       text-decoration: none;
+       padding: 0 5px;
+   }
+   .navbar a:hover {
+       text-decoration: underline;
+   }
+   .burger-icon {
+    float: right;
+    margin: 3px;
+    font-size: 40px;
+    margin-right: 10px;
+    cursor: pointer;
+}
+.sidebar {
+    position: fixed;
+    top: 0;
+    right: -250px;
+    width: 250px;
+    height: 100%;
+    background: linear-gradient(180deg, #0B5D37, #11AD64);    
+    color: white;
+    padding-top: 60px;
+    transition: 0.3s;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+.sidebar a {
+    display: flex;
+    align-items: center;
+    padding: 15px;
+    color: white;
+    text-decoration: none;
+}
+.sidebar a i {
+    margin-right: 10px;
+}
+.sidebar a:hover {
+    background: #0B5D37;
+    text-decoration: none;
+    border-radius: 7px;
+}
+.sidebar.active {
+    right: 0;
+}
+.close-modal-btn {
+    position: absolute;
+    top: 15px;
+    right: 20px;
+    margin: 3px;
+    font-size: 35px;
+    cursor: pointer;
+    color: white;
+}
+.menu-items {
+    flex-grow: 1;
+    font-size: 20px;
+    font-weight: 400;
+}
+.logout {
+    margin: 5px 0 5px 0;
+    font-size: 20px;
+    align-items: center;
+    padding-bottom: 20px;
+    font-weight: 600;
+}
+hr {
+    border: 0;
+    height: 1px;
+    background: #0f6e39;
+    margin: 10px 15px;
+}
+.typing-container {
+    margin: 40px 20px 30px 20px; 
+}
+.typing-container {
+    display: inline-block;
+    position: relative;
+    font-size: 28px;
+    font-weight: bold;
+    color: #222;
+}
+
+@keyframes typing {
+    0% { width: 0; }
+    100% { width: 100%; }
+}
+
+@keyframes move-border {
+    0% { right: 0; }
+    100% { right: -2px; }
+}
+
+@keyframes blink-caret {
+    50% { border-color: transparent; }
+}
+
+.form-container { 
+max-width: 600px; 
+margin: auto; 
+padding: 20px; 
+border: 1px solid #ccc; 
+border-radius: 10px; 
+}
+
+.form-container input, select { 
+width: 100%; 
+padding: 10px; 
+margin-bottom: 10px; 
+border: 1px solid #ccc; 
+border-radius: 5px; 
+}
+
+.form-container button { 
+padding: 10px 15px; 
+background-color: #28a745; 
+color: white; 
+border: none; 
+border-radius: 5px; 
+cursor: pointer; 
+}
+
+.form-container button:hover { 
+background-color: #218838; 
+}
+
+.error { 
+color: red; 
+}
+
+#usersTable {
+    border-radius: 7px;
+}
+#usersTable th {
+    background-color: #2fa966;
+    color: white;
+}
+
+#usersTable th, #usersTable td {
+    text-align: left;
+    border: 1px solid #236641;
+}
+#usersTable tbody tr:nth-child(odd) {
+    background-color: #f2f2f2;
+}
+
+#usersTable tbody tr {
+    background-color: white;
+
+}
+#usersTable tbody tr:hover {
+    background-color: #ddf8eb;
+}
+#usersTable_paginate, #usersTable_info {
+    margin-top: 10px;
+}
+
+#usersTable thead tr:first-child th:first-child {
+    border-top-left-radius: 7px;
+}
+#usersTable thead tr:first-child th:last-child {
+    border-top-right-radius: 7px;
+}
+#usersTable tbody tr:last-child td:first-child {
+    border-bottom-left-radius: 7px;
+}
+#usersTable tbody tr:last-child td:last-child {
+    border-bottom-right-radius: 7px;
+}
+
+.table-container {
+    padding: 20px;
+    margin: 12px;
+    border-radius: 7px;
+    border-left: 7px solid rgb(29, 150, 53);
+    border-bottom: 1px solid #000000;
+    border-right: 1px solid #000000;
+    border-top: 1px solid #000000;
+}
+button.delete-btn, button.edit-btn {
+    padding: 6px 10px;
+    border-radius: 15px;
+    font-size: 15px;
+}
+button.delete-btn {
+    border: 2px solid rgb(211, 10, 10);
+    color: rgb(211, 10, 10);
+}
+button.delete-btn:hover {
+    border: 2px solid rgb(211, 10, 10);
+    color: rgb(255, 255, 255);
+    background-color: rgb(211, 10, 10);
+}
+button.edit-btn {
+    border: 2px solid #0f6e39;
+    color: #0f6e39;
+}
+button.edit-btn:hover {
+    border: 2px solid #0f6e39;
+    color: #ffffff;
+    background-color: #0f6e39;
+}
