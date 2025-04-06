@@ -9,9 +9,9 @@ document.addEventListener("DOMContentLoaded", function () {
             fetch(`/gcc/users/admin/backend/fetch-user.php?id=` + userId)
                 .then(response => response.text())
                 .then(data => {
-                    console.log("Fetched Data:", data); // Debugging output
+                    console.log("Fetched Data:", data); 
 
-                    let userData = data.split("|"); // Split text response into an array
+                    let userData = data.split("|"); 
 
                     if (userData[0] === "Error") {
                         alert(userData[1]); // Show error message

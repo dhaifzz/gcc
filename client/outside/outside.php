@@ -9,6 +9,8 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Outside Client') {
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="css/outside.css">
@@ -99,6 +101,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Outside Client') {
                        <i class="fas fa-angle-right" style="margin-right: 5px; color:rgba(0, 0, 0, 0.59);"></i>
                        Shifting Exam
                        <span class="tooltip-custom">
+                       <i class="fa-solid fa-circle-exclamation mr-1" style="margin-right: 3px;"></i>
                            Only applicable for students in WMSU.
                            <span class="arrow"></span>
                        </span>

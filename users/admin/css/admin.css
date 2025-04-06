@@ -222,3 +222,14 @@ button.edit-btn:hover {
     color: #ffffff;
     background-color: #0f6e39;
 }
+.btn-primary {
+    padding: 10px;
+    color: white;
+    background-color: rgb(2, 2, 2);
+    border-radius: 40px;
+    border: none;
+    transition: background-color 0.3s ease;
+}
+.btn-primary:hover {
+    background-color: #0B5D37;
+}

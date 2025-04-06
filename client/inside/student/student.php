@@ -9,6 +9,8 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
 <!DOCTYPE html>
 <html>
 <head>
+    <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+    <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="css/student.css">

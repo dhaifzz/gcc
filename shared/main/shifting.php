@@ -9,6 +9,8 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/shifting.css">
@@ -24,7 +26,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
             echo '../../users/admin/admin.php';
             break;
         case 'Faculty':
-            echo '../../../client/inside/faculty/faculty.php';
+            echo '../../client/inside/faculty/faculty.php';
             break;
         case 'Student':
             echo '../../client/inside/student/student.php';
@@ -131,3 +133,4 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
 </html>
 
 <script src="/gcc/js/showFileName.js"></script>
+<script src="/gcc/js/sidebar.js"></script>

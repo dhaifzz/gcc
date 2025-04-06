@@ -45,3 +45,10 @@ body {
    .gcctext:hover, .gccetext:hover {
        text-decoration: underline;
    }
+   /* .burger-icon {
+    float: right;
+    margin: 3px;
+    font-size: 40px;
+    margin-right: 10px;
+    cursor: pointer;
+} */

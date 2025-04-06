@@ -9,6 +9,8 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['Student', 'Outs
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/about-us.css">
@@ -30,7 +32,7 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['Student', 'Outs
             echo '../../users/admin/admin.php';
             break;
         case 'Faculty':
-            echo '../../../client/inside/faculty/faculty.php';
+            echo '../../client/inside/faculty/faculty.php';
             break;
         case 'Student':
             echo '../../client/inside/student/student.php';
@@ -94,3 +96,4 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['Student', 'Outs
 </html>
 
 <script src="/gcc/js/descDropdown.js"></script>
+<script src="/gcc/js/sidebar.js"></script>

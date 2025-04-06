@@ -11,21 +11,18 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Admin') {
 $user_email = $_SESSION['email'];
 
 try {
-    // Fetch the first_name from the database
     $stmt = $pdo->prepare("SELECT first_name FROM users WHERE email = :email");
     $stmt->bindParam(':email', $user_email, PDO::PARAM_STR);
     $stmt->execute();
     $first_name = $stmt->fetchColumn(); // Get the first_name value directly
 
-    // If no first name is found, default to "User"
     if (!$first_name) {
         $first_name = "User"; 
     }
 
-    // Create the welcome text and calculate text length
     $text = "Welcome to GCC Admin, $first_name!";
     $text_length = strlen($text);
-    $name_length = strlen($first_name) + 17; // Or whatever logic you want
+    $name_length = strlen($first_name) + 17; 
 
 } catch (PDOException $e) {
     echo "Error: " . $e->getMessage();
@@ -75,21 +72,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     }
 }
 
-$stmt = $pdo->query("SELECT id, wmsu_id, first_name, middle_name, last_name, email, role, status FROM users");
+$stmt = $pdo->query("SELECT id, wmsu_id, first_name, middle_name, last_name, email, role FROM users");
 $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>GCC Admin</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="css/admin.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="css/bootstrap-modal.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
-    <script src="/gcc/js/action-modal.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
     <!-- ADMIN -->
 </head>
 <body>
@@ -148,10 +148,16 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
      </div>
 
     <div class="table-container">
-    <h2 style="align-items: left; justify-content: start; display: flex; margin-bottom: 35px; font-weight: 600;">
-    <i class="fa-solid fa-users" style="margin-right: 8px;"></i>
+    <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 35px;">
+    <h2 style="font-weight: 600; margin: 0; margin-right: 15px;"> 
+        <i class="fa-solid fa-users"></i>
         GCC's User Accounts
     </h2>
+    <button class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">
+        <i class="fa-solid fa-user-plus"></i> Add Account
+    </button>
+</div>
+
     <table id="usersTable" class="display">
     <thead>
         <tr>
@@ -160,7 +166,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Username</th>
             <th>Email</th>
             <th>Account Role</th>
-            <th>Status</th> 
             <th>Action</th>
         </tr>
     </thead>
@@ -172,7 +177,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
                 <td><?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?></td>
                 <td><?= $row['email'] ?></td>
                 <td><?= $row['role'] ?></td>
-                <td><?= $row['status'] ?></td> 
                 <td style="align-items: center; justify-content: center; display: flex; gap: 6px;">
                    <button class="edit-btn" data-id="<?= $row['id'] ?>">
                        <i class="fa-solid fa-pen-to-square"></i> Edit
@@ -194,10 +198,33 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
          </footer>
          </div>
     </div>
+
+    <script src="/gcc/js/sidebar.js"></script>
+    <script src="/gcc/js/dataTable.js"></script>
+    <script src="/gcc/js/action-modal.js"></script>
+
+    <script>
+    document.getElementById('confirmAddAccountBtn').addEventListener('click', function() {
+    window.location.href = 'add-account.php';
+});
+
+document.querySelectorAll('.close-btn, .cancel-btn').forEach(function(element) {
+    element.addEventListener('click', function() {
+        document.getElementById('confirmationModal').classList.remove('show');
+    });
+});
+    </script>
+    
+    <script>
+       function hideModal() {
+    modal.setAttribute('inert', ''); // Prevent focus and interaction
+    modal.style.display = 'none'; // Hide the modal (or use Bootstrap's hide method if you're using it)
+}
+
+function showModal() {
+    modal.removeAttribute('inert'); // Allow focus and interaction
+    modal.style.display = 'flex'; // Show the modal (or use Bootstrap's show method if you're using it)
+}
+    </script>
 </body>
 </html>
-
-<!-- <script src="/gcc/js/carousel.js"></script> -->
-<script src="/gcc/js/sidebar.js"></script>
-<script src="/gcc/js/dataTable.js"></script>
-

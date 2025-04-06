@@ -72,3 +72,10 @@ body {
    .dropdown-btn.active .dropdown-icon {
        transform: rotate(180deg);
    }
+   /* .burger-icon {
+    float: right;
+    margin: 3px;
+    font-size: 40px;
+    margin-right: 10px;
+    cursor: pointer;
+} */

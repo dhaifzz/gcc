@@ -49,9 +49,17 @@ body {
    }
 
    .info-box span {
-       color: green;
+       color: rgb(29, 98, 29);
+       font-weight: 600;
+       font-size: 18px;
    }
-
    .info-wide {
        grid-column: span 2;
    }
+   /* .burger-icon {
+    float: right;
+    margin: 3px;
+    font-size: 40px;
+    margin-right: 10px;
+    cursor: pointer;
+} */

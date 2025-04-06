@@ -1,0 +1,169 @@
+html, body {
+       font-family: "Instrument Sans", sans-serif;
+       margin: 0;
+       padding: 0;
+       overflow-x: hidden;
+       width: 100%; 
+       height: 100%;
+   }
+   
+   body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh; 
+   }
+      .website {
+          font-size: 22px;
+          font-weight: 600;
+      }
+      .navbar {
+          background-color: #11AD64;
+          color: white;
+          padding: 12px 12px;
+          position: sticky;
+          height: 52px;
+          top: 0;
+          z-index: 1000;
+      }
+      
+      .navbar a {
+          color: white;
+          text-decoration: none;
+          padding: 0 5px;
+      }
+      
+      .navbar a:hover {
+          text-decoration: underline;
+      }
+      .btn-hi-col {
+          background-color: #11AD64; 
+          transition: background-color 0.3s, transform 0.3s;
+   }
+      .btn-hi-col:hover {
+          background-image: linear-gradient(to top, rgb(27, 156, 98) 10%, transparent 30%);
+          transform: scale(1.03); 
+    }
+   #contact.contact {
+          color: rgb(0, 0, 0);
+          font-weight: 700; 
+          text-decoration: underline;
+          cursor: pointer;
+   }
+   #contact.contact:hover {
+          color: #16633F;
+          text-decoration: underline;
+   }
+   .calendar-container {
+       display: flex;
+       width: 80%;
+       flex-direction: column;
+       align-items: center;
+       padding: 20px;
+       background-color: #F1F1F1;
+       border-radius: 10px;
+       border: 2px solid #11AD64;
+       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   }
+   .calendar-header {
+       display: flex;
+       justify-content: space-between;
+       width: 100%;
+       align-items: center;
+       margin-bottom: 20px;
+   }
+   .calendar-header h2 {
+       margin: 0;
+       font-size: 24px;
+       font-weight: 600;
+   }
+   .calendar-header .month-nav {
+       display: flex;
+       gap: 10px;
+   }
+   .calendar-header .month-nav button {
+       background-color: #11AD64;
+       color: white;
+       border: none;
+       padding: 10px;
+       border-radius: 5px;
+       cursor: pointer;
+       font-size: 16px;
+       transition: background-color 0.3s;
+   }
+   .calendar-header .month-nav button:hover {
+       background-color: #0e7949;
+   }
+   .calendar-grid {
+       display: grid;
+       grid-template-columns: repeat(7, 1fr);
+       gap: 10px;
+   }
+   .calendar-grid div {
+       background-color: white;
+       padding: 20px;
+       border-radius: 5px;
+       text-align: center;
+       cursor: pointer;
+       transition: background-color 0.3s;
+   }
+   .calendar-grid div:hover {
+       background-color: #e0e0e0;
+   }
+   .calendar-grid .selected {
+       background-color: #11AD64;
+       color: white;
+   }
+   .calendar-grid .disabled {
+       background-color: #f0f0f0;
+       color: #ccc;
+       cursor: not-allowed;
+   }
+   .calendar-grid .weekdays {
+       font-weight: bold;
+       background-color: #f0f0f0;
+   }
+   .time-slot-container {
+       display: flex;
+       width: 40%;
+       flex-direction: column;
+       align-items: center;
+       padding: 20px;
+       background-color: #F1F1F1;
+       border-radius: 10px;
+       border: 2px solid #11AD64;
+       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+   }
+   .time-slot-section {
+       margin-bottom: 20px;
+   }
+   .time-slot {
+       background-color: white;
+       padding: 20px;
+       border-radius: 5px;
+       text-align: center;
+       cursor: pointer;
+       transition: background-color 0.3s;
+       border: 1px solid #ccc;
+   }
+   .time-slot:hover {
+       background-color: #e0e0e0;
+   }
+   .time-slot.selected {
+       background-color: #11AD64;
+       color: white;
+   }
+.save-record {
+       background-color: #11AD64; 
+       color: white; 
+       border: none; 
+       width: 100%; 
+       padding: 15px 20px; 
+       border-radius: 5px; 
+       cursor: pointer; 
+       font-size: 20px; 
+       font-weight: 600; 
+       transition: background-color 0.3s, transform 0.3s;
+}
+.save-record:hover {
+       background-color: #0f7d4a;
+}

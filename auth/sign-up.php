@@ -3,22 +3,35 @@ require_once '../font/font.php';
 require_once('../database/database.php');
 
 $error_messages = []; 
-if ($_SERVER["REQUEST_METHOD"] == "POST") {
-    $first_name = $_POST['first_name'];
-    $middle_name = $_POST['middle_name'];
-    $last_name = $_POST['last_name'];
-    $school = $_POST['school'];
-    $course_grade = $_POST['course_grade'];
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    $first_name = trim($_POST['first_name']);
+    $middle_name = trim($_POST['middle_name']);
+    $last_name = trim($_POST['last_name']);
+    $school = trim($_POST['school']);
+    $course_grade = trim($_POST['course_grade']);
     $sex = $_POST['sex'];
-    $age = $_POST['age'];
-    $contact_number = $_POST['contact_number'];
-    $address = $_POST['address'];
-    $civil_status = $_POST['civil_status'];
-    $occupation = $_POST['occupation'];
-    $wmsu_id = $_POST['wmsu_id'];
-    $email = $_POST['email'];
+    $age = trim($_POST['age']);
+    $contact_number = trim($_POST['contact_number']);
+    $address = trim($_POST['address']);
+    $civil_status = trim($_POST['civil_status']);
+    $occupation = trim($_POST['occupation']);
+    $wmsu_id = trim($_POST['wmsu_id']);
+    $email = trim($_POST['email']);
     $password = $_POST['password'];
     $confirm_password = $_POST['confirm_password'];
+
+    $valid_schools = [
+        "Western Mindanao State University",
+        "Universidad de Zamboanga",
+        "Ateneo de Zamboanga University",
+        "Southern City Colleges",
+        "Zamboanga City State Polytechnic College",
+        "Zamboanga State College of Marine Sciences and Technology"
+    ];
+
+    if (!in_array($school, $valid_schools)) {
+        $error_messages['school'] = "Please select a valid school from the list.";
+    }
 
     if ($password !== $confirm_password) {
         $error_messages['password'] = "Passwords do not match.";
@@ -33,13 +46,15 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $role = "";
 
     if (strpos($email, '@wmsu.edu.ph') !== false) {
-        if (!empty($wmsu_id) && is_numeric($wmsu_id)) {
+        if ($school !== 'Western Mindanao State University') {
+            $error_messages['email'] = "WMSU email can only be used if the school is Western Mindanao State University.";
+        } elseif (!empty($wmsu_id) && is_numeric($wmsu_id)) {
             if (strlen($wmsu_id) == 6) {
                 $role = 'Faculty';
             } elseif (strlen($wmsu_id) == 9) {
                 $role = 'Student';
             } else {
-                $error_messages['wmsu_id'] = "WMSU ID must be 6 or 9 digits for WMSU email addresses.";
+                $error_messages['wmsu_id'] = "WMSU ID is for be 6 or 9 digits for WMSU email addresses.";
             }
         } else {
             $error_messages['wmsu_id'] = "WMSU ID is required for WMSU email addresses.";
@@ -49,6 +64,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             $error_messages['wmsu_id'] = "WMSU ID should not be filled for non-WMSU email addresses.";
         }
         $role = 'Outside Client';
+        $wmsu_id = "<i>Guest ID</i>";
+    }
+
+    if ($school !== 'Western Mindanao State University' && strpos($email, '@wmsu.edu.ph') === false) {
+        $role = 'Outside Client';
+    }
+    
+    if ($course_grade === 'None' && $role === 'Outside Client') {
+        if (strpos($email, '@wmsu.edu.ph') !== false) {
+            $error_messages['email'] = "Outside clients cannot use a WMSU email address.";
+        }
         $wmsu_id = "<i>Guest ID</i>";
     }
     
@@ -71,7 +97,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
             }
         }
 
-        // Check if contact number is already in the database
         $contact_number_check_query = "SELECT * FROM users WHERE contact_number = :contact_number";
         $stmt = $pdo->prepare($contact_number_check_query);
         $stmt->execute([':contact_number' => $contact_number]);
@@ -81,8 +106,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         }
     
         if (empty($error_messages)) {
-            $sql = "INSERT INTO users (first_name, middle_name, last_name, school, course_grade, sex, age, contact_number, address, civil_status, occupation, wmsu_id, email, password, role, status) 
-                    VALUES (:first_name, :middle_name, :last_name, :school, :course_grade, :sex, :age, :contact_number, :address, :civil_status, :occupation, :wmsu_id, :email, :password, :role, :status)";
+            $sql = "INSERT INTO users (first_name, middle_name, last_name, school, course_grade, sex, age, contact_number, address, civil_status, occupation, wmsu_id, email, password, role) 
+                    VALUES (:first_name, :middle_name, :last_name, :school, :course_grade, :sex, :age, :contact_number, :address, :civil_status, :occupation, :wmsu_id, :email, :password, :role)";
     
             try {
                 $stmt = $pdo->prepare($sql);
@@ -102,7 +127,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
                     ':email' => $email,
                     ':password' => $hashed_password,
                     ':role' => $role,
-                    ':status' => 'ACTIVE'
                 ]);
 
                 header("Location: sign-in.php");
@@ -115,10 +139,11 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>Sign Up</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
@@ -148,28 +173,49 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         </div>
         <div class="school">
             <label for="school">School</label>
-            <select id="school" name="school" required>
-                <option value="wmsu" <?php echo (isset($_POST['school']) && $_POST['school'] == 'wmsu') ? 'selected' : ''; ?>>Western Mindanao State University</option>
-                <option value="uz" <?php echo (isset($_POST['school']) && $_POST['school'] == 'uz') ? 'selected' : ''; ?>>Universidad de Zamboanga</option>
-                <option value="adzu" <?php echo (isset($_POST['school']) && $_POST['school'] == 'adzu') ? 'selected' : ''; ?>>Ateneo de Zamboanga University</option>
-            </select>
+            <input 
+                type="text" 
+                id="school" 
+                name="school" 
+                placeholder="Search for your school..." 
+                list="schoolList" 
+                required
+                autocomplete="off"
+                value="<?php echo isset($_POST['school']) ? htmlspecialchars($_POST['school']) : ''; ?>">
+            
+            <datalist id="schoolList">
+                <option value="Western Mindanao State University">
+                <option value="Universidad de Zamboanga">
+                <option value="Ateneo de Zamboanga University">
+                <option value="Southern City Colleges">
+                <option value="Jak Roberto Anti-silos University">
+                <option value="Zamboanga City State Polytechnic College">
+                <option value="Zamboanga State College of Marine Sciences and Technology">
+            </datalist>
+            <?php if (isset($error_messages['school'])): ?>
+                <small style="color:red; font-weight: 600;"><?php echo $error_messages['school']; ?></small>
+            <?php endif; ?>
         </div>
     </div>
     <div class="flex-container">
-        <div class="course-grade">
-            <label for="course-grade">Course / Grade Level</label>
-            <select id="course-grade" name="course_grade" required>
-                <option value="js" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'js') ? 'selected' : ''; ?>>Junior High</option>
-                <option value="sh" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'sh') ? 'selected' : ''; ?>>Senior High</option>
-                <option value="cs" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'cs') ? 'selected' : ''; ?>>Computer Science</option>
-               </select>
-        </div>
+    <div class="course-grade">
+        <label for="course-grade">Course / Grade Level</label>
+         <select id="course-grade" name="course_grade" required>
+            <option value="None" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'None') ? 'selected' : ''; ?>>None</option>
+            <option value="Junior High" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'Junior High') ? 'selected' : ''; ?>>Junior High</option>
+            <option value="Senior High" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'Senior High') ? 'selected' : ''; ?>>Senior High</option>
+            <option value="BSCS" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'BSCS') ? 'selected' : ''; ?>>Computer Science</option>
+            <option value="BSIT" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'BSIT') ? 'selected' : ''; ?>>Information Technology</option>
+            <option value="ACT" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'ACT') ? 'selected' : ''; ?>>Associate in Computer Technology</option>
+            <option value="BSN" <?php echo (isset($_POST['course_grade']) && $_POST['course_grade'] == 'BSN') ? 'selected' : ''; ?>>Nursing</option>
+         </select>
+    </div>
         <div class="sex">
             <label for="sex">Sex</label>
             <select id="sex" name="sex" required>
-                <option value="male" <?php echo (isset($_POST['sex']) && $_POST['sex'] == 'male') ? 'selected' : ''; ?>>Male</option>
-                <option value="female" <?php echo (isset($_POST['sex']) && $_POST['sex'] == 'female') ? 'selected' : ''; ?>>Female</option>
-                <option value="prefer_not_to_say" <?php echo (isset($_POST['sex']) && $_POST['sex'] == 'prefer_not_to_say') ? 'selected' : ''; ?>>Prefer not to say</option>
+                <option value="Male" <?php echo (isset($_POST['sex']) && $_POST['sex'] == 'Male') ? 'selected' : ''; ?>>Male</option>
+                <option value="Female" <?php echo (isset($_POST['sex']) && $_POST['sex'] == 'Female') ? 'selected' : ''; ?>>Female</option>
+                <option value="Prefer not to say" <?php echo (isset($_POST['sex']) && $_POST['sex'] == 'Prefer not to say') ? 'selected' : ''; ?>>Prefer not to say</option>
             </select>
         </div>
         <div class="age">
@@ -199,21 +245,21 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
         <div class="civil-status">
             <label for="civil-status">Civil Status</label>
             <select id="civil-status" name="civil_status" required>
-                <option value="single" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'single') ? 'selected' : ''; ?>>Single</option>
-                <option value="married" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'married') ? 'selected' : ''; ?>>Married</option>
-                <option value="widowed" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'widowed') ? 'selected' : ''; ?>>Widowed</option>
-                <option value="divorced" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'divorced') ? 'selected' : ''; ?>>Divorced</option>
-                <option value="separated" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'separated') ? 'selected' : ''; ?>>Separated</option>
+                <option value="Single" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'Single') ? 'selected' : ''; ?>>Single</option>
+                <option value="Married" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'Married') ? 'selected' : ''; ?>>Married</option>
+                <option value="Widowed" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'Widowed') ? 'selected' : ''; ?>>Widowed</option>
+                <option value="Divorced" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'Divorced') ? 'selected' : ''; ?>>Divorced</option>
+                <option value="Separated" <?php echo (isset($_POST['civil_status']) && $_POST['civil_status'] == 'Separated') ? 'selected' : ''; ?>>Separated</option>
             </select>
         </div>
         <div class="occupation">
             <label for="occupation">Occupation</label>
             <select id="occupation" name="occupation" required>
-                <option value="student" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'student') ? 'selected' : ''; ?>>Student</option>
-                <option value="employee" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'employee') ? 'selected' : ''; ?>>Employee</option>
-                <option value="self_employed" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'self_employed') ? 'selected' : ''; ?>>Self-employed</option>
-                <option value="unemployed" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'unemployed') ? 'selected' : ''; ?>>Unemployed</option>
-                <option value="other" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'other') ? 'selected' : ''; ?>>Other</option>
+                <option value="Student" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'Student') ? 'selected' : ''; ?>>Student</option>
+                <option value="Employee" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'Employee') ? 'selected' : ''; ?>>Employee</option>
+                <option value="Self-employed" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'Self-employed') ? 'selected' : ''; ?>>Self-employed</option>
+                <option value="Unemployed" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'Unemployed') ? 'selected' : ''; ?>>Unemployed</option>
+                <option value="Other" <?php echo (isset($_POST['occupation']) && $_POST['occupation'] == 'Other') ? 'selected' : ''; ?>>Other</option>
             </select>
         </div>
     </div>
@@ -223,8 +269,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
          <input type="text" id="wmsu-id" name="wmsu_id" placeholder="For WMSU applicants only" style="font-style: italic; 
              <?php echo isset($error_messages['wmsu_id']) ? 'border: 1px solid red;' : ''; ?>"
              value="<?php echo isset($_POST['wmsu_id']) ? htmlspecialchars($_POST['wmsu_id']) : ''; ?>" 
-             maxlength="9" 
-             title="WMSU ID must be 6 or 9 digits">
+             maxlength="15" 
+             title="Invalid WMSU ID format.">
              
          <?php if (isset($error_messages['wmsu_id'])): ?>
              <small style="color:red; font-weight: 600;"><?php echo $error_messages['wmsu_id']; ?></small>
@@ -273,3 +319,4 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 </html>
 
 <script src="/gcc/js/eye-icon.js"></script>
+<script src="/gcc/js/none-course.js"></script>

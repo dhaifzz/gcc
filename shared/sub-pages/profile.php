@@ -54,6 +54,8 @@ switch ($user['role']) {
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/profile.css">
@@ -66,7 +68,7 @@ switch ($user['role']) {
        <a class="website" href="<?php
     switch ($_SESSION['role']) {
         case 'Faculty':
-            echo '../../../client/inside/faculty/faculty.php';
+            echo '../../client/inside/faculty/faculty.php';
             break;
         case 'Student':
             echo '../../client/inside/student/student.php';
@@ -125,7 +127,6 @@ switch ($user['role']) {
                 </div>
             </div>
             
-            <!-- Right Container (User Information) -->
             <div style="width: 60%; background-color: white; padding: 30px; border-radius: 15px; box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);">
                 <div style="font-weight: bold; margin-bottom: 10px; font-size: 18px;">Information:</div>
                 <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px;">
@@ -138,17 +139,17 @@ switch ($user['role']) {
                 </div>
             </div>  
         </div>
-        <!-- Appointments Table -->
+
         <div style="margin-top: 40px;">
             <h3>Appointments</h3>
-            <table style="width: 100%; border-collapse: collapse; background-color: white;">
+            <table style="width: 100%; border-collapse: collapse; background-color: white; border-radius: 9px;">
                 <thead>
                     <tr>
                         <th style="border: 1px solid #ddd; padding: 8px;">Type</th>
                         <th style="border: 1px solid #ddd; padding: 8px;">Date</th>
                         <th style="border: 1px solid #ddd; padding: 8px;">Counselor</th>
                         <th style="border: 1px solid #ddd; padding: 8px;">Time</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Edit</th>
+                        <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -157,7 +158,7 @@ switch ($user['role']) {
                         <td style="border: 1px solid #ddd; padding: 8px; color: red;">08-30-2004</td>
                         <td style="border: 1px solid #ddd; padding: 8px;">Kayden Andal</td>
                         <td style="border: 1px solid #ddd; padding: 8px;">10:00 am</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;"><button style="background-color: #DC143C; color: white; border: none; padding: 5px 10px; cursor: pointer;">Confirm</button></td>
+                        <td style="border: 1px solid #ddd; padding: 8px;"><button style="background-color:rgb(240, 147, 8); color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 7px;">Pending</button></td>
                     </tr>
                     <tr>
                         <td style="border: 1px solid #ddd; padding: 8px;">-</td>
@@ -194,3 +195,4 @@ switch ($user['role']) {
 </html>
 
 <script src="/gcc/js/upload-profile.js"></script>
+<script src="/gcc/js/sidebar.js"></script>

@@ -9,28 +9,25 @@ unset($_SESSION['error']);
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = $_POST['email'];
     $password = $_POST['password'];
+    $remember_me = isset($_POST['remember_me']);
 
     $stmt = $pdo->prepare("SELECT * FROM users WHERE email = :email");
     $stmt->execute(['email' => $email]);
     $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($user) {
-        if ($user['status'] === 'Inactive') { 
-            $_SESSION['error'] = 'Your account is currently inactive. Please contact the admin.';
-            header("Location: sign-in.php");
-            exit();
+    if ($user && password_verify($password, $user['password'])) {
+        $_SESSION['email'] = $email;
+        $_SESSION['role'] = $user['role'];
+
+        if ($remember_me) {
+            $token = bin2hex(random_bytes(16));
+            $stmt = $pdo->prepare("UPDATE users SET remember_token = :token WHERE id = :id");
+            $stmt->execute([':token' => $token, ':id' => $user['id']]);
+            setcookie('remember_token', $token, time() + (86400 * 30), "/"); // 30 days
         }
-        
-        if (password_verify($password, $user['password'])) { 
-            $_SESSION['email'] = $email;
-            $_SESSION['role'] = $user['role'];
-            header("Location: backend/redirect.php");
-            exit();
-        } else {
-            $_SESSION['error'] = 'Incorrect password / email or Account does not exist.'; 
-            header("Location: sign-in.php"); 
-            exit();
-        }
+
+        header("Location: backend/redirect.php");
+        exit();
     } else {
         $_SESSION['error'] = 'Incorrect password / email or Account does not exist.'; 
         header("Location: sign-in.php"); 
@@ -39,10 +36,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 }
 ?>
 
-
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>Login</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">

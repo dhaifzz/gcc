@@ -9,11 +9,12 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
 <!DOCTYPE html>
 <html>
 <head>
+<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/assessment.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
-    <!-- <a href="../../auth/sign-out.php">Sign Out</a> -->
     <!-- STUDENT / ASSESSMENT -->
 </head>
 <body>
@@ -25,7 +26,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
             echo '../../users/admin/admin.php';
             break;
         case 'Faculty':
-            echo '../../../client/inside/faculty/faculty.php';
+            echo '../../client/inside/faculty/faculty.php';
             break;
         case 'Student':
             echo '../../client/inside/student/student.php';
@@ -54,7 +55,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
                 <!-- For High School -->
                 <div style="font-size: 30px; font-weight: 600;">For High School Students</div>
                 <div style="font-size: 20px;">Book, Check in for Reschedule or change an appointment.</div>
-                <button class="btn-hi-col" style="background-color: #11AD64; color: white; border: 2px solid rgb(14, 121, 73); padding: 15px 0; margin-bottom: -20px; border-radius: 5px; cursor: pointer; font-size: 22px; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
+                <button class="btn-hi-col" onclick="location.href='./appointment-pages/assessment-appoint.php'" style="background-color: #11AD64; color: white; border: 2px solid rgb(14, 121, 73); padding: 15px 0; margin-bottom: -20px; border-radius: 5px; cursor: pointer; font-size: 22px; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
                   <i class="fas fa-arrow-right" style="margin-right: 10px;"></i>Reserve
                 </button>
               </div>
@@ -62,7 +63,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
               <div style="width: 30%; height: 300px; background-color: white; border: 1px solid #ccc; border-radius: 7px; display: flex; flex-direction: column; justify-content: center; padding: 0px 20px 0px; text-align: center; gap: 50px;">
                 <div style="font-size: 30px; font-weight: 600;">For College Students</div>
                 <div style="font-size: 20px;">Book, Check in for Reschedule or change an appointment.</div>
-                <button class="btn-hi-col" style="background-color: #11AD64; color: white; border: 2px solid rgb(14, 121, 73); padding: 15px 0; margin-bottom: -20px; border-radius: 5px; cursor: pointer; font-size: 22px; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
+                <button class="btn-hi-col" onclick="location.href='./appointment-pages/assessment-appoint.php'" style="background-color: #11AD64; color: white; border: 2px solid rgb(14, 121, 73); padding: 15px 0; margin-bottom: -20px; border-radius: 5px; cursor: pointer; font-size: 22px; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
                   <i class="fas fa-arrow-right" style="margin-right: 10px;"></i>Reserve
                 </button>
               </div>
@@ -84,3 +85,5 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
   </div>
 </body>
 </html>
+
+<script src="/gcc/js/sidebar.js"></script>
