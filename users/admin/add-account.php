@@ -169,14 +169,36 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
-    <title>Add Account</title>
+<meta name="viewport" content="width=device-width, initial-scale=1">
+    <title>GCC Admin</title>
     <?php includeGoogleFonts(); ?>
-    <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
-    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="css/add-account.css">
+    <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
 </head>
 <body>
+        <!-- Sidebar -->
+        <div class="sidebar">
+        <div class="sidebar-header">
+            <h3 style="text-decoration: underline; text-decoration-color: red; text-underline-offset: 0.3125rem;">GCC <?php echo $_SESSION['role']; ?></h3>
+        </div>
+        <div class="menu-items">
+            <a href="dashboard.php"><i class="fa-solid fa-home"></i> Dashboard</a>
+            <a href="admin.php"><i class="fa-solid fa-users"></i> Manage Users</a>
+            <a href="add-account.php"style=" background-color: rgb(255, 255, 255); color: #236641;"><i class="fa-solid fa-chart-bar"></i> Create Account</a>
+            <a href="settings.php"><i class="fa-solid fa-cog"></i> Settings</a>
+            <a href="../../auth/sign-out.php"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <div class="sidebar-footer">
+        <small>© 2025 WMSU </small>
+        <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+        <img src="/gcc/img/wmsu-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+    </div>
+    </div>
+    
     <div class="container">
     <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 50px;">
     <h2 style="font-weight: 600; margin: 0;"> 
@@ -321,8 +343,6 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </form>
       </div>
 </body>
-<script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"></script>
-<script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+
 <script src="/gcc/js/none-course.js"></script>
 </html>

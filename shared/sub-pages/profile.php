@@ -39,7 +39,8 @@ switch ($user['role']) {
     case 'Faculty':
         $profile_title = "Faculty's Profile";
         break;
-    case 'Student':
+    case 'College Student':
+    case 'High School Student':
         $profile_title = "Student's Profile";
         break;
     case 'Outside Client':
@@ -56,6 +57,7 @@ switch ($user['role']) {
 <head>
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/profile.css">
@@ -63,15 +65,20 @@ switch ($user['role']) {
     <!-- STUDENT, OUTSIDE, FACULTY / PROFILE -->
 </head>
 <body>
-    <div class="navbar">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
+<div class="navbar">
+    <div class="navbar-items">
+       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+       <img src="/gcc/img/wmsu-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
        <a class="website" href="<?php
     switch ($_SESSION['role']) {
         case 'Faculty':
             echo '../../client/inside/faculty/faculty.php';
             break;
-        case 'Student':
-            echo '../../client/inside/student/student.php';
+        case 'College Student':
+            echo '../../client/inside/student/college.php';
+            break;
+        case 'High School Student':
+            echo '../../client/inside/student/high-school.php';
             break;
         case 'Outside Client':
             echo '../../client/outside/outside.php';
@@ -79,11 +86,13 @@ switch ($user['role']) {
         default:
            echo '../../../auth/sign-in.php';  
     }
-    ?>">Guidance and Counseling Center</a>
-       <div class="burger-icon" style="float: right; margin: 10px;">
-           <i class="fas fa-bars" style="font-size: 35px;"></i>
-       </div>
+    ?>">WMSU Guidance and Counseling Center</a>
     </div>
+       <div class="navbar-content">
+    <button class="btn-sign-out" onclick="window.location.href='../../auth/sign-out.php'">Sign Out</button>
+    </div>
+  </div>
+
     <div class="content">
     <div class="container">
     <div style="background-color: #F1F1F1; padding: 70px 80px 100px; border-radius: 15px;">

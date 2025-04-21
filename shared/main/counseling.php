@@ -1,7 +1,7 @@
 <?php
 require_once '../../font/font.php';
 session_start();
-if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['Student', 'Outside Client', 'Faculty',])) {
+if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty',])) {
     header("Location: ../../auth/sign-in.php");
     exit();
 }
@@ -22,14 +22,14 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['Student', 'Outs
        <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
        <a class="website" href="<?php
     switch ($_SESSION['role']) {
-        case 'Admin':
-            echo '../../users/admin/admin.php';
-            break;
         case 'Faculty':
             echo '../../client/inside/faculty/faculty.php';
             break;
-        case 'Student':
-            echo '../../client/inside/student/student.php';
+        case 'College Student':
+            echo '../../client/inside/student/college.php';
+            break;
+        case 'High School Student':
+            echo '../../client/inside/student/high-school.php';
             break;
         case 'Outside Client':
             echo '../../client/outside/outside.php';

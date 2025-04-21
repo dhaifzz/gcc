@@ -1,7 +1,7 @@
 <?php
 require_once '../../font/font.php';
 session_start();
-if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['Student', 'Outside Client', 'Faculty', 'Director', 'Staff', 'Admin'])) {
+if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty', 'Director', 'Staff', 'Admin'])) {
     header("Location: ../../auth/sign-in.php");
     exit();
 }
@@ -16,27 +16,24 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['Student', 'Outs
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/contact-us.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
-    <!-- STUDENT / CONTACT US -->
+    <!-- CONTACT US -->
 </head>
 <body>
 <div class="navbar">
      <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
      <a class="website" href="<?php
     switch ($_SESSION['role']) {
-        case 'Director':
-            echo '../../users/director/director.php';
-            break;
-        case 'Staff':
-            echo '../../users/staff/staff.php';
-            break;
         case 'Admin':
             echo '../../users/admin/admin.php';
             break;
         case 'Faculty':
             echo '../../client/inside/faculty/faculty.php';
             break;
-        case 'Student':
-            echo '../../client/inside/student/student.php';
+        case 'College Student':
+            echo '../../client/inside/student/college.php';
+            break;
+        case 'High School Student':
+            echo '../../client/inside/student/high-school.php';
             break;
         case 'Outside Client':
             echo '../../client/outside/outside.php';

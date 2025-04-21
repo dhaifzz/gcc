@@ -1,7 +1,7 @@
 <?php
 require_once '../../font/font.php';
 session_start();
-if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
+if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'College Student') {
     header("Location: ../../auth/sign-in.php");
     exit();
 }
@@ -15,25 +15,16 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/shifting.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
-    <!-- STUDENT / SHIFTING EXAM -->
+    <!-- COLLEGE STUDENT / SHIFTING EXAM -->
 </head>
 <body>
     <div class="navbar">
        <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
        <a class="website" href="<?php
     switch ($_SESSION['role']) {
-        case 'Admin':
-            echo '../../users/admin/admin.php';
-            break;
-        case 'Faculty':
-            echo '../../client/inside/faculty/faculty.php';
-            break;
-        case 'Student':
-            echo '../../client/inside/student/student.php';
-            break;
-        case 'Outside Client':
-            echo '../../client/outside/outside.php';
-            break;
+        case 'College Student':
+           echo '../../client/inside/student/college.php';
+        break;
         default:
            echo '../../../auth/sign-in.php';  
     }

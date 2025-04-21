@@ -52,30 +52,29 @@ document.addEventListener("DOMContentLoaded", function () {
     document.querySelectorAll(".delete-btn").forEach(button => {
         button.addEventListener("click", function () {
             let userId = this.getAttribute("data-id");
-
+    
             // Fetch user's details
             fetch(`/gcc/users/admin/backend/fetch-user.php?id=` + userId)
                 .then(response => response.text())
                 .then(data => {
                     console.log("Fetched Data:", data); // Debugging output
-
+    
                     let userData = data.split("|"); // Split response into array
-
+    
                     if (userData[0] === "Error") {
                         alert("User not found!");
                         return;
                     }
-
+    
                     // Extract full name (First Middle Last)
                     let fullName = `${userData[1]} ${userData[2]} ${userData[3]}`.trim();
-
+    
                     // Update modal text with the full name
                     document.getElementById("deleteUserName").textContent = fullName;
-
+    
                     // Store the user ID for deletion
-                    deleteUserId = userId;
-                    document.getElementById("delete_user_id").value = deleteUserId;
-
+                    document.getElementById("delete_user_id").value = userId;
+    
                     // Show the modal
                     openModal("deleteUserModal");
                 })
@@ -99,44 +98,48 @@ document.addEventListener("DOMContentLoaded", function () {
         .catch(error => console.error("Delete error:", error));
     });
 
-    // Modal Functions
-    function openModal(modalId) {
-        let modal = document.getElementById(modalId);
-        modal.style.display = "block";
-        setTimeout(() => {
-            modal.classList.add("show");
-        }, 10);
-    }
 
+    document.getElementById("confirmAddAccountBtn").addEventListener("click", function () {
+        window.location.href = "add-account.php";
+    });
+
+    document.querySelector(".add-btn").addEventListener("click", function () {
+        openModal("confirmationModal");
+    });    
+
+    // Modal Functions
     function closeModal(modalId) {
         let modal = document.getElementById(modalId);
         modal.classList.remove("show");
+        modal.classList.add("closing");
+
         setTimeout(() => {
             modal.style.display = "none";
-        }, 300); // Ensure fade-out transition happens before hiding
+            modal.classList.remove("closing");
+        }, 300); // Match this with your CSS transition time
     }
 
     // Close modal when clicking outside
-    document.querySelectorAll(".modal").forEach(modal => {
-        modal.addEventListener("click", function (event) {
-            if (event.target === modal) {
-                closeModal(modal.id);
-            }
-        });
-    });
+    function openModal(modalId) {
+        let modal = document.getElementById(modalId);
+        modal.style.display = "flex";
+        setTimeout(() => {
+            modal.classList.add("show");
+        }, 10); // Small delay to trigger the CSS transition
+    }
 
     // Add event listeners for close buttons in modals
-    document.querySelectorAll('.close-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            let modal = this.closest('.modal');
+    document.querySelectorAll(".close-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let modal = this.closest(".modal");
             closeModal(modal.id);
         });
     });
 
     // Handle Cancel button in Delete Modal
-    document.querySelectorAll('.cancel-btn').forEach(btn => {
-        btn.addEventListener('click', function () {
-            let modal = this.closest('.modal');
+    document.querySelectorAll(".cancel-btn").forEach(button => {
+        button.addEventListener("click", function () {
+            let modal = this.closest(".modal");
             closeModal(modal.id);
         });
     });

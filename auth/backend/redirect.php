@@ -28,9 +28,12 @@ try {
 
 // Redirect based on user role
 switch ($_SESSION['role']) {
-    case 'Student':
-        header("Location: ../../client/inside/student/student.php");
+    case 'College Student':
+        header("Location: ../../client/inside/student/college.php");
         break;
+    case 'High School Student':
+        header("Location: ../../client/inside/student/high-school.php");
+        break; 
     case 'Outside Client':
         header("Location: ../../client/outside/outside.php");
         break;

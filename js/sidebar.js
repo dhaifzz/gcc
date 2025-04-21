@@ -13,7 +13,7 @@ function toggleSidebar() {
         overlay.classList.toggle('active');
     }
     
-    document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : '';
+document.body.style.overflow = sidebar.classList.contains('active') ? 'hidden' : 'auto';
 }
 
 document.querySelectorAll('.sidebar a').forEach(link => {

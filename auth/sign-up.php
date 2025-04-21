@@ -45,27 +45,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 
     $role = "";
 
+    if ($course_grade === "Junior High" || $course_grade === "Senior High") {
+        $role = "High School Student";
+    } elseif ($course_grade === "None") {
+        $role = "Outside Client";
+    } else {
+        $role = "College Student";
+    }
+
     if (strpos($email, '@wmsu.edu.ph') !== false) {
         if ($school !== 'Western Mindanao State University') {
             $error_messages['email'] = "WMSU email can only be used if the school is Western Mindanao State University.";
-        } elseif (!empty($wmsu_id) && is_numeric($wmsu_id)) {
+        } else {
             if (strlen($wmsu_id) == 6) {
                 $role = 'Faculty';
             } elseif (strlen($wmsu_id) == 9) {
-                $role = 'Student';
+                if ($course_grade === "Junior High" || $course_grade === "Senior High") {
+                    $role = 'High School Student';
+                } else {
+                    $role = 'College Student';
+                }
             } else {
-                $error_messages['wmsu_id'] = "WMSU ID is for be 6 or 9 digits for WMSU email addresses.";
+                $error_messages['wmsu_id'] = "WMSU ID must be 6 digits for faculty or 9 digits for students.";
             }
-        } else {
-            $error_messages['wmsu_id'] = "WMSU ID is required for WMSU email addresses.";
         }
     } else {
         if (!empty($wmsu_id)) {
             $error_messages['wmsu_id'] = "WMSU ID should not be filled for non-WMSU email addresses.";
         }
         $role = 'Outside Client';
-        $wmsu_id = "<i>Guest ID</i>";
+        $wmsu_id = "Guest ID";
     }
+
 
     if ($school !== 'Western Mindanao State University' && strpos($email, '@wmsu.edu.ph') === false) {
         $role = 'Outside Client';
@@ -315,8 +326,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         </div>
 </form>
 
+<script src="/gcc/js/hs-col-role.js"></script>
+<script src="/gcc/js/eye-icon.js"></script>
+<script src="/gcc/js/none-course.js"></script>
 </body>
 </html>
 
-<script src="/gcc/js/eye-icon.js"></script>
-<script src="/gcc/js/none-course.js"></script>

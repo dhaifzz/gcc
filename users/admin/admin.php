@@ -81,16 +81,15 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
 <head>
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GCC Admin</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="css/admin.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <link rel="stylesheet" href="css/bootstrap-modal.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
-    <!-- ADMIN -->
 </head>
 <body>
 
@@ -99,8 +98,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
          display: inline-block;
          white-space: nowrap;
          overflow: hidden;
-         border-right: 3px solid rgb(29, 215, 129);
-         padding-right: 3px;
+         border-right: 0.1875rem solid rgb(29, 215, 129); /* 3px */
+         padding-right: 0.1875rem; /* 3px */
          animation: typing 2s steps(<?php echo $text_length; ?>) forwards, 
                     blink-caret 0.75s step-end infinite;
      }
@@ -108,123 +107,85 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
          position: absolute;
          top: 0;
          right: 0;
-         width: 2px;
+         width: 0.125rem; /* 2px */
          background-color: black;
          animation: move-border 2s steps(<?php echo $text_length; ?>) forwards;
      }
     </style>
 
-    <!-- Navbar -->
-    <div class="navbar">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-       <a class="website" href="#">Guidance and Counseling Center</a>
-       <!-- Sidebar -->
-       <div class="burger-icon" onclick="toggleSidebar()">
-         <i class="fas fa-bars"></i>
-       </div>
-       <div class="sidebar" id="sidebar">
-        <span class="close-modal-btn" onclick="toggleSidebar()">
-            <i class="fa-solid fa-bars-staggered"></i>
-        </span>
+<body>
+    <!-- Sidebar -->
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <h3 style="text-decoration: underline; text-decoration-color: red; text-underline-offset: 0.3125rem;">GCC <?php echo $_SESSION['role']; ?></h3>
+        </div>
         <div class="menu-items">
-            <a href="admin.php"><i class="fas fa-home"></i>Home</a>
-            <a href="#"><i class="fas fa-user"></i>Profile</a>
-            <a href="counseling.php"><i class="fas fa-calendar-check"></i>Appointments</a>
-            <hr>
-            <a href="../../shared/sub-pages/contact-us.php"><i class="fas fa-envelope"></i>Contact Us</a>
-            <a href="../../shared/sub-pages/about-us.php"><i class="fas fa-info-circle"></i>About Us</a>
-            <a href="../../shared/sub-pages/our-team.php"><i class="fas fa-users"></i>Our Team</a>
-            <hr>
-            <a href="../../auth/sign-out.php" class="logout"><i class="fas fa-sign-out-alt"></i>Log Out</a>
+            <a href="dashboard.php"><i class="fa-solid fa-home"></i> Dashboard</a>
+            <a href="admin.php" style=" background-color: rgb(255, 255, 255); color: #236641;"><i class="fa-solid fa-users"></i> Manage Users</a>
+            <a href="add-account.php"><i class="fa-solid fa-chart-bar"></i> Create Account</a>
+            <a href="settings.php"><i class="fa-solid fa-cog"></i> Settings</a>
+            <a href="../../auth/sign-out.php"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <div class="sidebar-footer">
+        <small>© 2025 WMSU </small>
+        <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+        <img src="/gcc/img/wmsu-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+    </div>
+    </div>
 
-            </div>
-       </div>
-    </div>   
-
+    <!-- Main Content -->
     <div class="container">
-    <div class="typing-container">
-     <span class="typing-text">Welcome to GCC Admin, <span style="color:rgb(11, 178, 100);"><?php echo $first_name; ?></span>.</span>
-     <span class="vertical-border"></span>
-     </div>
+        <div class="typing-container">
+            <span class="typing-text">Welcome to WMSU GCC Admin, <span style="color:rgb(11, 178, 100);"><?php echo $first_name; ?></span>.</span>
+            <span class="vertical-border"></span>
+        </div>
 
-    <div class="table-container">
-    <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 35px;">
-    <h2 style="font-weight: 600; margin: 0; margin-right: 15px;"> 
-        <i class="fa-solid fa-users"></i>
-        GCC's User Accounts
-    </h2>
-    <button class="btn btn-primary" data-toggle="modal" data-target="#confirmationModal">
-        <i class="fa-solid fa-user-plus"></i> Add Account
-    </button>
-</div>
+        <div class="table-container">
+            <div style="display: flex; justify-content: flex-start; align-items: center; margin-bottom: 2.1875rem;"> <!-- 35px -->
+                <h2 style="font-weight: 600; margin: 0; margin-right: 0.9375rem;"> <!-- 15px -->
+                    <i class="fa-solid fa-users"></i>
+                    GCC's User Accounts
+                </h2>
+                <button class="add-btn">
+                    <i class="fa-solid fa-user-plus"></i> Add Account
+                </button>
+            </div>
 
-    <table id="usersTable" class="display">
-    <thead>
-        <tr>
-            <th>ID</th>
-            <th>WMSU ID</th>
-            <th>Username</th>
-            <th>Email</th>
-            <th>Account Role</th>
-            <th>Action</th>
-        </tr>
-    </thead>
-    <tbody>
-        <?php foreach ($users as $row) { ?>
-            <tr>
-                <td><?= $row['id'] ?></td>
-                <td><?= $row['wmsu_id'] ?></td>
-                <td><?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?></td>
-                <td><?= $row['email'] ?></td>
-                <td><?= $row['role'] ?></td>
-                <td style="align-items: center; justify-content: center; display: flex; gap: 6px;">
-                   <button class="edit-btn" data-id="<?= $row['id'] ?>">
-                       <i class="fa-solid fa-pen-to-square"></i> Edit
-                   </button>
-                   <button class="delete-btn" data-id="<?= $row['id'] ?>">
-                       <i class="fa-solid fa-trash"></i> Delete
-                   </button>
-               </td>
-            </tr>
-        <?php } ?>
-    </tbody>
-</table>
-     <?php include 'components/modals.php'; ?>  
+            <table id="usersTable" class="display">
+                <thead>
+                    <tr>
+                        <th>ID</th>
+                        <th>WMSU ID</th>
+                        <th>Username</th>
+                        <th>Email</th>
+                        <th>Account Role</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($users as $row) { ?>
+                        <tr>
+                            <td><?= $row['id'] ?></td>
+                            <td><?= $row['wmsu_id'] ?></td>
+                            <td><?= $row['first_name'] . ' ' . $row['middle_name'] . ' ' . $row['last_name'] ?></td>
+                            <td><?= $row['email'] ?></td>
+                            <td><?= $row['role'] ?></td>
+                            <td style="align-items: center; justify-content: center; display: flex; gap: 0.375rem;"> <!-- 6px -->
+                                <button class="edit-btn" data-id="<?= $row['id'] ?>">
+                                    <i class="fa-solid fa-pen-to-square"></i> Edit
+                                </button>
+                                <button class="delete-btn" data-id="<?= $row['id'] ?>">
+                                    <i class="fa-solid fa-trash"></i> Delete
+                                </button>
+                            </td>
+                        </tr>
+                    <?php } ?>
+                </tbody>
+            </table>
+            <?php include 'components/modals.php'; ?>  
+        </div>
     </div>
-    <div>
-         <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
-            <div style="margin-right: 20px;"><img src="/gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
-         </footer>
-         </div>
-    </div>
-
-    <script src="/gcc/js/sidebar.js"></script>
     <script src="/gcc/js/dataTable.js"></script>
     <script src="/gcc/js/action-modal.js"></script>
-
-    <script>
-    document.getElementById('confirmAddAccountBtn').addEventListener('click', function() {
-    window.location.href = 'add-account.php';
-});
-
-document.querySelectorAll('.close-btn, .cancel-btn').forEach(function(element) {
-    element.addEventListener('click', function() {
-        document.getElementById('confirmationModal').classList.remove('show');
-    });
-});
-    </script>
-    
-    <script>
-       function hideModal() {
-    modal.setAttribute('inert', ''); // Prevent focus and interaction
-    modal.style.display = 'none'; // Hide the modal (or use Bootstrap's hide method if you're using it)
-}
-
-function showModal() {
-    modal.removeAttribute('inert'); // Allow focus and interaction
-    modal.style.display = 'flex'; // Show the modal (or use Bootstrap's show method if you're using it)
-}
-    </script>
 </body>
 </html>

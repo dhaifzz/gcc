@@ -39,6 +39,7 @@
     </div>
 </div>
 
+
 <style>
 * {
     font-family: "Instrument Sans", sans-serif;
@@ -47,12 +48,11 @@
 .modal {
     display: none;
     position: fixed;
-    z-index: 1000;
+    z-index: 999;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
-    backdrop-filter: blur(3px);
     background-color: rgba(0, 0, 0, 0.4);
     align-items: center;
     justify-content: center;
@@ -63,28 +63,42 @@
 .modal.show {
     display: flex !important;
     opacity: 1;
-    justify-content: center;
-    align-items: center;
-    pointer-events: all; 
+}
+
+.modal.closing {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 500px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: scale(0.9);
+    opacity: 0;
+    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
 }
 
 .modal.show .modal-content {
     transform: scale(1);
     opacity: 1;
 }
-/* Modal Content (Perfectly Centered) */
-.modal .modal-content {
-    background: white;
-    padding: 20px;
-    width: 400px;
-    max-width: 90%;
-    border-radius: 10px;
-    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-    position: relative;
-    text-align: center;
+
+.modal.closing .modal-content {
     transform: scale(0.9);
-    transition: transform 0.3s ease-in-out, opacity 0.3s ease-in-out;
+    opacity: 0;
 }
+
+.close-btn {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+}
+
 /* ============================= */
 /* Edit User Modal Styles */
 /* ============================= */
@@ -104,7 +118,7 @@
 
 /* Input Fields */
 #editUserModal input {
-    width: 90%;
+    width: 96%;
     padding: 10px;
     margin: 5px 0;
     border: 1px solid #ccc;

@@ -1,9 +1,9 @@
 <?php
 require_once '../../font/font.php';
 session_start();
-if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
-    header("Location: ../../auth/sign-in.php");
-    exit();
+if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student'])) {
+  header("Location: ../../auth/sign-in.php");
+  exit();
 }
 ?>
 <!DOCTYPE html>
@@ -15,24 +15,18 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/assessment.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
-    <!-- STUDENT / ASSESSMENT -->
+    <!-- COLLEGE AND HIGH SCHOOL STUDENT / ASSESSMENT -->
 </head>
 <body>
     <div class="navbar">
        <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
        <a class="website" href="<?php
     switch ($_SESSION['role']) {
-        case 'Admin':
-            echo '../../users/admin/admin.php';
+        case 'College Student':
+            echo '../../client/inside/student/college.php';
             break;
-        case 'Faculty':
-            echo '../../client/inside/faculty/faculty.php';
-            break;
-        case 'Student':
-            echo '../../client/inside/student/student.php';
-            break;
-        case 'Outside Client':
-            echo '../../client/outside/outside.php';
+        case 'High School Student':
+            echo '../../client/inside/student/high-school.php';
             break;
         default:
            echo '../../../auth/sign-in.php';  
@@ -74,7 +68,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Student') {
        <p style="margin: 15px 30px; text-align: left; font-size: 25px;"> Student Assesments at the WMSU Guidance and Counseling Center starts with an initial appointment. Appointments can be booked on the same day or for the next day, available Monday – Friday, 8 AM – 5 PM. During peak times, appointment availability may vary.</p>
       </div>
       <div style="background-color: #F1F1F1; padding: 50px 0 50px;">
-            <p style="margin: 0 30px; text-align: start; font-size: 23px; font-weight: 500;">If you cannot find an appointment <a id="contact" class="contact" href="sub-pages/contact-us.php">contact us</a> during business hours. We can arrange for a counselor to provide a brief triage phone call to discuss support options. You can also check out what you can do while you are waiting, or if you need urgent support.</p>
+            <p style="margin: 0 30px; text-align: start; font-size: 23px; font-weight: 500;">If you cannot find an appointment <a id="contact" class="contact" href="../../shared/sub-pages/contact-us.php">contact us</a> during business hours. We can arrange for a counselor to provide a brief triage phone call to discuss support options. You can also check out what you can do while you are waiting, or if you need urgent support.</p>
       </div>
       
       <div style="background-image: url('/gcc/img/gcc-bg.png'); background-size: cover; width: 100%; height: 1000px; border-top: solid 1px rgba(124, 124, 124, 0.91)"></div>

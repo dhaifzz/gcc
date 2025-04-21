@@ -26,9 +26,9 @@ require_once '../font/font.php';
     <div class="dropdown">
         <a href="#" class="dropbtn">Appointments <i class="fas fa-caret-down"></i></a>
         <div class="dropdown-content">
-            <a href="h"><i class="fas fa-calendar-check"></i> Counseling</a>
-            <a href="h"><i class="fas fa-file-alt"></i> Assessments</a>
-            <a href="h"><i class="fas fa-edit"></i> Shifting Exam</a>
+        <a class="h" data-section="Counseling"><i class="fas fa-calendar-check"></i> Counseling</a>
+        <a class="h" data-section="Assessments"><i class="fas fa-file-alt"></i> Assessments</a>
+        <a class="h" data-section="Shifting Exam"><i class="fas fa-edit"></i> Shifting Exam</a>
         </div>
     </div>
     <div class="dropdown">
@@ -54,13 +54,13 @@ require_once '../font/font.php';
         </span>
     <div class="menu-items">
             <a href="public-page.php"><i class="fas fa-home"></i>Home</a>
-            <a class="h"><i class="fas fa-calendar-check"></i>Appointments</a>
-            <a class="h"><i class="fas fa-file-alt"></i>Assessments</a>
-            <a class="h"><i class="fas fa-edit"></i>Shifting Exam</a>
+            <a class="h" data-section="Appointments"><i class="fas fa-calendar-check"></i> Appointments</a>
+            <a class="h" data-section="Assessments"><i class="fas fa-file-alt"></i> Assessments</a>
+            <a class="h" data-section="Shifting Exam"><i class="fas fa-edit"></i> Shifting Exam</a>
             <hr>
-            <a href="contact.php"><i class="fas fa-envelope"></i>Contact Us</a>
-            <a href="about.php"><i class="fas fa-info-circle"></i>About Us</a>
-            <a href="team.php"><i class="fas fa-users"></i>Our Team</a>
+            <a href="contact.php"><i class="fas fa-envelope"></i> Contact Us</a>
+            <a href="about.php"><i class="fas fa-info-circle"></i> About Us</a>
+            <a href="team.php"><i class="fas fa-users"></i> Our Team</a>
             <hr>
             <a href="../auth/sign-in.php" class="logout"><i class="fas fa-sign-out-alt"></i>Sign In</a>
         </div>
@@ -81,9 +81,10 @@ require_once '../font/font.php';
                  </div>
              </div>
              <div class="carousel-item active">
-                 <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">
+                 <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">   
              </div>
           </div>
+          <div class="carousel-overlay"></div>
           <div class="welcome-text">
              <span>Welcome to GCC Website!</span>
           </div>
@@ -125,17 +126,17 @@ require_once '../font/font.php';
        <div class="image-gallery">
             <div class="image-item">
                    <img src="/gcc/img/counseling-img.png" alt="Image 1">
-                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Counseling</a></p>
+                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="#" class="h" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Counseling</a></p>
                    <span class="description"> Counseling services are available for both students and outside clients. Appointments are required for consultations, which include the completion of the Personal Data Form and Counseling Form before sessions.</span>
             </div>
             <div class="image-item">
                    <img src="/gcc/img/assessment-img.png" alt="Image 2">
-                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Assessment for Students</a></p>
+                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="#" class="h" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Assessment for Students</a></p>
                    <span class="description"> Conducts assessments for students taking the DASS-21 Test (College) and DASS-Y Test (High School). Students must schedule an appointment and complete the required forms before the assessment.</span>
             </div>
             <div class="image-item">
                    <img src="/gcc/img/shifting-img.png" alt="Image 3">
-                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Shifting Exam</a></p>
+                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="#" class="h" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Shifting Exam</a></p>
                    <span class="description"> Students changing programs. Applicants must schedule an appointment and complete the required forms before taking the exam.</span>
             </div>
         </div>
@@ -160,4 +161,4 @@ require_once '../font/font.php';
 <script src="/gcc/js/carousel.js"></script>
 <script src="/gcc/js/sidebar.js"></script>
 <script src="/gcc/js/card-animation.js"></script>
-
+<script src="/gcc/js/slide-to-sign.js"></script>
