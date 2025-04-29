@@ -1,7 +1,7 @@
 // Multiple dropdowns
 function toggleDropdown(index) {
-       var content = document.querySelectorAll(".dropdown-content")[index];
-       var button = document.querySelectorAll(".dropdown-btn")[index];
+       var content = document.querySelectorAll(".dropdown-content-form")[index];
+       var button = document.querySelectorAll(".dropdown-btn-form")[index];
 
        if (content.style.display === "block") {
            content.style.display = "none";

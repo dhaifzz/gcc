@@ -1,153 +1,325 @@
 * {
-       font-family: 'Instrument Sans', sans-serif;
-       color: white;
-       box-sizing: border-box; 
-   }
-   
-   body {
-       background: url('../../img/gcc-bg.png') no-repeat center center fixed;
-       background-size: cover;
-       display: flex;
-       justify-content: center;
-       align-items: center;
-       height: 100vh;
-       margin: 0;
-   }
-   
-   form {
-       background-color: rgba(17, 137, 81, 0.88); 
-       padding: 30px 30px 5px; 
-       border-radius: 7px;
-       box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-       width: 100%;
-       max-width: 900px;
-       text-align: center; 
-       border-left: 8px solid #DC143C;
-       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
-   }
-   
-   form div {
-       margin-bottom: 15px;
-   }
-   
-   label {
-       display: block;
-       font-size: 12px;
-       margin-bottom: 5px;
-       text-align: left; 
-   }
-   
-   option {
-       color: black;
-   }
-   
-   input[type="text"],
-   input[type="email"],
-   input[type="password"],
-   input[type="number"],
-   select {
-       width: 100%;
-       color: black;
-       padding: 10px;
-       border: 1px solid #ccc;
-       border-radius: 4.41px;
-       font-size: 12px;
-   }
-   
-   .header-container {
-       display: flex;
-       align-items: center;
-       justify-content: flex-start;
-       margin-bottom: 20px;
-   }
-   
-   img#gcc-logo {
-       width: 120px;
-       height: 120px;
-       margin: 0 10px 0 0;
-       display: inline-block;
-       vertical-align: middle;
-   }
+    font-family: 'Instrument Sans', sans-serif;
+    color: white;
+    box-sizing: border-box; 
+}
 
-   
-   .text {
-       font-size: 20px;
-       font-weight: 500;
-       text-align: left;
-       display: inline-block;
-       vertical-align: middle;
-       margin: 0;
-   }
-   
-   button {
-       width: 100%;
-       padding: 10px;
-       background-color: #064728;
-       color: white;
-       border: none;
-       border-radius: 7px;
-       cursor: pointer;
-       font-size: 12px;
-       font-weight: 500;
-       transition: background 0.3s ease;
-   }
-   
-   button:hover {
-       background-color: #16633F;
-   }
-   .signin-text {
-       text-align: center;
-       font-size: 13px;
-   }
-   .signin-text p {
-       font-weight: normal;
-       margin: 7px;
-   }
-   
-   .signin-text a {
-       color: #ffffff;
-       text-decoration: none;
-       font-weight: 500;
-   }
-   
-   .signin-text a:hover {
-       text-decoration: underline;
-   }
-   
-   .flex-container {
-       display: flex;
-       justify-content: space-between;
-   }
-   
-   .flex-container > div {
-       flex: 1;
-       margin-right: 10px;
-   }
-   
-   .flex-container > div:last-child {
-       margin-right: 0;
-   }
-   
-   .flex-container .course-grade,
-   .flex-container .sex,
-   .flex-container .age {
-       flex: 1;
-       margin-right: 10px;
-   }
-   
-   .flex-container .course-grade {
-       flex: 2;
-   }
-   
-   .flex-container .sex,
-   .flex-container .age {
-       flex: 1;
-   }
-   .password, .confirm-password {
+body {
+    background: url('../../img/gcc-bg.png') no-repeat center center fixed;
+    background-size: cover;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+}
+.error-message {
+    color: #da0e23;
+    font-size: 0.875rem;
+    margin-top: 0.25rem;
+    font-weight: 600;
+    display: block;
+}
+.invalid {
+    border-color: #da0e23 !important;
+}
+
+form {
+    background-color: rgba(17, 137, 81, 0.88); 
+    padding: 30px 30px 5px; 
+    border-radius: 7px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    width: 100%;
+    max-width: 600px;
+    text-align: center; 
+    border-left: 8px solid #DC143C;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+}
+
+form div {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    font-size: 12px;
+    margin-bottom: 5px;
+    text-align: left; 
+}
+
+option {
+    color: black;
+}
+
+input[type="text"],
+input[type="email"],
+input[type="password"],
+input[type="number"],
+select {
+    width: 100%;
+    color: black;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4.41px;
+    font-size: 12px;
+}
+
+.header-container {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    margin-bottom: 20px;
+}
+
+img#gcc-logo, img#wmsu-logo {
+    width: 80px;
+    height: 80px;
+    margin: 0 10px 0 0;
+    display: inline-block;
+    vertical-align: middle;
+}
+img#gcc-logo {
+    margin-right: 2px;
+}
+
+.text {
+    font-size: 20px;
+    font-weight: 500;
+    text-align: left;
+    display: inline-block;
+    vertical-align: middle;
+    margin: 0;
+}
+.text h1 {
+    font-size: 19px;
+    font-weight: bold;
+    margin: 0;
+    color: white;
+}
+
+.text p {
+    font-size: 15px;
+    margin: 0;
+    color: white;
+}
+.progress-stepper {
+    display: flex;
+    justify-content: space-between;
     position: relative;
-   }
+    text-align: center;
+}
+.progress-stepper::before {
+    content: '';
+    position: absolute;
+    top: 30%;
+    left: 0;
+    right: 0;
+    height: 3px;
+    border-radius: 5px;
+    background-color: #0ab160b8;
+    z-index: 0;
+    transform: translateY(-50%);
+}
+.button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+  }
+  
+  .button-group {
+    display: flex;
+    justify-content: space-between;
+    gap: 5px;
+  }
+  
+  .prev-btn,
+  .next-btn {
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: normal;
+    cursor: pointer;
+    display: flex;
+    justify-content: center; 
+    gap: 10px;
+    align-items: center;
+    background-color: #064728;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  
+  .prev-btn:hover,
+  .next-btn:hover {
+    background-color: #16633F;
+  }
+  
+  /* Icon size */
+  .prev-btn i,
+  .next-btn i {
+    font-size: 14px;
+  }  
+  .sub-btn {
+    padding: 7px 16px;
+    font-size: 13px;
+    font-weight: normal;
+    cursor: pointer;
+    display: flex;
+    justify-content: center; 
+    background-color: #ac1818;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    transition: background-color 0.3s ease;
+  }
+  .sub-btn:hover {
+    background-color: #8a1515;
+  }
+  .step {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100px;
+}
 
-   .toggle-password {
+.circle {
+    width: 25px;
+    height: 25px;
+    background-color: #bababa;
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    margin: 0;
+    justify-content: center;
+    align-items: center;
+    font-size: 12px;
+    font-weight: 600;
+    z-index: 1;
+}
+
+.step.active .circle {
+    background-color: #0ab160;
+}
+
+.step.completed .circle {
+    background-color: #16633F;
+}
+
+.step-text {
+    margin: 0;
+    font-size: 10px;
+    color: #d9d9d9;
+}
+.step-text-2 {
+    margin: 0;
+    font-size: 8px;
+    color: #d9d9d9;
+}
+
+.step.active .step-text {
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.step.completed .step-text {
+    color: #16633F;
+}
+
+button {
+    width: 100%;
+    padding: 10px;
+    background-color: #064728;
+    color: white;
+    border: none;
+    border-radius: 7px;
+    cursor: pointer;
+    font-size: 12px;
+    font-weight: 500;
+    transition: background 0.3s ease;
+}
+
+button:hover {
+    background-color: #16633F;
+}
+
+.signin-text {
+    text-align: center;
+    font-size: 15px;
+}
+
+.signin-text p {
+    font-weight: normal;
+    margin: 7px;
+}
+
+.signin-text a {
+    color: #ffffff;
+    text-decoration: none;
+    font-weight: 500;
+}
+
+.signin-text a:hover {
+    text-decoration: underline;
+}
+
+.flex-container {
+    display: flex;
+    justify-content: space-between;
+}
+
+.flex-container > div {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.flex-container > div:last-child {
+    margin-right: 0;
+}
+
+.flex-container .course-grade,
+.flex-container .sex,
+.flex-container .age {
+    flex: 1;
+    margin-right: 10px;
+}
+
+.flex-container .course-grade {
+    flex: 2;
+}
+
+.flex-container .sex,
+.flex-container .age {
+    flex: 1;
+}
+
+.password, .confirm-password {
+    position: relative;
+}
+
+/* Multi-step form styles */
+.form-step {
+    display: none;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.form-step.active {
+    display: block;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.toggle-password {
     position: absolute;
     right: 10px;
     top: 70%;
@@ -155,4 +327,4 @@
     cursor: pointer;
     color: #000;
     font-size: 1.2em;
-   }
+}

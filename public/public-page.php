@@ -1,5 +1,9 @@
 <?php
 require_once '../font/font.php';
+require_once '../database/database.php';
+// include('users\admin\content.php');
+
+// $contents = [];
 ?>
 <!DOCTYPE html>
 <html>
@@ -7,7 +11,7 @@ require_once '../font/font.php';
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-    <title>GCC Website</title>
+    <title>GCC Website</title>  
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="css/public-page.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
@@ -88,7 +92,8 @@ require_once '../font/font.php';
           <div class="welcome-text">
              <span>Welcome to GCC Website!</span>
           </div>
-    </div>
+   </div>
+
     <div class="motto" style="background-color: #F1F1F1; padding: 5rem 0 5rem;">
   <p style="margin: 0 1.25rem; text-align: center; font-size: 1.75rem; font-weight: 500;">
     The <span style="color: #095D36; font-weight: 600;">Guidance and Counseling Center</span> at Western Mindanao State University offers free, 

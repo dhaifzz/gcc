@@ -1,16 +1,41 @@
 <?php
+require_once '../navbar.php';
 require_once '../../font/font.php';
+require_once '../../database/database.php';
+
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Outside Client') {
     header("Location: ../../../auth/sign-in.php");
     exit();
 }
+
+$email = $_SESSION['email'];
+$query = "SELECT * FROM users WHERE email = :email";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['email' => $email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$profile_image = '/gcc/img/profiles/default-profile.png'; 
+
+if ($user) {
+    $user_id = $user['id'];
+    $profileQuery = "SELECT profile_image FROM profiles WHERE user_id = :user_id";
+    $profileStmt = $pdo->prepare($profileQuery);
+    $profileStmt->execute(['user_id' => $user_id]);
+    $profile = $profileStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($profile && !empty($profile['profile_image'])) {
+        $profile_image = '/gcc/img/profiles/' . htmlspecialchars($profile['profile_image']);
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html>
-<head>
+<head>  
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="css/outside.css">
@@ -19,30 +44,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Outside Client') {
 </head>
 <body>
     <!-- Navbar -->
-    <div class="navbar">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-       <a class="website" href="#">Guidance and Counseling Center</a>
-       <!-- Sidebar -->
-       <div class="burger-icon" onclick="toggleSidebar()">
-         <i class="fas fa-bars"></i>
-       </div>
-       <div class="sidebar" id="sidebar">
-        <span class="close-btn" onclick="toggleSidebar()">
-            <i class="fa-solid fa-bars-staggered"></i>
-        </span>
-        <div class="menu-items">
-            <a href="outside.php"><i class="fas fa-home"></i>Home</a>
-            <a href="../../shared/sub-pages/profile.php"><i class="fas fa-user"></i>Profile</a>
-            <a href="../../shared/main/counseling.php"><i class="fas fa-calendar-check"></i>Appointments</a>
-            <hr>
-            <a href="../../shared/sub-pages/contact-us.php"><i class="fas fa-envelope"></i>Contact Us</a>
-            <a href="../../shared/sub-pages/about-us.php"><i class="fas fa-info-circle"></i>About Us</a>
-            <a href="../../shared/sub-pages/our-team.php"><i class="fas fa-users"></i>Our Team</a>
-            <hr>
-            <a href="../../auth/sign-out.php" class="logout"><i class="fas fa-sign-out-alt"></i>Log Out</a>
-            </div>
-       </div>
-    </div>   
+    <?php renderNavbar($profile_image); ?>
 
     <div class="container">
     <div id="carousel" class="carousel">
@@ -102,7 +104,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Outside Client') {
                        Shifting Exam
                        <span class="tooltip-custom">
                        <i class="fa-solid fa-circle-exclamation mr-1" style="margin-right: 3px;"></i>
-                           Only applicable for students in WMSU.
+                           Only applicable for college students in WMSU.
                            <span class="arrow"></span>
                        </span>
                    </a>

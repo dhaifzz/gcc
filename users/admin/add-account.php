@@ -188,7 +188,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="menu-items">
             <a href="dashboard.php"><i class="fa-solid fa-home"></i> Dashboard</a>
             <a href="admin.php"><i class="fa-solid fa-users"></i> Manage Users</a>
-            <a href="add-account.php"style=" background-color: rgb(255, 255, 255); color: #236641;"><i class="fa-solid fa-chart-bar"></i> Create Account</a>
+            <a href="add-account.php"style=" background-color: rgb(255, 255, 255); color: #236641;"><i class="fa-solid fa-user-plus"></i> Create Account</a>
+            <a href="content.php"><i class="fa-solid fa-chart-bar"></i> Content </a>
             <a href="settings.php"><i class="fa-solid fa-cog"></i> Settings</a>
             <a href="../../auth/sign-out.php"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
         </div>

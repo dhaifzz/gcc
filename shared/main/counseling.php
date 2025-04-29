@@ -1,16 +1,41 @@
 <?php
 require_once '../../font/font.php';
+require_once '../../client/navbar.php';
+require_once '../../database/database.php';
+
 session_start();
 if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty',])) {
     header("Location: ../../auth/sign-in.php");
     exit();
 }
+
+$email = $_SESSION['email'];
+$query = "SELECT * FROM users WHERE email = :email";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['email' => $email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$profile_image = '/gcc/img/profiles/default-profile.png'; 
+
+if ($user) {
+    $user_id = $user['id'];
+    $profileQuery = "SELECT profile_image FROM profiles WHERE user_id = :user_id";
+    $profileStmt = $pdo->prepare($profileQuery);
+    $profileStmt->execute(['user_id' => $user_id]);
+    $profile = $profileStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($profile && !empty($profile['profile_image'])) {
+        $profile_image = '/gcc/img/profiles/' . htmlspecialchars($profile['profile_image']);
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/counseling.css">
@@ -18,32 +43,11 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
     <!-- COUNSELING -->
 </head>
 <body>
-    <div class="navbar">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-       <a class="website" href="<?php
-    switch ($_SESSION['role']) {
-        case 'Faculty':
-            echo '../../client/inside/faculty/faculty.php';
-            break;
-        case 'College Student':
-            echo '../../client/inside/student/college.php';
-            break;
-        case 'High School Student':
-            echo '../../client/inside/student/high-school.php';
-            break;
-        case 'Outside Client':
-            echo '../../client/outside/outside.php';
-            break;
-        default:
-           echo '../../../auth/sign-in.php';  
-    }
-    ?>">Guidance and Counseling Center</a>
-       <div class="burger-icon" style="float: right; margin: 10px;">
-           <i class="fas fa-bars" style="font-size: 35px;"></i>
-       </div>
-    </div>    
+    <!-- Navbar -->
+    <?php counselingNavbar($profile_image); ?>
+    
        <div class="container">
-         <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Appointments </div>
+         <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Appointments for Counseling </div>
            <div id="motto" class="motto" style="padding: 60px 0 60px;">
             <p style="margin: 0 20px; text-align: center; font-size: 23px; font-weight: 500;">The <span style="color: #095D36; font-weight: 600;">Guidance and Counseling Center</span> at WMSU offers counseling services for both students and outside clients. Appointments are required for consultations, including the completion of the Personal Data Form and Counseling Form before sessions.</p>
          </div>
@@ -60,11 +64,7 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
               <div style="width: 30%; height: 300px; background-color: white; border: 1px solid #ccc; border-radius: 7px; display: flex; flex-direction: column; justify-content: center; padding: 0px 20px 0px; text-align: center; gap: 50px;">
                 <div style="font-size: 30px; font-weight: 600;">Meet our Counsellors</div>
                 <div style="font-size: 20px;">Meet the GCC's team director, coordinators and staff.</div>
-                <button class="btn-re-view" 
-                onclick="window.location.href='../sub-pages/our-team.php'"
-                 style="background-color: #11AD64; color: white; border: 2px solid rgb(14, 121, 73); 
-                               padding: 15px 0; margin-bottom: -20px; border-radius: 5px; cursor: pointer; 
-                               font-size: 22px; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
+                <button class="btn-our-team" onclick="window.location.href='../sub-pages/our-team.php'">
                     <i class="fas fa-arrow-right" style="margin-right: 10px;"></i>View
                 </button>
               </div>

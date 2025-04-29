@@ -1,12 +1,33 @@
 <?php
 require_once '../../../font/font.php';
+require_once '../../../client/navbar.php';
 require_once '../../../database/database.php';
+
 session_start();
 if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty',])) {
     header("Location: ../../../auth/sign-in.php");
     exit();
 }
 
+$email = $_SESSION['email'];
+$query = "SELECT * FROM users WHERE email = :email";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['email' => $email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$profile_image = '/gcc/img/profiles/default-profile.png'; 
+
+if ($user) {
+    $user_id = $user['id'];
+    $profileQuery = "SELECT profile_image FROM profiles WHERE user_id = :user_id";
+    $profileStmt = $pdo->prepare($profileQuery);
+    $profileStmt->execute(['user_id' => $user_id]);
+    $profile = $profileStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($profile && !empty($profile['profile_image'])) {
+        $profile_image = '/gcc/img/profiles/' . htmlspecialchars($profile['profile_image']);
+    }
+}
 // Handle form submission
 $message = '';
 $error = '';
@@ -15,7 +36,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
     $appointment_type = 'counseling'; 
     $requested_date = $_POST['requested_date'];
     $requested_time = $_POST['requested_time']; 
-    $status = 'pending';
+    $status = 'Pending';
 
     try {
         // Check if the selected time and date are already reserved
@@ -53,8 +74,9 @@ $pdo = null;
 <!DOCTYPE html>
 <html>
 <head>
-        <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
+    <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
     <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../../css/appoint-counsel.css">
@@ -86,24 +108,9 @@ $pdo = null;
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="navbar">
-       <img src="../../../../gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-       <a class="website" href="<?php
-    switch ($_SESSION['role']) {
-        case 'College Student':
-            echo '../../../client/inside/student/college.php';
-            break;
-        case 'High School Student':
-            echo '../../../client/inside/student/high-school.php';
-            break;
-        default:
-           echo '../../../auth/sign-in.php';  
-    }
-    ?>">Guidance and Counseling Center</a>
-       <div class="burger-icon" style="float: right; margin: 10px;">
-           <i class="fas fa-bars" style="font-size: 35px;"></i>
-       </div>
-    </div>    
+     <!-- Navbar -->
+     <?php appointPageNavbar($profile_image); ?> 
+
        <div class="container">
          <div style="background-color: #16633F; width: 100%; height: 150px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Schedule your Counseling Appointment </div>
          <div style="padding: 40px; display: flex; justify-content: center; gap: 20px;">
@@ -150,11 +157,12 @@ $pdo = null;
              <div class="success"><?php echo $message; ?></div>
          <?php endif; ?>
          <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-            <div style="margin-left: 20px;">Copyright Â© 2025 Western Mindanao State University. All rights reserved.</div>
+            <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
             <div style="margin-right: 20px;"><img src="../../../../gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
          </footer>
   </div>
 
+<script src="/gcc/js/sidebar.js"></script>
 <script>
     const calendarDays = document.getElementById('calendarDays');
     const calendarMonth = document.getElementById('calendarMonth');

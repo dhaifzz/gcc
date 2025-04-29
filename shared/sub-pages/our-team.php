@@ -1,49 +1,49 @@
 <?php
 require_once '../../font/font.php';
+require_once '../../client/navbar.php';
+require_once '../../database/database.php';
+
 session_start();
-if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty', 'Director', 'Staff', 'Admin'])) {
+if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty'])) {
     header("Location: ../../auth/sign-in.php");
     exit();
 }
+
+$email = $_SESSION['email'];
+$query = "SELECT * FROM users WHERE email = :email";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['email' => $email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$profile_image = '/gcc/img/profiles/default-profile.png'; 
+
+if ($user) {
+    $user_id = $user['id'];
+    $profileQuery = "SELECT profile_image FROM profiles WHERE user_id = :user_id";
+    $profileStmt = $pdo->prepare($profileQuery);
+    $profileStmt->execute(['user_id' => $user_id]);
+    $profile = $profileStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($profile && !empty($profile['profile_image'])) {
+        $profile_image = '/gcc/img/profiles/' . htmlspecialchars($profile['profile_image']);
+    }
+}
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/our-team.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
 </head>
 <body>
-    <div class="navbar">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-       <a class="website" href="<?php
-    switch ($_SESSION['role']) {
-        case 'Admin':
-            echo '../../users/admin/admin.php';
-            break;
-        case 'Faculty':
-            echo '../../client/inside/faculty/faculty.php';
-            break;
-        case 'College Student':
-            echo '../../client/inside/student/college.php';
-            break;
-        case 'High School Student':
-            echo '../../client/inside/student/high-school.php';
-            break;
-        case 'Outside Client':
-            echo '../../client/outside/outside.php';
-            break;
-        default:
-           echo '../../../auth/sign-in.php';  
-    }
-    ?>">Guidance and Counseling Center</a>
-       <div class="burger-icon" style="float: right; margin: 10px;">
-           <i class="fas fa-bars" style="font-size: 35px;"></i>
-       </div>
-    </div>    
+    <!-- Navbar -->
+   <?php ourTeamNavbar($profile_image); ?>    
 
     <div class="container">
         <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 45px; font-weight: 500; color: white; display: flex; justify-content: left; align-items: center; padding-left: 70px;"> 
@@ -71,7 +71,7 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
                         <p class="status"> RGC, LPT </p>
                         <p class="title">Director, Guidance and Counseling Center</p>
                     </div> 
-                    <img src="/gcc/img/team-gcc/MA'AM.FINI.png" alt="Dr. Fini Joy P. Buenafe" class="profile-img">
+                    <img src="/gcc/img/team-gcc/MA'AM.FINI.png" alt="Dr. Fini Joy P. Buenafe" class="profile-img-role">
                 </div>
             </div>
         </div>
@@ -82,14 +82,14 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
         </div>
         <div id="guidance-counselors" class="guidance-counselors" style="display: flex; justify-content: center; gap: 100px; margin-bottom: 50px;">
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MS.GLENDA.png" alt="Ms. Glenda P. Acedo" class="profile-img">
+                <img src="/gcc/img/team-gcc/MS.GLENDA.png" alt="Ms. Glenda P. Acedo" class="profile-img-role">
                 <p class="name">Ms. Glenda P. Acedo</p>
                 <p class="status"> RGC, RPm, LPT </p>
                 <p class="title">Guidance Counselor III</p>
             </div>
 
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.MELTA.png" alt="Melta A. Villarta" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.MELTA.png" alt="Melta A. Villarta" class="profile-img-role">
                 <p class="name">Melta A. Villarta</p>
                 <p class="status"> RPm, RGC </p>
                 <p class="title">Assistant Professor</p>
@@ -102,13 +102,13 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
         </div>
         <div id="staff" class="staff" style="display: flex; justify-content: center; gap: 100px;">
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MS.AKEMI.png" alt="Ms. Glenda P. Acedo" class="profile-img">
+                <img src="/gcc/img/team-gcc/MS.AKEMI.png" alt="Ms. Glenda P. Acedo" class="profile-img-role">
                 <p class="name">Ms. Akemi Lim</p>
                 <p class="status"> MPA </p>
             </div>
 
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MR.ROMEL.png" alt="Melta A. Villarta" class="profile-img">
+                <img src="/gcc/img/team-gcc/MR.ROMEL.png" alt="Melta A. Villarta" class="profile-img-role">
                 <p class="name">Mr. Romel L. San Juan</p>
             </div>
         </div>
@@ -119,105 +119,105 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
         </div>
         <div id="coords" class="coords" style="display: flex; justify-content: center; gap: 50px; margin-bottom: 50px;">
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LEAN.png" alt="Lean A. Legarde" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.LEAN.png" alt="Lean A. Legarde" class="profile-img-role">
                 <p class="name">Lean A. Legarde</p>
                 <p class="status"> MPA </p>
                 <p class="title" style="max-width: 300px;">College of Public Administration and Development Studies</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.NADINE.png" alt="Nadine Evangelista" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.NADINE.png" alt="Nadine Evangelista" class="profile-img-role">
                 <p class="name">Nadine Evangelista</p>
                 <p class="status"> CpE </p>
                 <p class="title">College of Engineering</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.JIEMAR.png" alt="Jiemar A. Arabani" class="profile-img">
+                <img src="/gcc/img/team-gcc/SIR.JIEMAR.png" alt="Jiemar A. Arabani" class="profile-img-role">
                 <p class="name">Jiemar A. Arabani</p>
                 <p class="title" style="max-width: 250px;">College of Criminal Justice Education</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.CLARISSA.png" alt="Clarissa B. Miranda" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.CLARISSA.png" alt="Clarissa B. Miranda" class="profile-img-role">
                 <p class="name">Clarissa B. Miranda</p>
                 <p class="title">College of Liberal Arts</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.CARPIZO.png" alt="Marcelina Carpizo" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.CARPIZO.png" alt="Marcelina Carpizo" class="profile-img-role">
                 <p class="name">Marcelina Carpizo</p>
                 <p class="status"> Ph.D., RSW </p>
                 <p class="title" style="max-width: 300px;">College of Social Work and Community Development</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.UCOL.png" alt="Arlene B. Ucol" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.UCOL.png" alt="Arlene B. Ucol" class="profile-img-role">
                 <p class="name">Arlene B. Ucol</p>
                 <p class="status"> LPT, MSPE </p>
                 <p class="title" style="max-width: 300px;">College of Sports Science and Physical Education</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.PERFECTO.png" alt="Perfecto B. Cimafranca III." class="profile-img">
+                <img src="/gcc/img/team-gcc/SIR.PERFECTO.png" alt="Perfecto B. Cimafranca III." class="profile-img-role">
                 <p class="name">Perfecto B. Cimafranca III.</p>
                 <p class="status"> Ph.D., RGC, RTsy, LPT </p>
                 <p class="title"> College of Teacher Education</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.COROS.png" alt="Aurea T. Coros" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.COROS.png" alt="Aurea T. Coros" class="profile-img-role">
                 <p class="name">Aurea T. Coros</p>
                 <p class="title">College of Science and Mathematics</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.CARMEN.png" alt="Carmen Theresa V. Dickina" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.CARMEN.png" alt="Carmen Theresa V. Dickina" class="profile-img-role">
                 <p class="name">Carmen Theresa V. Dickina</p>
                 <p class="status">  Arch., UAP, PICAM </p>
                 <p class="title">College of Architecture</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.SANDRA.png" alt="Sandra M. Covarrubias" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.SANDRA.png" alt="Sandra M. Covarrubias" class="profile-img-role">
                 <p class="name">Sandra M. Covarrubias</p>
                 <p class="status"> RN, MN </p>
                 <p class="title">College of Nursing</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.MARJ.png" alt="Marjorie A. Rojas" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.MARJ.png" alt="Marjorie A. Rojas" class="profile-img-role">
                 <p class="name">Marjorie A. Rojas</p>
                 <p class="status"> CpE </p>
                 <p class="title">College of Computing Studies</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LIM.png" alt="Ruby M. Lim" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.LIM.png" alt="Ruby M. Lim" class="profile-img-role">
                 <p class="name">Ruby M. Lim</p>
                 <p class="status"> RND </p>
                 <p class="title">College of Home Economics</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.SITTIRASMA.png" alt="Sittirasma I. Jalilula" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.SITTIRASMA.png" alt="Sittirasma I. Jalilula" class="profile-img-role">
                 <p class="name">Sittirasma I. Jalilula</p>
                 <p class="status"> RF </p>
                 <p class="title" style="max-width: 300px;">College of Forestry and Environmental Studies</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.NURMIA.png" alt="Nurmia L. Ticao" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.NURMIA.png" alt="Nurmia L. Ticao" class="profile-img-role">
                 <p class="name">Nurmia L. Ticao</p>
                 <p class="status"> MA </p>
                 <p class="title" style="max-width: 200px;">College of Asian and Islamic Studies</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.TOTO.png" alt="Sitti Aisha G. Toto" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.TOTO.png" alt="Sitti Aisha G. Toto" class="profile-img-role">
                 <p class="name">Sitti Aisha G. Toto</p>
                 <p class="status"> LPT </p>
                 <p class="title">College of Agriculture</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.SHERYL.png" alt="Sheryl P. Ramirez" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.SHERYL.png" alt="Sheryl P. Ramirez" class="profile-img-role">
                 <p class="name">Sheryl P. Ramirez</p>
                 <p class="status"> Ph.D., LPT </p>
                 <p class="title" style="max-width: 250px;">Integrated Laboratory School (Secondary)</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.ALICE.png" alt="Alice A. Calahat" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.ALICE.png" alt="Alice A. Calahat" class="profile-img-role">
                 <p class="name">Alice A. Calahat</p>
                 <p class="title" style="max-width: 250px;">Integrated Laboratory School (Elementary)</p>
             </div>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.CECILE.png" alt="Cecile G. Miang" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.CECILE.png" alt="Cecile G. Miang" class="profile-img-role">
                 <p class="name">Cecile G. Miang</p>
                 <p class="title" style="max-width: 250px;">Department of Extension Services and Community Development</p>
             </div>
@@ -243,57 +243,57 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
             </div>
             <div id="coords" class="coords" style="display: flex; justify-content: center; gap: 100px; margin-bottom: 50px;">
               <div class="profile-card">
-                  <img src="/gcc/img/team-gcc/MA'AM.DECENA.png" alt="Rowee Joy S. Decena" class="profile-img">
+                  <img src="/gcc/img/team-gcc/MA'AM.DECENA.png" alt="Rowee Joy S. Decena" class="profile-img-role">
                   <p class="name">Rowee Joy S. Decena</p>
                   <p class="title"> Ipil/Naga Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LAGUNA.png" alt="Erjorie A. Laguna" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.LAGUNA.png" alt="Erjorie A. Laguna" class="profile-img-role">
                 <p class="name">Erjorie A. Laguna</p>
                 <p class="title">Diplahan Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.PACAMALAN.png" alt="Myco Leo B. Pacamalan" class="profile-img">
+                <img src="/gcc/img/team-gcc/SIR.PACAMALAN.png" alt="Myco Leo B. Pacamalan" class="profile-img-role">
                 <p class="name">Myco Leo B. Pacamalan</p>
                 <p class="title">Siay Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.NOSCA.png" alt="Nosca Bonna Ar Taasin" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.NOSCA.png" alt="Nosca Bonna Ar Taasin" class="profile-img-role">
                 <p class="name">Nosca Bonna Ar Taasin</p>
                 <p class="title">Tungawan Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LUNA.png" alt="Loribel A. Luna" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.LUNA.png" alt="Loribel A. Luna" class="profile-img-role">
                 <p class="name">Loribel A. Luna</p>
                 <p class="title">Curuan Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.ANTOLIN.png" alt="Antolin Sialana" class="profile-img">
+                <img src="/gcc/img/team-gcc/SIR.ANTOLIN.png" alt="Antolin Sialana" class="profile-img-role">
                 <p class="name">Antolin Sialana</p>
                 <p class="title">Alicia Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.BIHAG.png" alt="Cristie Bihag" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.BIHAG.png" alt="Cristie Bihag" class="profile-img-role">
                 <p class="name">Cristie Bihag</p>
                 <p class="title">Imelda Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.DELACRUZ.png" alt="Maria Celeste B. Dela Cruz" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.DELACRUZ.png" alt="Maria Celeste B. Dela Cruz" class="profile-img-role">
                 <p class="name">Maria Celeste B. Dela Cruz</p>
                 <p class="title">Malangas Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LOLITA.png" alt="Lolita Lacao-Lacao" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.LOLITA.png" alt="Lolita Lacao-Lacao" class="profile-img-role">
                 <p class="name">Lolita Lacao-Lacao</p>
                 <p class="title">Olutanga Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.MICHELLE.png" alt="Michelle Paderan" class="profile-img">
+                <img src="/gcc/img/team-gcc/MA'AM.MICHELLE.png" alt="Michelle Paderan" class="profile-img-role">
                 <p class="name">Michelle Paderan</p>
                 <p class="title">Mabuhay Campus</p>
               </div>
               <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.NOEL.png" alt="Noel Pugosa" class="profile-img">
+                <img src="/gcc/img/team-gcc/SIR.NOEL.png" alt="Noel Pugosa" class="profile-img-role">
                 <p class="name">Noel Pugosa</p>
                 <p class="title">Pagadian Campus</p>
               </div>

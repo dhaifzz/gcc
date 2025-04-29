@@ -1,9 +1,32 @@
 <?php
 require_once '../../font/font.php';
+require_once '../../client/navbar.php';
+require_once '../../database/database.php';
+
 session_start();
-if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty', 'Director', 'Staff', 'Admin'])) {
+if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty'])) {
     header("Location: ../../auth/sign-in.php");
     exit();
+}
+
+$email = $_SESSION['email'];
+$query = "SELECT * FROM users WHERE email = :email";
+$stmt = $pdo->prepare($query);
+$stmt->execute(['email' => $email]);
+$user = $stmt->fetch(PDO::FETCH_ASSOC);
+
+$profile_image = '/gcc/img/profiles/default-profile.png'; 
+
+if ($user) {
+    $user_id = $user['id'];
+    $profileQuery = "SELECT profile_image FROM profiles WHERE user_id = :user_id";
+    $profileStmt = $pdo->prepare($profileQuery);
+    $profileStmt->execute(['user_id' => $user_id]);
+    $profile = $profileStmt->fetch(PDO::FETCH_ASSOC);
+
+    if ($profile && !empty($profile['profile_image'])) {
+        $profile_image = '/gcc/img/profiles/' . htmlspecialchars($profile['profile_image']);
+    }
 }
 ?>
 
@@ -12,6 +35,7 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
 <head>
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
+<meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../css/contact-us.css">
@@ -19,33 +43,9 @@ if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student
     <!-- CONTACT US -->
 </head>
 <body>
-<div class="navbar">
-     <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-     <a class="website" href="<?php
-    switch ($_SESSION['role']) {
-        case 'Admin':
-            echo '../../users/admin/admin.php';
-            break;
-        case 'Faculty':
-            echo '../../client/inside/faculty/faculty.php';
-            break;
-        case 'College Student':
-            echo '../../client/inside/student/college.php';
-            break;
-        case 'High School Student':
-            echo '../../client/inside/student/high-school.php';
-            break;
-        case 'Outside Client':
-            echo '../../client/outside/outside.php';
-            break;
-        default:
-           echo '../../../auth/sign-in.php';  
-    }
-    ?>">Guidance and Counseling Center</a>
-       <div class="burger-icon" style="float: right; margin: 10px;">
-           <i class="fas fa-bars" style="font-size: 35px;"></i>
-       </div>
-    </div>    
+    <!-- Navbar -->
+    <?php contactNavbar($profile_image); ?>    
+    
        <div class="container">
          <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 45px; font-weight: 500; color: white; display: flex; justify-content: left; align-items: center; padding-left: 70px;"> Contact Us </div>
            <div style="padding: 60px 0 60px;">

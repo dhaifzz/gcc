@@ -4,7 +4,7 @@ require_once '../../../font/font.php';
 require_once '../../../database/database.php';
 
 session_start();
-if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'College Student') {
+if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'High School Student') {
     header("Location: ../../../auth/sign-in.php");
     exit();
 }
@@ -39,9 +39,9 @@ if ($user) {
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
-    <link rel="stylesheet" type="text/css" href="css/college.css">
+    <link rel="stylesheet" type="text/css" href="css/high-school.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
-    <!-- COLLEGE STUDENT -->
+    <!-- HIGH SCHOOL STUDENT -->
 </head>
 <body>
     <!-- Navbar -->
@@ -86,10 +86,22 @@ if ($user) {
                    <span class="description"> Conducts assessments for students taking the DASS-21 Test (College) and DASS-Y Test (High School). Students must schedule an appointment and complete the required forms before the assessment.</span>
             </div>
             <div class="image-item">
-                   <img src="/gcc/img/shifting-img.png" alt="Image 3">
-                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="../../../shared/main/shifting.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Shifting Exam</a></p>
-                   <span class="description"> Students changing programs. Applicants must schedule an appointment and complete the required forms before taking the exam.</span>
-            </div>
+               <img src="/gcc/img/shifting-img.png" alt="Image 1" style="filter: grayscale(90%);">
+               <p class="clickable-text" style="margin: 15px 5px 20px; cursor: pointer;">
+                   <a class="text-link" style="text-decoration: none; color: inherit; user-select: none; color:rgba(0, 0, 0, 0.59);">
+                       <i class="fas fa-angle-right" style="margin-right: 5px; color:rgba(0, 0, 0, 0.59);"></i>
+                       Shifting Exam
+                       <span class="tooltip-custom">
+                       <i class="fa-solid fa-circle-exclamation mr-1" style="margin-right: 3px;"></i>
+                           Only applicable for college students in WMSU.
+                           <span class="arrow"></span>
+                       </span>
+                   </a>
+               </p>
+               <span class="description" style="color:rgba(0, 0, 0, 0.59);">
+                   Students changing programs. Applicants must schedule an appointment and complete the required forms before taking the exam.
+               </span>
+           </div>
         </div>
     </div>
     <div class="gcc-pages">

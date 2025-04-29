@@ -91,7 +91,6 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
     <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
     <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.bundle.min.js"></script>
 </head>
-<body>
 
     <style>
     .typing-text {
@@ -122,7 +121,8 @@ $users = $stmt->fetchAll(PDO::FETCH_ASSOC);
         <div class="menu-items">
             <a href="dashboard.php"><i class="fa-solid fa-home"></i> Dashboard</a>
             <a href="admin.php" style=" background-color: rgb(255, 255, 255); color: #236641;"><i class="fa-solid fa-users"></i> Manage Users</a>
-            <a href="add-account.php"><i class="fa-solid fa-chart-bar"></i> Create Account</a>
+            <a href="add-account.php"><i class="fa-solid fa-user-plus"></i> Create Account</a>
+            <a href="content.php"><i class="fa-solid fa-chart-bar"></i> Content </a>
             <a href="settings.php"><i class="fa-solid fa-cog"></i> Settings</a>
             <a href="../../auth/sign-out.php"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
         </div>

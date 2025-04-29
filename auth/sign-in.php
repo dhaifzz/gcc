@@ -50,22 +50,25 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <body>
     <form method="POST" action="">
         <div>
-            <img src="../img/gcc-logo.png" alt="GCC Logo" id="gcc-logo" style="display: block; margin: 0 auto;">
+        <div style="display: flex; justify-content: center; align-items: center; gap: 7px;">
+            <img src="../img/gcc-logo.png" alt="GCC Logo" id="gcc-logo" style="height: 100px;">
+            <img src="../img/wmsu-logo.png" alt="WMSU Logo" id="wmsu-logo" style="height: 100px;">
+        </div>
             <p class="text">Log in with your WMSU / Gmail account to access GCC appointment portal</p>
         </div>
         <div class="email">
             <label for="email">Email</label>
-            <input type="email" id="email" name="email" required>
+            <input type="email" id="email" name="email" class="input-fade" required>
         </div>
         <div class="password">
             <label for="password">Password</label>
-            <input type="password" id="password" name="password" required>
+            <input type="password" id="password" name="password" class="input-fade" required>
             <span class="toggle-password" onclick="togglePassword('password', this)">
-             <i class="fas fa-eye-slash" style="color: #16633F;"></i>
+                <i class="fas fa-eye-slash" style="color: #16633F;"></i>
             </span>
         </div>
         <div>
-            <button type="submit">Sign In</button>
+            <button type="submit" class="input-fade">Sign In</button>
         </div>
         <div class="signup-text">
             <p>Don't have an account? <a href="../auth/sign-up.php" class="signup">Sign Up</a></p>
