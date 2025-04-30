@@ -353,16 +353,111 @@ function getFormValue($field) {
                 <?php endif; ?>
             </div>
             <div class="form-group">
-            <label for="course-grade">Course / Grade Level (optional)</label>
-                <select id="course-grade" name="course_grade">
-                    <option value="" <?= (empty(getFormValue('course_grade'))) ? 'selected' : '' ?>>None</option>
-                    <option value="Junior High" <?= (getFormValue('course_grade') === 'Junior High') ? 'selected' : '' ?>>Junior High</option>
-                    <option value="Senior High" <?= (getFormValue('course_grade') === 'Senior High') ? 'selected' : '' ?>>Senior High</option>
-                    <option value="BSCS" <?= (getFormValue('course_grade') === 'BSCS') ? 'selected' : '' ?>>Computer Science</option>
-                    <option value="BSIT" <?= (getFormValue('course_grade') === 'BSIT') ? 'selected' : '' ?>>Information Technology</option>
-                    <option value="ACT" <?= (getFormValue('course_grade') === 'ACT') ? 'selected' : '' ?>>Associate in Computer Technology</option>
-                    <option value="BSN" <?= (getFormValue('course_grade') === 'BSN') ? 'selected' : '' ?>>Nursing</option>
-                </select>
+              <label for="course-grade">Course / Grade Level (optional)</label>
+              <select id="course-grade" name="course_grade">
+              <optgroup label="Select Course / Grade Level" style="color:rgb(61, 61, 61);">
+                <option value="" <?= (empty(getFormValue('course_grade'))) ? 'selected' : '' ?>>None</option>
+                </optgroup>
+                <optgroup label="High School">
+                <option value="Junior High" <?= (getFormValue('course_grade') === 'Junior High') ? 'selected' : '' ?>>Junior High</option>
+                <option value="Senior High" <?= (getFormValue('course_grade') === 'Senior High') ? 'selected' : '' ?>>Senior High</option>
+                </optgroup>
+            
+                <optgroup label="College of Agriculture">
+                  <option value="BSA" <?= (getFormValue('course_grade') === 'BSA') ? 'selected' : '' ?>>Bachelor of Science in Agriculture (BSA)</option>
+                  <option value="BSFT" <?= (getFormValue('course_grade') === 'BSFT') ? 'selected' : '' ?>>Bachelor of Science in Food Technology (BSFT)</option>
+                  <option value="BSBA" <?= (getFormValue('course_grade') === 'BSBA') ? 'selected' : '' ?>>Bachelor of Science in Agribusiness (BSBA)</option>
+                  <option value="BAT" <?= (getFormValue('course_grade') === 'BAT') ? 'selected' : '' ?>>Bachelor of Agricultural Technology (BAT)</option>
+                </optgroup>
+            
+                <optgroup label="College of Liberal Arts">
+                  <option value="ACCTANCY" <?= (getFormValue('course_grade') === 'ACCTANCY') ? 'selected' : '' ?>>Bachelor of Science in Accountancy</option>
+                  <option value="BAH" <?= (getFormValue('course_grade') === 'BAH') ? 'selected' : '' ?>>Bachelor of Arts in History</option>
+                  <option value="BAELS" <?= (getFormValue('course_grade') === 'BAELS') ? 'selected' : '' ?>>Bachelor of Arts in English</option>
+                  <option value="POLSCI" <?= (getFormValue('course_grade') === 'POLSCI') ? 'selected' : '' ?>>Bachelor of Arts in Political Science</option>
+                  <option value="JOURNALISM" <?= (getFormValue('course_grade') === 'JOURNALISM') ? 'selected' : '' ?>>BA Mass Communication – Journalism</option>
+                  <option value="BROADCASTING" <?= (getFormValue('course_grade') === 'BROADCASTING') ? 'selected' : '' ?>>BA Mass Communication – Broadcasting</option>
+                  <option value="ECON" <?= (getFormValue('course_grade') === 'ECON') ? 'selected' : '' ?>>Bachelor of Science in Economics</option>
+                  <option value="PSYCH" <?= (getFormValue('course_grade') === 'PSYCH') ? 'selected' : '' ?>>Bachelor of Science in Psychology</option>
+                </optgroup>
+            
+                <optgroup label="College of Architecture">
+                  <option value="ARCHI" <?= (getFormValue('course_grade') === 'ARCHI') ? 'selected' : '' ?>>Bachelor of Science in Architecture</option>
+                </optgroup>
+            
+                <optgroup label="College of Nursing">
+                  <option value="BSN" <?= (getFormValue('course_grade') === 'BSN') ? 'selected' : '' ?>>Bachelor of Science in Nursing</option>
+                </optgroup>
+            
+                <optgroup label="College of Asian & Islamic Studies">
+                  <option value="CAIS" <?= (getFormValue('course_grade') === 'CAIS') ? 'selected' : '' ?>>College of Asian and Islamic Studies</option>
+                </optgroup>
+            
+                <optgroup label="College of Computing Studies">
+                  <option value="BSCS" <?= (getFormValue('course_grade') === 'BSCS') ? 'selected' : '' ?>>Bachelor of Science in Computer Science</option>
+                  <option value="BSIT" <?= (getFormValue('course_grade') === 'BSIT') ? 'selected' : '' ?>>Bachelor of Science in Information Technology</option>
+                  <option value="ACT" <?= (getFormValue('course_grade') === 'ACT') ? 'selected' : '' ?>>Associate in Computer Technology</option>
+                </optgroup>
+            
+                <optgroup label="College of Forestry & Environmental Studies">
+                  <option value="BSF" <?= (getFormValue('course_grade') === 'BSF') ? 'selected' : '' ?>>Bachelor of Science in Forestry</option>
+                  <option value="BSAF" <?= (getFormValue('course_grade') === 'BSAF') ? 'selected' : '' ?>>Bachelor of Science in Agroforestry</option>
+                  <option value="BSES" <?= (getFormValue('course_grade') === 'BSES') ? 'selected' : '' ?>>Bachelor of Science in Environmental Science</option>
+                </optgroup>
+            
+                <optgroup label="College of Criminal Justice Education">
+                  <option value="CRIM" <?= (getFormValue('course_grade') === 'CRIM') ? 'selected' : '' ?>>Bachelor of Science in Criminal Justice Education</option>
+                </optgroup>
+            
+                <optgroup label="College of Home Economics">
+                  <option value="BSHE" <?= (getFormValue('course_grade') === 'BSHE') ? 'selected' : '' ?>>Bachelor of Science in Home Economics</option>
+                  <option value="BSND" <?= (getFormValue('course_grade') === 'BSND') ? 'selected' : '' ?>>Bachelor of Science in Nutrition and Dietetics</option>
+                  <option value="BSHM" <?= (getFormValue('course_grade') === 'BSHM') ? 'selected' : '' ?>>Bachelor of Science in Home Management</option>
+                </optgroup>
+            
+                <optgroup label="College of Engineering">
+                  <option value="BSABE" <?= (getFormValue('course_grade') === 'BSABE') ? 'selected' : '' ?>>BS Agricultural and Biosystems Engineering</option>
+                  <option value="CE" <?= (getFormValue('course_grade') === 'CE') ? 'selected' : '' ?>>BS Civil Engineering</option>
+                  <option value="CPE" <?= (getFormValue('course_grade') === 'CPE') ? 'selected' : '' ?>>BS Computer Engineering</option>
+                  <option value="BSEE" <?= (getFormValue('course_grade') === 'BSEE') ? 'selected' : '' ?>>BS Electrical Engineering</option>
+                  <option value="EE" <?= (getFormValue('course_grade') === 'EE') ? 'selected' : '' ?>>BS Electronics Engineering</option>
+                  <option value="ENVI" <?= (getFormValue('course_grade') === 'ENVI') ? 'selected' : '' ?>>BS Environmental Engineering</option>
+                  <option value="GEO" <?= (getFormValue('course_grade') === 'GEO') ? 'selected' : '' ?>>BS Geodetic Engineering</option>
+                  <option value="IE" <?= (getFormValue('course_grade') === 'IE') ? 'selected' : '' ?>>BS Industrial Engineering</option>
+                  <option value="ME" <?= (getFormValue('course_grade') === 'ME') ? 'selected' : '' ?>>BS Mechanical Engineering</option>
+                  <option value="SE" <?= (getFormValue('course_grade') === 'SE') ? 'selected' : '' ?>>BS Sanitary Engineering</option>
+                </optgroup>
+            
+                <optgroup label="College of Public Administration & Development Studies">
+                  <option value="PUBAD" <?= (getFormValue('course_grade') === 'PUBAD') ? 'selected' : '' ?>>Bachelor of Public Administration</option>
+                </optgroup>
+            
+                <optgroup label="College of Sports Science & Physical Education">
+                  <option value="BPED" <?= (getFormValue('course_grade') === 'BPED') ? 'selected' : '' ?>>Bachelor of Physical Education</option>
+                  <option value="BSESS" <?= (getFormValue('course_grade') === 'BSESS') ? 'selected' : '' ?>>Bachelor of Science in Exercise and Sports Sciences</option>
+                </optgroup>
+            
+                <optgroup label="College of Science and Mathematics">
+                  <option value="BIO" <?= (getFormValue('course_grade') === 'BIO') ? 'selected' : '' ?>>BS Biology</option>
+                  <option value="CHEM" <?= (getFormValue('course_grade') === 'CHEM') ? 'selected' : '' ?>>BS Chemistry</option>
+                  <option value="MATH" <?= (getFormValue('course_grade') === 'MATH') ? 'selected' : '' ?>>BS Mathematics</option>
+                  <option value="PHY" <?= (getFormValue('course_grade') === 'PHY') ? 'selected' : '' ?>>BS Physics</option>
+                  <option value="STATS" <?= (getFormValue('course_grade') === 'STATS') ? 'selected' : '' ?>>BS Statistics</option>
+                </optgroup>
+            
+                <optgroup label="College of Social Work & Community Development">
+                  <option value="BSSW" <?= (getFormValue('course_grade') === 'BSSW') ? 'selected' : '' ?>>Bachelor of Science in Social Work</option>
+                  <option value="BSCD" <?= (getFormValue('course_grade') === 'BSCD') ? 'selected' : '' ?>>Bachelor of Science in Community Development</option>
+                </optgroup>
+            
+                <optgroup label="College of Teacher Education">
+                  <option value="BCAED" <?= (getFormValue('course_grade') === 'BCAED') ? 'selected' : '' ?>>Bachelor of Culture and Arts Education</option>
+                  <option value="BECED" <?= (getFormValue('course_grade') === 'BECED') ? 'selected' : '' ?>>Bachelor of Early Childhood Education</option>
+                  <option value="BEED" <?= (getFormValue('course_grade') === 'BEED') ? 'selected' : '' ?>>Bachelor of Elementary Education</option>
+                  <option value="BSED" <?= (getFormValue('course_grade') === 'BSED') ? 'selected' : '' ?>>Bachelor of Secondary Education</option>
+                  <option value="BSNED" <?= (getFormValue('course_grade') === 'BSNED') ? 'selected' : '' ?>>Bachelor of Special Needs Education</option>
+                </optgroup>
+              </select>
             </div>
             <div class="button-group">
                 <button type="button" class="prev-btn">
@@ -407,6 +502,6 @@ function getFormValue($field) {
         <?php endif; ?>
     </script>
     <script src="/gcc/js/stepper-form.js"></script>
-    <script src="/gcc/js/validation-signup"></script>
+    <script src="/gcc/js/validation-signup.js"></script>
 </body>
 </html>

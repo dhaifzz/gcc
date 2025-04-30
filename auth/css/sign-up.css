@@ -218,7 +218,7 @@ img#gcc-logo {
     color: #d9d9d9;
 }
 
-.step.active .step-text {
+.step.active .step-text, .step.active .step-text-2 {
     color: #ffffff;
     font-weight: 600;
 }
@@ -328,3 +328,7 @@ button:hover {
     color: #000;
     font-size: 1.2em;
 }
+select optgroup {
+    color: black;
+    font-weight: bold; 
+  }

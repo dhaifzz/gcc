@@ -336,7 +336,7 @@ function assessNavbar($profile_image) {
         echo '../../../client/outside/outside.php';
         break;
      case 'Faculty':
-         echo '../../../client/faculty/faculty.php';
+         echo '../../../client/inside/faculty/faculty.php';
          break;
      default:
         echo 'Role not identified!';  
@@ -356,7 +356,7 @@ function assessNavbar($profile_image) {
         echo '../../../client/outside/outside.php';
         break;
      case 'Faculty':
-         echo '../../../client/faculty/faculty.php';
+         echo '../../../client/inside/faculty/faculty.php';
          break;
      default:
         echo 'Error 404';  
@@ -525,7 +525,7 @@ function assessNavbar($profile_image) {
             <a class="website" href="<?php
                 switch ($_SESSION['role']) {
                     case 'Faculty':
-                        echo '../../client/faculty/faculty.php';
+                        echo '../../client/inside/faculty/faculty.php';
                         break;
                     case 'College Student':
                         echo '../../client/inside/student/college.php';
@@ -545,7 +545,7 @@ function assessNavbar($profile_image) {
             <a href="<?php
                 switch ($_SESSION['role']) {
                     case 'Faculty':
-                        echo '../../client/faculty/faculty.php';
+                        echo '../../client/inside/faculty/faculty.php';
                         break;
                     case 'College Student':
                         echo '../../client/inside/student/college.php';
@@ -632,7 +632,7 @@ function ourTeamNavbar($profile_image) {
             <a class="website" href="<?php
  switch ($_SESSION['role']) {
     case 'Faculty':
-        echo '../../client/faculty/faculty.php';
+        echo '../../client/inside/faculty/faculty.php';
         break;
     case 'College Student':
         echo '../../client/inside/student/college.php';
@@ -652,7 +652,7 @@ function ourTeamNavbar($profile_image) {
             <a href="<?php
  switch ($_SESSION['role']) {
     case 'Faculty':
-        echo '../../client/faculty/faculty.php';
+        echo '../../client/inside/faculty/faculty.php';
         break;
     case 'College Student':
         echo '../../client/inside/student/college.php';
@@ -735,7 +735,7 @@ function contactNavbar($profile_image) {
             <a class="website" href="<?php
  switch ($_SESSION['role']) {
     case 'Faculty':
-        echo '../../client/faculty/faculty.php';
+        echo '../../client/inside/faculty/faculty.php';
         break;
     case 'College Student':
         echo '../../client/inside/student/college.php';
@@ -755,7 +755,7 @@ function contactNavbar($profile_image) {
             <a href="<?php
  switch ($_SESSION['role']) {
     case 'Faculty':
-        echo '../../client/faculty/faculty.php';
+        echo '../../client/inside/faculty/faculty.php';
         break;
     case 'College Student':
         echo '../../client/inside/student/college.php';

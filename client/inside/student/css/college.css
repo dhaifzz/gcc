@@ -330,8 +330,7 @@ hr {
     flex-direction: row;
     padding: 2.5rem 0 3.75rem; /* 40px 0 60px */
     margin: 2.5rem 0 3.75rem; /* 40px 0 60px */
-    flex-wrap: wrap;
-}
+    flex-wrap: wrap;}
    
 .image-gallery img {
     height: auto;
@@ -349,8 +348,13 @@ hr {
     text-align: center;
     font-size: 1.5625rem; /* 25px */
     font-weight: 600;
+    transition: transform 0.3s ease; /* Smooth transition */
 }
-   
+
+.image-item:hover {
+    transform: scale(1.03) translateY(-5px); /* Scale + move up */
+}
+
 .image-item p:hover {
     text-decoration: underline;
 }

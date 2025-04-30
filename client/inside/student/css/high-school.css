@@ -346,14 +346,19 @@
    }
       
    .image-item {
-       text-align: center;
-       font-size: 1.5625rem; /* 25px */
-       font-weight: 600;
-   }
-      
-   .image-item p:hover {
-       text-decoration: underline;
-   }
+    text-align: center;
+    font-size: 1.5625rem; /* 25px */
+    font-weight: 600;
+    transition: transform 0.3s ease; /* Smooth transition */
+}
+
+.image-item:hover {
+    transform: scale(1.03) translateY(-5px); /* Scale + move up */
+}
+
+.image-item p:hover {
+    text-decoration: underline;
+}
       
    .description {
        width: 19.375rem; /* 310px */

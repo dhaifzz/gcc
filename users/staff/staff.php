@@ -67,12 +67,12 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Staff') {
        <div class="image-gallery">
             <div class="image-item">
                    <img src="/gcc/img/counseling-img.png" alt="Image 1">
-                   <p style="margin: 15px 5px 20px; cursor: pointer;"><a href="../staff/table.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Counseling</a></p>
+                   <p style="margin: 15px 5px 20px; cursor: pointer;"><a href="../staff/staff-counseling.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Counseling</a></p>
                    <span class="description"> Pending Counseling request</span>
             </div>
             <div class="image-item">
                    <img src="/gcc/img/assessment-img.png" alt="Image 2">
-                   <p style="margin: 15px 5px 20px; cursor: pointer;"><a href="../staff/table.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Assessment for Students</a></p>
+                   <p style="margin: 15px 5px 20px; cursor: pointer;"><a href="../staff/staff-assessment.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 5px; color:rgb(14, 72, 45);"></i>Assessment for Students</a></p>
                    <span class="description"> Pending assessments request for DASS-21 Test (College) and DASS-Y Test (High School).</span>
             </div>
             <div class="image-item">

@@ -63,7 +63,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $cor = $_FILES['cor']['name'];
         $cetResult = $_FILES['cet_result']['name'];
 
-        $uploadDir = 'uploads/shifting';
+        $uploadDir = 'uploads/shifting/';
         $allowedTypes = ['image/jpeg', 'image/png', 'application/pdf'];
 
         function uploadFile($file, $uploadDir, $allowedTypes) {
@@ -129,91 +129,98 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
      <!-- Navbar -->
      <?php shiftingNavbar($profile_image); ?>
 
-      <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Shifting Exam Form </div>
-    <div class="shift-form" style="padding: 70px 50px 70px 50px;">
-    <?php if (isset($successMessage)): ?>
-            <div style="background-color: #c8f7c5; padding: 15px; color: #2c662d; margin-bottom: 20px; border-radius: 5px;">
+     <div class="message-container">
+     <?php if (isset($successMessage)): ?>
+            <div class="success">
                 <?= htmlspecialchars($successMessage) ?>
             </div>
         <?php elseif (isset($errorMessage)): ?>
-            <div style="background-color: #f8d7da; padding: 15px; color: #842029; margin-bottom: 20px; border-radius: 5px;">
+            <div class="error">
                 <?= htmlspecialchars($errorMessage) ?>
             </div>
         <?php endif; ?>
-        <!-- <form action="submit_shift_form.php" method="post" enctype="multipart/form-data"> -->
+        </div>
 
+      <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Shifting Exam Form </div>
+    <div class="shift-form" style="padding: 70px 50px 70px 50px;">
+        <!-- <form action="submit_shift_form.php" method="post" enctype="multipart/form-data"> -->
+        <form action="" method="post" enctype="multipart/form-data">
             <div style="display: flex; width: 100%; gap: 20px;">
                 <div style="flex: 1; display: flex; flex-direction: column;">
                     <label for="first_name" style="font-size: 25px; color: white;">First Name</label>
-                    <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required style="font-size: 25px; width: 100%; border-radius: 4.41px; border: 3px solid #0b3822; padding: 5px 0 5px 0; margin-top: 5px;" readonly>
+                    <input type="text" id="first_name" name="first_name" value="<?php echo htmlspecialchars($firstName); ?>" required style="font-size: 25px; width: 100%; border-radius: 7px; border: 2px solid #0b3822; padding: 7px 0 10px; margin-top: 5px; pointer-events: none; user-select: none; background-color:rgb(212, 212, 212); color:rgb(23, 69, 46);" readonly>
                 </div>
                 <div style="flex: 1; display: flex; flex-direction: column;">
-                    <label for="middle_name" style="font-size: 25px; color: white;">Middle Name (optional)</label>
-                    <input type="text" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($middleName); ?>" style="font-size: 25px; width: 100%; border-radius: 4.41px; border: 3px solid #0b3822; padding: 5px 0 5px 0; margin-top: 5px;" readonly>                </div>
+                    <label for="middle_name" style="font-size: 25px; color: white;">Middle Name</label>
+                    <input type="text" id="middle_name" name="middle_name" value="<?php echo htmlspecialchars($middleName); ?>" style="font-size: 25px; width: 100%; border-radius: 7px; border: 2px solid #0b3822; padding: 7px 0 10px; margin-top: 5px; pointer-events: none; user-select: none; background-color:rgb(212, 212, 212); color:rgb(23, 69, 46);" readonly>                
+                </div>
             </div>
             <div style="display: flex; width: 100%; gap: 20px; margin-top: 20px;">
                 <div style="flex: 1; display: flex; flex-direction: column;">
                     <label for="last_name" style="font-size: 25px; color: white;">Last Name</label>
-                    <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($lastName); ?>" required style="font-size: 25px; width: 100%; border-radius: 4.41px; border: 3px solid #0b3822; padding: 5px 0 5px 0; margin-top: 5px;" readonly>
+                    <input type="text" id="last_name" name="last_name" value="<?php echo htmlspecialchars($lastName); ?>" required style="font-size: 25px; width: 100%; border-radius: 7px; border: 2px solid #0b3822; padding: 7px 0 10px; margin-top: 5px; pointer-events: none; user-select: none; background-color:rgb(212, 212, 212); color:rgb(23, 69, 46);" readonly>
                 </div>
                 <div style="flex: 1; display: flex; flex-direction: column;">
                     <label for="student_id" style="font-size: 25px; color: white;">Student ID</label>
-                    <input type="text" id="school_id" name="school_id" value="<?php echo htmlspecialchars($wmsu_id); ?>" required style="font-size: 25px; width: 100%; border-radius: 4.41px; border: 3px solid #0b3822; padding: 5px 0 5px 0; margin-top: 5px;" readonly>
+                    <input type="text" id="school_id" name="school_id" value="<?php echo htmlspecialchars($wmsu_id); ?>" required style="font-size: 25px; width: 100%; border-radius: 7px; border: 2px solid #0b3822; padding: 7px 0 10px; margin-top: 5px; pointer-events: none; user-select: none; background-color:rgb(212, 212, 212); color:rgb(23, 69, 46);" readonly>
                 </div>
             </div>
             <div style="display: flex; width: 100%; gap: 20px; margin-top: 20px;">
                 <div style="flex: 1; display: flex; flex-direction: column;">
-                    <label for="course_to_shift" style="font-size: 25px; color: white;">Course to Shift</label>
-                    <select id="course_to_shift" name="course_to_shift" style="font-size: 25px; width: 100%; border-radius: 4.41px; border: 3px solid #0b3822; padding: 5px 0 5px 0; margin-top: 5px;">
-                        <option value="course1">Information Technology</option>
-                        <option value="course2">Nursing</option>
-                        <option value="course3">Law</option>
-                    </select>
+                    <label for="course_to_shift" style="font-size: 25px; color: white;">Current Course</label>
+                    <input type="text" id="current_course" name="current_course" value="<?php echo htmlspecialchars($currentCourse); ?>" required style="font-size: 25px; width: 100%; border-radius: 7px; border: 2px solid #0b3822; padding: 7px 0 10px; margin-top: 5px; pointer-events: none; user-select: none; background-color:rgb(212, 212, 212); color:rgb(23, 69, 46);" readonly>
                 </div>
                 <div style="flex: 1; display: flex; flex-direction: column;">
-                    <label for="reason_to_shift" style="font-size: 25px; color: white;">Reason to Shift</label>
-                    <select id="reason_to_shift" name="reason_to_shift" style="font-size: 25px; width: 100%; border-radius: 4.41px; border: 3px solid #0b3822; padding: 5px 0 5px 0; margin-top: 5px;">
-                        <option value="academic">Academic</option>
-                        <option value="personal">Personal</option>
-                        <option value="career">Career</option>
-                        <option value="other">Other</option>
+                    <label for="course_to_shift" style="font-size: 25px; color: white;">Course to Shift</label>
+                    <select id="course_to_shift" name="course_to_shift" required style="font-size: 25px; width: 100%; border-radius: 7px; border: 2px solid #0b3822; padding: 7px 0 10px; margin-top: 5px;">
+                        <option value="">Select a course</option>
+                        <option value="Information Technology">Information Technology</option>
+                        <option value="Nursing">Nursing</option>
+                        <option value="Law">Law</option>
                     </select>
+                </div>
+            </div>
+            <div style="width: 100%; margin-top: 20px;">
+                <div style="display: flex; flex-direction: column;">
+                    <label for="reason_to_shift" style="font-size: 25px; color: white;">Reason to Shift</label>
+                    <textarea id="reason_to_shift" name="reason_to_shift" required style="font-size: 25px; width: 100%; border-radius: 7px; border: 3px solid #0b3822; padding: 7px 0 10px; margin-top: 5px; min-height: 100px; resize: none;"></textarea>
                 </div>
             </div>
             <div style="display: flex; width: 100%; gap: 20px; margin-top: 30px;">
                 <div style="flex: 1; display: flex; flex-direction: column;">
-                    <label for="picture" style="font-size: 25px; color: white;">2x2 Picture with Name Tag (not selfie)</label>
+                    <label for="picture" style="font-size: 25px; color: white;">2x2 Picture with Name Tag (not selfie)*</label>
                     <label class="custom-file-upload" style="margin-top: 5px;">
-                        <input type="file" id="picture" name="picture" onchange="showFileName('picture')">
+                        <input type="file" id="picture" name="picture" accept="image/jpeg,image/png" required onchange="showFileName('picture')">
                         <i class="fa-solid fa-upload"></i> Upload Picture
                     </label>
                     <span id="picture-file-name" class="file-name" style="color:rgb(193, 255, 202); font-size: 18px;"></span>
                 </div>
                 <div style="flex: 1; display: flex; flex-direction: column;">
-                    <label for="grades" style="font-size: 25px; color: white;">All Downloadable Grades:</label>
+                    <label for="grades" style="font-size: 25px; color: white;">All Downloadable Grades*</label>
                     <label class="custom-file-upload" style="margin-top: 5px;">
-                        <input type="file" id="grades" name="grades" onchange="showFileName('grades')">
+                        <input type="file" id="grades" name="grades" accept="application/pdf" required onchange="showFileName('grades')">
                         <i class="fa-solid fa-upload"></i> Upload Grades
                     </label>
-                    <span id="grades-file-name" class="file-name"></span>
+                    <span id="grades-file-name" class="file-name" style="color:rgb(193, 255, 202); font-size: 18px;"></span>
                 </div>
             </div>
-            <div style="display: flex; width: 100%; gap: 20px; margin-top: 40px;">
+
+            <div style="display: flex; width: 100%; gap: 20px; margin-top: 30px;">
                 <div style="flex: 1; display: flex; flex-direction: column;">
-                    <label for="cor" style="font-size: 25px; color: white;">Latest COR</label>
+                    <label for="cor" style="font-size: 25px; color: white;">Latest COR*</label>
                     <label class="custom-file-upload" style="margin-top: 5px;">
-                        <input type="file" id="cor" name="cor" onchange="showFileName('cor')">
+                        <input type="file" id="cor" name="cor" accept="application/pdf" required onchange="showFileName('cor')">
                         <i class="fa-solid fa-upload"></i> Upload COR
                     </label>
-                    <span id="cor-file-name" class="file-name"></span>
+                    <span id="cor-file-name" class="file-name" style="color:rgb(193, 255, 202); font-size: 18px;"></span>
                 </div>
                 <div style="flex: 1; display: flex; flex-direction: column;">
-                    <label for="cet_result" style="font-size: 25px; color: white;">College Entrance Test Result</label>
+                    <label for="cet_result" style="font-size: 25px; color: white;">College Entrance Test Result*</label>
                     <label class="custom-file-upload" style="margin-top: 5px;">
-                        <input type="file" id="cet_result" name="cet_result" onchange="showFileName('cet_result')">
+                        <input type="file" id="cet_result" name="cet_result" accept="application/pdf" required onchange="showFileName('cet_result')">
                         <i class="fa-solid fa-upload"></i> Upload CET Result
                     </label>
-                    <span id="cet_result-file-name" class="file-name"></span>
+                    <span id="cet_result-file-name" class="file-name" style="color:rgb(193, 255, 202); font-size: 18px;"></span>
                 </div>
             </div>
             <div style="margin-top: 80px;">

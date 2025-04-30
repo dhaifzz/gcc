@@ -30,6 +30,18 @@ try {
 
     $_SESSION['profile_image'] = $profile_image;
 
+    // Fetch 5 most recent appointments
+    $stmt = $pdo->prepare("SELECT * FROM appointments WHERE client_id = :user_id ORDER BY appointment_id DESC LIMIT 5");
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+    // Fetch shifting requests
+    $stmt = $pdo->prepare("SELECT * FROM shifting WHERE user_id = :user_id ORDER BY submitted_at DESC LIMIT 5");
+    $stmt->bindParam(':user_id', $user_id, PDO::PARAM_INT);
+    $stmt->execute();
+    $shiftingRequests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 } catch (PDOException $e) {
     die("Error fetching user details: " . $e->getMessage());
 }
@@ -150,46 +162,49 @@ switch ($user['role']) {
         </div>
 
         <div style="margin-top: 40px;">
-            <h3>Appointments</h3>
+            <h3>Recent Appointments</h3>
             <table style="width: 100%; border-collapse: collapse; background-color: white; border-radius: 9px;">
                 <thead>
                     <tr>
                         <th style="border: 1px solid #ddd; padding: 8px;">Type</th>
                         <th style="border: 1px solid #ddd; padding: 8px;">Date</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Counselor</th>
                         <th style="border: 1px solid #ddd; padding: 8px;">Time</th>
                         <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
                     </tr>
                 </thead>
                 <tbody>
+                    <?php foreach ($appointments as $appointment): ?>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($appointment['appointment_type'])); ?></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($appointment['requested_date'])); ?></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($appointment['requested_time'])); ?></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($appointment['status'])); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+
+        <div style="margin-top: 40px;">
+            <h3>Recent Shifting Requests</h3>
+            <table style="width: 100%; border-collapse: collapse; background-color: white; border-radius: 9px;">
+                <thead>
                     <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Counseling</td>
-                        <td style="border: 1px solid #ddd; padding: 8px; color: red;">08-30-2004</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">Kayden Andal</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">10:00 am</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;"><button style="background-color:rgb(240, 147, 8); color: white; border: none; padding: 5px 10px; cursor: pointer; border-radius: 7px;">Pending</button></td>
+                        <th style="border: 1px solid #ddd; padding: 8px;">Current Course</th>
+                        <th style="border: 1px solid #ddd; padding: 8px;">Course to Shift</th>
+                        <th style="border: 1px solid #ddd; padding: 8px;">Date/Time</th>
+                        <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
                     </tr>
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                    </tr>
-                    <tr>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                        <td style="border: 1px solid #ddd; padding: 8px;">-</td>
-                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($shiftingRequests as $request): ?>
+                        <tr>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['current_course'])); ?></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['course_to_shift'])); ?></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['submitted_at'])); ?></td>
+                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['status'])); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
