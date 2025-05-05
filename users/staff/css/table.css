@@ -55,72 +55,126 @@ html, body {
    }
    
    .sidebar {
-       position: fixed;
-       top: 0;
-       right: -250px;
-       width: 250px;
-       height: 100%;
-       background: linear-gradient(180deg, #0B5D37, #11AD64);
-       color: white;
-       padding-top: 60px;
-       transition: 0.3s;
-       display: flex;
-       flex-direction: column;
-       justify-content: space-between;
-   }
-   
-   .sidebar a {
-       display: flex;
-       align-items: center;
-       padding: 15px;
-       color: white;
-       text-decoration: none;
-   }
-   
-   .sidebar a i {
-       margin-right: 10px;
-   }
-   
-   .sidebar a:hover {
-       background: #0B5D37;
-       text-decoration: none;
-       border-radius: 7px;
-   }
-   
-   .sidebar.active {
-       right: 0;
-   }
-   
-   .close-btn {
-       position: absolute;
-       top: 15px;
-       right: 20px;
-       margin: 3px;
-       font-size: 35px;
-       cursor: pointer;
-       color: white;
-   }
-   
-   .menu-items {
-       flex-grow: 1;
-       font-size: 20px;
-       font-weight: 400;
-   }
-   
-   .logout {
-       margin: 5px 0 5px 0;
-       font-size: 20px;
-       align-items: center;
-       padding-bottom: 20px;
-       font-weight: 600;
-   }
-   
-   hr {
-       border: 0;
-       height: 1px;
-       background: #0f6e39;
-       margin: 10px 15px;
-   }
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 13.75rem;
+    height: 100%;
+    background-color: #236641;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    z-index: 1000;
+}
+.sidebar-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14.5%; /* 1/8 of the sidebar height */
+    background-color: #17442b;
+    background: 
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+}
+.sidebar-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #ffffff;
+}
+
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3125rem; /* 5px */
+    padding: 0.9375rem 1.5625rem 1.5625rem 1.5625rem; /* 15px 25px 25px 25px */
+    border-top: 0.125rem solid #065027; /* 2px */
+    color: #ccc;
+    font-size: 0.85rem;
+}
+.sidebar-footer::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 18.5%; /* Same as top */
+    background-color: #17442b;
+    background:
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+}
+.sidebar-footer img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.sidebar .menu-items a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .menu-items a:hover {
+    background-color: #098c4f;
+}
+/* Main Content Styles */
+.container {
+    margin-left: 15.625rem; /* 250px */
+    padding: 1rem;
+}
+
+.main-content {
+    padding: 1rem;
+}
+
+.menu-items {
+    flex-grow: 1;
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.logout {
+    margin: 0.3125rem 0;
+    font-size: 1.25rem;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+hr {
+    border: 0;
+    height: 0.0625rem;
+    background: #0f6e39;
+    margin: 0.625rem 0.9375rem;
+}
    
 #appointmentsTable {
        border-radius: 7px;
@@ -163,7 +217,6 @@ html, body {
    }
    
    .table-container {
-       padding: 20px;
        margin: 12px;
        border-radius: 7px;
        border-left: 7px solid rgb(29, 150, 53);
@@ -205,3 +258,123 @@ html, body {
    .btn-primary:hover {
        background-color: #0B5D37;
    }
+   .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 13.75rem;
+    height: 100%;
+    background-color: #236641;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    z-index: 1000;
+}
+.sidebar-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14.5%; /* 1/8 of the sidebar height */
+    background-color: #17442b;
+    background: 
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+}
+.sidebar-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #ffffff;
+}
+
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3125rem; /* 5px */
+    padding: 0.9375rem 1.5625rem 1.5625rem 1.5625rem; /* 15px 25px 25px 25px */
+    border-top: 0.125rem solid #065027; /* 2px */
+    color: #ccc;
+    font-size: 0.85rem;
+}
+.sidebar-footer::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 18.5%; /* Same as top */
+    background-color: #17442b;
+    background:
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+}
+.sidebar-footer img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.sidebar .menu-items a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .menu-items a:hover {
+    background-color: #098c4f;
+}
+/* Main Content Styles */
+.container {
+    margin-left: 15.625rem; /* 250px */
+}
+
+.main-content {
+    padding: 1rem;
+}
+
+.menu-items {
+    flex-grow: 1;
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.logout {
+    margin: 0.3125rem 0;
+    font-size: 1.25rem;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+hr {
+    border: 0;
+    height: 0.0625rem;
+    background: #0f6e39;
+    margin: 0.625rem 0.9375rem;
+}

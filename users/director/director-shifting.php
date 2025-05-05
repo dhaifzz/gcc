@@ -1,399 +1,439 @@
+<?php
+require_once '../../font/font.php';
+require_once '../../database/database.php';
+session_start();
+
+if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Director') {
+    header("Location: ../../auth/sign-in.php");
+    exit();
+}
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST') {
+    if (isset($_POST['approve']) || isset($_POST['reschedule'])) {
+        $id = $_POST['id'];
+        $status = isset($_POST['approve']) ? 'approved' : 'rescheduled';
+        
+        // Get director's info from session
+        $director_id = $_SESSION['user_id'];
+        $director_stmt = $pdo->prepare("SELECT first_name, last_name FROM users WHERE id = ?");
+        $director_stmt->execute([$director_id]);
+        $director = $director_stmt->fetch(PDO::FETCH_ASSOC);
+        $director_name = $director['first_name'] . ' ' . $director['last_name'];
+
+        // Update shifting request
+        $stmt = $pdo->prepare("UPDATE shifting SET status = :status, approved_by = :director_id WHERE id = :id");
+        $stmt->execute([
+            'status' => $status,
+            'director_id' => $director_id,
+            'id' => $id
+        ]);
+
+        if ($stmt->rowCount() > 0) {
+            echo '<script>alert("Request ' . $status . ' by ' . htmlspecialchars($director_name) . '");</script>';
+        } else {
+            echo '<script>alert("Error processing request.");</script>';
+        }
+    }
+}
+
+// Fetch shifting requests with user info
+$stmt = $pdo->query("SELECT s.id, s.user_id, s.first_name, s.middle_name, s.last_name, 
+                     s.current_course, s.course_to_shift, s.status, s.approved_by,
+                     u.email, u.contact_number as phone_number, u.wmsu_id,
+                     d.first_name as approver_first, d.last_name as approver_last
+                     FROM shifting s
+                     JOIN users u ON s.user_id = u.id
+                     LEFT JOIN users d ON s.approved_by = d.id
+                     WHERE s.status = 'approved'");
+$requests = $stmt->fetchAll(PDO::FETCH_ASSOC);
+?>
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-<link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
-<link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
-    <title>GCC Admin - Shifting Exam</title>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
-    <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script src="https://cdn.datatables.net/1.13.6/js/jquery.dataTables.min.js"></script>
+    <meta charset="UTF-8">
+    <title>Shifting Exam Registration</title>
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.13.5/css/jquery.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <link rel="stylesheet" href="css/director-shifting.css">
     <style>
-        * {
-            font-family: 'Instrument Sans', sans-serif;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             margin: 0;
             padding: 0;
-            box-sizing: border-box;
-        }
-        
-        body {
             background-color: #f5f5f5;
         }
-        
-        .navbar {
-            background-color: #11AD64;
-            padding: 10px 20px;
+        .nav {
+            background-color: #2c3e50;
+            color: white;
+            padding: 15px 20px;
             display: flex;
             align-items: center;
             box-shadow: 0 2px 5px rgba(0,0,0,0.1);
         }
-        
-        .navbar img {
-            width: 56px;
-            height: 56px;
-            margin-right: 15px;
-        }
-        
-        .website {
-            font-size: 20px;
-            font-weight: 600;
-            color: white;
-            text-decoration: none;
-        }
-        
         .container {
-            max-width: 1200px;
-            margin: 0 auto;
+            padding: 20px;
             background-color: white;
-            box-shadow: 0 0 10px rgba(0,0,0,0.1);
-            margin-top: 20px;
-            margin-bottom: 20px;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin: 20px;
         }
-        
-        .header {
-            background-color: #16633F;
-            color: white;
-            padding: 30px;
-            text-align: center;
-            font-size: 28px;
-            font-weight: 500;
-        }
-        
-        .content {
-            padding: 50px;
-        }
-        
-        .success {
-            color: #2e7d32;
-            padding: 15px;
-            margin-bottom: 20px;
-            background-color: #e8f5e9;
-            border: 1px solid #c8e6c9;
-            border-radius: 4px;
-        }
-        
-        .error {
-            color: #c62828;
-            padding: 15px;
-            margin-bottom: 20px;
-            background-color: #ffebee;
-            border: 1px solid #ffcdd2;
-            border-radius: 4px;
-        }
-        
-        table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-        
-        th, td {
-            padding: 12px 15px;
-            text-align: left;
-            border-bottom: 1px solid #e0e0e0;
-        }
-        
-        th {
-            background-color: #f2f2f2;
-            font-weight: 600;
-            color: #333;
-        }
-        
-        tr:hover {
-            background-color: #f9f9f9;
-        }
-        
-        .action-buttons {
-            display: flex;
-            gap: 8px;
-        }
-        
-        .btn {
-            padding: 8px 12px;
+        .view-btn, .approve-btn, .reschedule-btn {
+            padding: 5px 10px;
             border: none;
             border-radius: 4px;
-            color: white;
             cursor: pointer;
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 5px;
+            margin: 2px;
+            color: white;
         }
-        
         .view-btn {
-            background-color: #2196F3;
+            background-color: #3498db;
         }
-        
         .approve-btn {
-            background-color: #4CAF50;
+            background-color: #2ecc71;
         }
-        
-        .reject-btn {
-            background-color: #f44336;
+        .reschedule-btn {
+            background-color: #e74c3c;
         }
-        
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.5);
-        }
-        
-        .modal-content {
-            background-color: white;
-            margin: 5% auto;
-            padding: 25px;
-            border-radius: 8px;
-            width: 70%;
-            max-width: 800px;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            position: relative;
-        }
-        
-        .close {
-            position: absolute;
-            right: 20px;
-            top: 15px;
-            font-size: 24px;
-            color: #aaa;
-            cursor: pointer;
-        }
-        
-        .modal-header {
-            padding-bottom: 15px;
-            border-bottom: 1px solid #eee;
-            margin-bottom: 20px;
-        }
-        
-        .modal-body {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 20px;
-        }
-        
-        .detail-group {
-            margin-bottom: 15px;
-        }
-        
-        .detail-label {
-            font-weight: 500;
-            color: #555;
-            margin-bottom: 5px;
-            display: block;
-        }
-        
-        .detail-value {
-            padding: 8px;
-            background-color: #f9f9f9;
-            border-radius: 4px;
-        }
-        
-        .attachments {
-            grid-column: span 2;
-            margin-top: 15px;
-        }
-        
-        .attachment-link {
-            display: inline-block;
-            margin-right: 15px;
-            color: #2196F3;
-            text-decoration: none;
-        }
-        
-        .attachment-link:hover {
-            text-decoration: underline;
-        }
-        
-        footer {
-            background-color: #DC143C;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
+        /* Add modal and other styles as needed */
     </style>
 </head>
 <body>
-<div class="navbar">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-       <a class="website" href="director.php">Guidance and Counseling Center</a>
-    </div>  
-    <div class="ext" style="background-color: white; padding: 60px;"></div>  
-    <div class="container">
-        <div class="header">
-            Shifting Exam Registrations
-        </div>
-        
-        <div class="content">
-            <div class="success" id="successMessage">
-                <i class="fas fa-check-circle"></i> Registration approved successfully.
-            </div>
+<div class="nav">
+    <img src="/gcc/img/gcc-logo.png" alt="Logo" width="56" height="56">
+    <a href="#" class="website">Guidance and Counseling Center</a>
+</div>
+<div class="container">
+    <h2>Shifting Exam Registration</h2>
+    <table id="examTable" class="display responsive nowrap" style="width:100%;">
+        <thead>
+            <tr>
+                <th>School ID</th>
+                <th>Name</th>
+                <th>Current Course</th>
+                <th>Desired Course</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+        <?php foreach ($requests as $row): ?>
+            <tr>
+                <td><?= htmlspecialchars($row['user_id']) ?></td>
+                <td><?= htmlspecialchars($row['first_name'] . ' ' . 
+                    (!empty($row['middle_name']) ? strtoupper(substr($row['middle_name'], 0, 1)) . '. ' : '') . 
+                    $row['last_name']) ?></td>
+                <td><?= htmlspecialchars($row['current_course']) ?></td>
+                <td><?= htmlspecialchars($row['course_to_shift']) ?></td>
+                <td>
+                    <button class='view-btn' onclick='viewRegistration(<?= $row['id'] ?>)'>
+                        <i class='fas fa-eye'></i> View
+                    </button>
+                    <form method='POST' style='display:inline;'>
+                        <input type='hidden' name='id' value='<?= $row['id'] ?>'>
+                        <button type='submit' name='approve' class='approve-btn'>
+                            <i class='fas fa-check'></i> Approve
+                        </button>
+                    </form>
+                    <form method='POST' style='display:inline;'>
+                        <input type='hidden' name='id' value='<?= $row['id'] ?>'>
+                        <button type='submit' name='reschedule' class='reschedule-btn'>
+                            <i class='fas fa-times'></i> Reschedule
+                        </button>
+                    </form>
+                </td>
+            </tr>
+        <?php endforeach; ?>
+        </tbody>
+    </table>
+</div>
 
-            <div class="error" id="errorMessage" style="display: none;">
-                <i class="fas fa-exclamation-circle"></i> Error processing request.
-            </div>
-            
-            <table id="registrationsTable">
-                <thead>
-                    <tr>
-                        <th>School ID</th>
-                        <th>Student Name</th>
-                        <th>Current Course</th>
-                        <th>Desired Course</th>
-                        <th>Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <!-- Sample data - replace with dynamic PHP code -->
-                    <tr>
-                        <td>2020-1234</td>
-                        <td>Juan Dela Cruz</td>
-                        <td>BS Computer Science</td>
-                        <td>BS Information Technology</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn view-btn" onclick="viewRegistration(1)">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                                <button class="btn approve-btn">
-                                    <i class="fas fa-check"></i> Approve
-                                </button>
-                                <button class="btn reject-btn">
-                                    <i class="fas fa-times"></i> Reject
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2021-5678</td>
-                        <td>Maria Santos</td>
-                        <td>BS Biology</td>
-                        <td>BS Nursing</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn view-btn" onclick="viewRegistration(2)">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                                <button class="btn approve-btn">
-                                    <i class="fas fa-check"></i> Approve
-                                </button>
-                                <button class="btn reject-btn">
-                                    <i class="fas fa-times"></i> Reject
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                    <tr>
-                        <td>2019-9012</td>
-                        <td>Pedro Reyes</td>
-                        <td>BS Mathematics</td>
-                        <td>BS Computer Engineering</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="btn view-btn" onclick="viewRegistration(3)">
-                                    <i class="fas fa-eye"></i> View
-                                </button>
-                                <button class="btn approve-btn">
-                                    <i class="fas fa-check"></i> Approve
-                                </button>
-                                <button class="btn reject-btn">
-                                    <i class="fas fa-times"></i> Reject
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                </tbody>
-            </table>
+<div id="viewModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('viewModal')">&times;</span>
+        <div class="modal-header">Registration Details</div>
+        <div id="modalDetails" class="modal-body">
         </div>
     </div>
-    
-    <!-- Registration Details Modal -->
-    <div id="registrationModal" class="modal">
-        <div class="modal-content">
-            <span class="close" onclick="closeModal()">&times;</span>
-            <div class="modal-header">
-                <h2>Registration Details</h2>
+</div>
+
+<div id="fileViewerModal" class="modal">
+    <div class="modal-content">
+        <span class="close" onclick="closeModal('fileViewerModal')">&times;</span>
+        <div class="viewer-header">
+            <h3 id="viewer-title">Document Viewer</h3>
+            <div class="header-controls">
+                <a id="download-btn" href="#" class="download-link">
+                    <i class="fas fa-download"></i> Download
+                </a>
             </div>
-            <div class="modal-body">
-                <div class="detail-group">
-                    <span class="detail-label">School ID</span>
-                    <div class="detail-value">2020-1234</div>
+        </div>
+        <div class="viewer-container">
+            <img id="imageViewer">
+            <iframe id="pdfViewer"></iframe>
+            <pre id="textViewer"></pre>
+            <div class="loading-spinner"></div>
+        </div>
+    </div>
+</div>
+
+<script src="https://code.jquery.com/jquery-3.7.1.min.js"></script>
+<script src="https://cdn.datatables.net/1.13.5/js/jquery.dataTables.min.js"></script>
+<script src="https://cdn.datatables.net/responsive/2.5.0/js/dataTables.responsive.min.js"></script>
+
+<script>
+// Define previewable file types
+const PREVIEWABLE_TYPES = {
+    images: ['jpg', 'jpeg', 'png', 'gif', 'bmp', 'webp', 'svg'],
+    pdf: ['pdf'],
+    text: ['txt', 'csv', 'json', 'xml', 'html', 'css', 'js']
+};
+
+$(document).ready(function() {
+    $('#examTable').DataTable({
+        responsive: true,
+        language: {
+            search: "_INPUT_",
+            searchPlaceholder: "Search...",
+        }
+    });
+    initModals();
+});
+
+function initModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeAllModals();
+            }
+        });
+    });
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeAllModals();
+        }
+    });
+}
+
+function showModal(modalId) {
+    closeAllModals();
+    const modal = document.getElementById(modalId);
+    modal.classList.add('show');
+    document.body.classList.add('modal-open');
+}
+
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    modal.classList.remove('show');
+    document.body.classList.remove('modal-open');
+    if (modalId === 'fileViewerModal') {
+        clearFileViewer();
+    }
+}
+
+function closeAllModals() {
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.classList.remove('show');
+    });
+    document.body.classList.remove('modal-open');
+    clearFileViewer();
+}
+
+function clearFileViewer() {
+    const elements = {
+        pdfViewer: document.getElementById('pdfViewer'),
+        imageViewer: document.getElementById('imageViewer'),
+        textViewer: document.getElementById('textViewer')
+    };
+
+    for (const [key, element] of Object.entries(elements)) {
+        if (element) {
+            if (key === 'textViewer') {
+                element.textContent = '';
+            } else {
+                element.src = '';
+            }
+            element.style.display = 'none';
+        }
+    }
+}
+
+function showLoading(show) {
+    const spinner = document.querySelector('.loading-spinner');
+    if (spinner) {
+        spinner.style.display = show ? 'block' : 'none';
+    }
+}
+
+function viewRegistration(id) {
+    showLoading(true);
+    
+    $.ajax({
+        url: 'get-registration-details.php',
+        type: 'GET',
+        data: { id: id },
+        dataType: 'json',
+        success: function(data) {
+            showLoading(false);
+            
+            if (data.error) {
+                alert(data.error);
+                return;
+            }
+            
+            $('#modalDetails').html(`
+                <div class="detail-group" style="grid-column: span 2;">
+                    <div class="detail-label">Student Name</div>
+                    <div class="detail-value">${data.first_name || ''} ${data.middle_name || ''} ${data.last_name || ''}</div>
                 </div>
                 <div class="detail-group">
-                    <span class="detail-label">Student Name</span>
-                    <div class="detail-value">Juan Dela Cruz</div>
+                    <div class="detail-label">School ID</div>
+                    <div class="detail-value">${data.wmsu_id || 'N/A'}</div>
                 </div>
                 <div class="detail-group">
-                    <span class="detail-label">Sex</span>
-                    <div class="detail-value">Male</div>
+                    <div class="detail-label">Current Course</div>
+                    <div class="detail-value">${data.current_course || 'N/A'}</div>
                 </div>
                 <div class="detail-group">
-                    <span class="detail-label">College</span>
-                    <div class="detail-value">College of Science and Mathematics</div>
-                </div>
-                <div class="detail-group">
-                    <span class="detail-label">Current Course</span>
-                    <div class="detail-value">BS Computer Science</div>
-                </div>
-                <div class="detail-group">
-                    <span class="detail-label">Desired Course</span>
-                    <div class="detail-value">BS Information Technology</div>
+                    <div class="detail-label">Desired Course</div>
+                    <div class="detail-value">${data.course_to_shift || 'N/A'}</div>
                 </div>
                 <div class="detail-group" style="grid-column: span 2;">
-                    <span class="detail-label">Reason for Shifting</span>
-                    <div class="detail-value">I have discovered a stronger passion for the practical applications of IT in business environments and believe this program better aligns with my career goals.</div>
+                    <div class="detail-label">Reason for Shifting</div>
+                    <div class="detail-value">${data.reason_to_shift || 'No reason provided'}</div>
                 </div>
                 <div class="attachments">
-                    <h3>Attachments</h3>
-                    <a href="#" class="attachment-link"><i class="fas fa-image"></i> Photo</a>
-                    <a href="#" class="attachment-link"><i class="fas fa-file-alt"></i> Grades</a>
-                    <a href="#" class="attachment-link"><i class="fas fa-file-contract"></i> CET Result</a>
-                    <a href="#" class="attachment-link"><i class="fas fa-id-card"></i> School ID</a>
+                    <div class="detail-label">Attachments</div>
+                    <ul class="attachment-list">
+                        <li>
+                            <a class="attachment-link" onclick="viewAttachment('${data.picture}', 'Student Photo')">
+                                <i class="fas fa-image attachment-icon"></i>Student Photo
+                            </a>
+                        </li>
+                        <li>
+                            <a class="attachment-link" onclick="viewAttachment('${data.grades}', 'Grades')">
+                                <i class="fas fa-file-alt attachment-icon"></i>Grades
+                            </a>
+                        </li>
+                        <li>
+                            <a class="attachment-link" onclick="viewAttachment('${data.cor}', 'Certificate of Registration')">
+                                <i class="fas fa-file attachment-icon"></i>Certificate of Registration
+                            </a>
+                        </li>
+                        <li>
+                            <a class="attachment-link" onclick="viewAttachment('${data.cet_result}', 'CET Result')">
+                                <i class="fas fa-id-card attachment-icon"></i>CET Result
+                            </a>
+                        </li>
+                    </ul>
                 </div>
-            </div>
-        </div>
-    </div>
-    <div class="ext" style="background-color: white; padding: 60px;"></div>
-    <footer>
-        <div>Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
-        <div><img src="/gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
-    </footer>
-
-    <script>
-        $(document).ready(function() {
-            $('#registrationsTable').DataTable({
-                responsive: true,
-                language: {
-                    search: "_INPUT_",
-                    searchPlaceholder: "Search registrations...",
-                }
-            });
-
-            setTimeout(function() {
-                $('#successMessage, #errorMessage').fadeOut('slow');
-            }, 5000);
-        });
-        
-        function viewRegistration(id) {
-
-            document.getElementById('registrationModal').style.display = 'block';
+            `);
+            
+            showModal('viewModal');
+        },
+        error: function(xhr, status, error) {
+            showLoading(false);
+            alert('Could not fetch registration details: ' + error);
         }
-        
-        function closeModal() {
-            document.getElementById('registrationModal').style.display = 'none';
-        }
-        
-        // Close modal when clicking outside
-        window.onclick = function(event) {
-            if (event.target == document.getElementById('registrationModal')) {
-                closeModal();
+    });
+}
+
+function viewAttachment(url, caption) {
+    if (!url) {
+        alert('No attachment available');
+        return;
+    }
+
+    const normalizedUrl = url.replace(/(\/shared\/main\/uploads\/shifting)+/g, '/shared/main/uploads/shifting');
+    
+    showLoading(true);
+    showModal('fileViewerModal');
+    
+    const pdfViewer = document.getElementById('pdfViewer');
+    const imageViewer = document.getElementById('imageViewer');
+    const textViewer = document.getElementById('textViewer');
+    const downloadBtn = document.getElementById('download-btn');
+    const viewerTitle = document.getElementById('viewer-title');
+
+    viewerTitle.textContent = caption;
+    downloadBtn.href = normalizedUrl;
+    downloadBtn.download = caption || 'document';
+    downloadBtn.style.display = 'block';
+
+    clearFileViewer();
+
+    checkFileExists(normalizedUrl).then(exists => {
+        if (!exists) {
+            alert('File not found on server. Please contact administrator.');
+            showLoading(false);
+            const downloadBtn = document.getElementById('download-btn');
+            if (downloadBtn) {
+                downloadBtn.style.display = 'none';
             }
+            return;
         }
-    </script>
+
+        const extension = normalizedUrl.split('.').pop().toLowerCase().split('?')[0];
+        
+        if (PREVIEWABLE_TYPES.images.includes(extension)) {
+            imageViewer.onload = function() {
+                showLoading(false);
+                imageViewer.style.display = 'block';
+            };
+            imageViewer.src = normalizedUrl;
+        } 
+        else if (PREVIEWABLE_TYPES.pdf.includes(extension)) {
+            pdfViewer.onload = function() {
+                showLoading(false);
+                pdfViewer.style.display = 'block';
+            };
+            pdfViewer.onerror = function() {
+                alert('Error loading PDF. Please download the file instead.');
+                showLoading(false);
+            };
+            pdfViewer.src = normalizedUrl + '#view=FitH';
+        } 
+        else if (PREVIEWABLE_TYPES.text.includes(extension)) {
+            fetchAttachmentAsText(normalizedUrl);
+        } 
+        else {
+            alert('This file format cannot be previewed. Please download the file instead.');
+            showLoading(false);
+        }
+    }).catch(() => {
+        alert('Error checking file. Please try again or contact administrator.');
+        showLoading(false);
+    });
+}
+
+function checkFileExists(url) {
+    return fetch(url, { method: 'HEAD' })
+        .then(response => {
+            return response.ok;
+        })
+        .catch(() => {
+            return false;
+        });
+}
+
+function fetchAttachmentAsText(url) {
+    const textViewer = document.getElementById('textViewer');
+    
+    fetch(url)
+        .then(response => {
+            if (!response.ok) throw new Error('Failed to load');
+            return response.text();
+        })
+        .then(text => {
+            textViewer.textContent = text;
+            textViewer.style.display = 'block';
+            showLoading(false);
+        })
+        .catch(() => {
+            alert('This file format cannot be previewed. Please download the file instead.');
+            showLoading(false);
+        });
+}
+</script>
+
 </body>
 </html>

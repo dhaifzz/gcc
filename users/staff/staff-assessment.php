@@ -58,6 +58,7 @@ $pdo = null;
 <!DOCTYPE html>
 <html>
 <head>
+<meta charset="UTF-8">
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
     <title>GCC Admin</title>
@@ -86,13 +87,27 @@ $pdo = null;
     </style>
 </head>
 <body>
-<div class="navbar">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-       <a class="website" href="staff.php">Guidance and Counseling Center</a>
-    </div>    
+<div class="sidebar">
+        <div class="sidebar-header">
+            <h3 style="text-decoration: underline; text-decoration-color: red; text-underline-offset: 0.3125rem;">GCC <?php echo $_SESSION['role']; ?></h3>
+        </div>
+        <div class="menu-items">
+            <a href="staff.php"><i class="fa-solid fa-home"></i> Home </a>
+            <a href="staff-counseling.php"><i class="fa-regular fa-calendar-days"></i>Counseling Table</a>
+            <a href="staff-assessment.php" style=" background-color: rgb(255, 255, 255); color: #236641;"><i class="fa-regular fa-calendar"></i> Assessment Table</a>           
+            <a href="staff-shifting.php"><i class="fa-solid fa-envelope"></i> Shifting Table</a>
+            <!-- <a href="settings.php"><i class="fa-solid fa-cog"></i> Settings</a> -->
+            <a href="../../auth/sign-out.php"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <div class="sidebar-footer">
+        <small>© 2025 WMSU </small>
+        <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+        <img src="/gcc/img/wmsu-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+    </div>
+    </div> 
     <div class="container">
-        <div style="background-color: #16633F; width: 100%; height: 150px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;">
-            Check Appointment Requests
+        <div style="background-color:rgb(20, 72, 48); width: 100%; height: 150px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px;">
+            Check Assessment Requests
         </div>
         
         <?php if ($error): ?>
@@ -138,11 +153,6 @@ $pdo = null;
             </table>
         </div>
     </div>
-    
-    <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-        <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
-        <div style="margin-right: 20px;"><img src="../../../../gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
-    </footer>
 
     <script>
         $(document).ready(function() {

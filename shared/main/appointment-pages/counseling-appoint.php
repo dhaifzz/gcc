@@ -4,11 +4,11 @@ require_once '../../../client/navbar.php';
 require_once '../../../database/database.php';
 
 session_start();
-if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty',])) {
-    header("Location: ../../../auth/sign-in.php");
+
+if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student'])) {
+    header("Location: ../../../../auth/sign-in.php");
     exit();
 }
-
 $email = $_SESSION['email'];
 $query = "SELECT * FROM users WHERE email = :email";
 $stmt = $pdo->prepare($query);
@@ -29,37 +29,56 @@ if ($user) {
     }
 }
 
-// Handle form submission
+// Check if user has an active appointment (Pending or Approved)
+$activeAppointment = false;
+$appointmentCheckQuery = "SELECT status FROM appointments WHERE client_id = :user_id AND status IN ('Pending', 'Approved', 'Rescheduled')";
+$appointmentCheckStmt = $pdo->prepare($appointmentCheckQuery);
+$appointmentCheckStmt->execute(['user_id' => $user_id]);
+if ($appointmentCheckStmt->fetch()) {
+    $activeAppointment = true;
+}
+
+// Fetch all booked appointments
+$bookedAppointments = [];
+$appointmentQuery = "SELECT requested_date, requested_time FROM appointments WHERE status != 'Cancelled'";
+$appointmentStmt = $pdo->query($appointmentQuery);
+while ($row = $appointmentStmt->fetch(PDO::FETCH_ASSOC)) {
+    $bookedAppointments[$row['requested_date']][] = $row['requested_time'];
+}
+
+// Define all available time slots
+$allTimeSlots = ['8am - 9am', '9am - 10am', '10am - 11am', '2pm - 3pm', '3pm - 4pm', '4pm - 5pm'];
+
+// Calculate fully booked dates
+$fullyBookedDates = [];
+foreach ($bookedAppointments as $date => $times) {
+    if (count($times) >= count($allTimeSlots)) {
+        $fullyBookedDates[] = $date;
+    }
+}
+
 $message = '';
 $error = '';
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'book') {
-    $client_id = $_SESSION['user_id'];
-    $appointment_type = 'counseling'; 
-    $requested_date = $_POST['requested_date'];
-    $requested_time = $_POST['requested_time']; 
-    $status = 'Pending';
+    // Check if user already has an active appointment
+    if ($activeAppointment) {
+        $error = "You already have an active appointment. Please wait until it's completed or cancelled before booking another one.";
+    } else {
+        $client_id = $_SESSION['user_id'];
+        $appointment_type = isset($_POST['appointment_type']) ? $_POST['appointment_type'] : 'counseling'; 
+        $requested_date = $_POST['requested_date'];
+        $requested_time = $_POST['requested_time']; 
+        $status = 'Pending';
 
-    try {
-        // Check if user has an existing counseling appointment that's not rescheduled, completed, or cancelled
-        $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments 
-                              WHERE client_id = ? 
-                              AND appointment_type = 'counseling'
-                              AND status NOT IN ('Completed', 'Cancelled', 'Rescheduled')");
-        $stmt->execute([$client_id]);
-        $existingAppointments = $stmt->fetchColumn();
-
-        if ($existingAppointments > 0) {
-            $error = "You already have an active counseling appointment. Please complete, cancel, or reschedule it before booking a new one.";
-        } else {
-            // Check if the selected time and date are already reserved
-            $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE requested_date = ? AND requested_time = ?");
+        try {
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE requested_date = ? AND requested_time = ? AND status != 'Cancelled'");
             $stmt->execute([$requested_date, $requested_time]);
             $count = $stmt->fetchColumn();
 
             if ($count > 0) {
-                $error = "The selected time and date are already reserved. Please choose another.";
+                header("Location: " . $_SERVER['PHP_SELF']);
+                exit();
             } else {
-                // Prepare the SQL statement
                 $stmt = $pdo->prepare("INSERT INTO appointments (client_id, appointment_type, requested_date, requested_time, status) VALUES (?, ?, ?, ?, ?)");
                 $stmt->bindParam(1, $client_id);
                 $stmt->bindParam(2, $appointment_type);
@@ -67,23 +86,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
                 $stmt->bindParam(4, $requested_time);
                 $stmt->bindParam(5, $status);
 
-                // Execute the statement
                 if ($stmt->execute()) {
                     $message = "Counseling appointment booked successfully";
+                    // Add the new booking to our array to immediately reflect in UI
+                    $bookedAppointments[$requested_date][] = $requested_time;
+                    // Update fully booked dates if needed
+                    if (count($bookedAppointments[$requested_date]) >= count($allTimeSlots)) {
+                        $fullyBookedDates[] = $requested_date;
+                    }
+                    // Update active appointment status
+                    $activeAppointment = true;
                 } else {
                     $error = "Error booking appointment: " . implode(" ", $stmt->errorInfo());
                 }
             }
+        } catch (PDOException $e) {
+            $error = "Database error: " . $e->getMessage();
         }
-    } catch (PDOException $e) {
-        $error = "Database error: " . $e->getMessage();
     }
 
     $stmt = null;
 }
-
 $pdo = null;
 ?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -93,108 +119,78 @@ $pdo = null;
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../../css/appoint-counsel.css">
-    <style>
-        .time-slot {
-            padding: 10px;
-            margin: 5px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            cursor: pointer;
-            transition: background-color 0.3s;
-        }
-        .time-slot:hover {
-            background-color: #f0f0f0;
-        }
-        .time-slot.selected {
-            background-color: #11AD64;
-            color: white;
-        }
-        .error {
-            color: #DC143C;
-            margin-top: 10px;
-            text-align: center;
-            font-size: 16px;
-            padding: 10px;
-            background-color: #FFE5E5;
-            border-radius: 5px;
-            border: 1px solid #DC143C;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-        .success {
-            color: #11AD64;
-            margin-top: 10px;
-            text-align: center;
-            font-size: 16px;
-            padding: 10px;
-            background-color: #E8F5E9;
-            border-radius: 5px;
-            border: 1px solid #11AD64;
-            max-width: 600px;
-            margin-left: auto;
-            margin-right: auto;
-        }
-    </style>
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
 </head>
 <body>
-     <!-- Navbar -->
-     <?php appointPageNavbar($profile_image); ?> 
+    <!-- Navbar -->
+    <?php appointPageNavbar($profile_image); ?> 
 
-       <div class="container">
-         <div style="background-color: #16633F; width: 100%; height: 150px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Schedule your Counseling Appointment </div>
+    <div class="container">
+         <div style="background-color: #16633F; width: 100%; height: 150px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Schedule your Appointment </div>
          <div style="padding: 40px; display: flex; justify-content: center; gap: 20px;">
-            <form id="appointmentForm" style="display: flex; flex-direction: column; align-items: center; gap: 20px;" method="post">
-                <input type="hidden" name="action" value="book">
-                <input type="hidden" id="requested_date" name="requested_date" required>
-                <input type="hidden" id="requested_time" name="requested_time" required>
-                <div style="display: flex; gap: 20px;">
-                    <div class="calendar-container">
-                        <div class="calendar-header">
-                            <button type="button" onclick="prevMonth()">&#8249;</button>
-                            <h2 id="calendarMonth">January 2025</h2>
-                            <button type="button" onclick="nextMonth()">&#8250;</button>
-                        </div>
-                        <div class="calendar-grid" id="calendarDays">
-                            <!-- Calendar days will be generated here -->
-                        </div>
-                    </div>
-                    <div class="time-slot-container">
-                        <h2 style="text-align: center; margin-bottom: 20px;">Time</h2>
-                        <div class="time-slot-section">
-                            <h3>Schedule for Morning</h3>
-                            <div class="time-slot" onclick="selectTimeSlot('8am - 9am')">8am - 9am</div>
-                            <div class="time-slot" onclick="selectTimeSlot('9am - 10am')">9am - 10am</div>
-                            <div class="time-slot" onclick="selectTimeSlot('10am - 11am')">10am - 11am</div>
-                        </div>
-                        <div class="time-slot-section">
-                            <h3>Schedule for Afternoon</h3>
-                            <div class="time-slot" onclick="selectTimeSlot('2pm-3pm')">2pm - 3pm</div>
-                            <div class="time-slot" onclick="selectTimeSlot('3pm-4pm')">3pm - 4pm</div>
-                            <div class="time-slot" onclick="selectTimeSlot('4pm-5pm')">4pm - 5pm</div>
-                        </div>
-                    </div>
+            <?php if ($activeAppointment): ?>
+                <div style="text-align: center; padding: 20px; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 100%; max-width: 600px;">
+                <div style="padding: 50px; background-color: #f8f9fa;"></div>
+                    <h2 style="color: #dc3545;">You already have an active appointment</h2>
+                    <p>You can only book one appointment at a time. Please wait until your current appointment is completed or cancelled before booking another one.</p>
+                    <a href="../../../shared/sub-pages/profile.php" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #16633F; color: white; text-decoration: none; border-radius: 4px;">View My Appointments</a>
+                    <div style="padding: 50px; background-color: #f8f9fa;"></div>
                 </div>
-                <button type="submit" class="save-record">
-                    Save Record
-                </button>
-            </form>
+            <?php else: ?>
+                <form id="appointmentForm" style="display: flex; flex-direction: column; align-items: center; gap: 20px;" method="post">
+                    <input type="hidden" name="action" value="book">
+                    <input type="hidden" id="requested_date" name="requested_date" required>
+                    <input type="hidden" id="requested_time" name="requested_time" required>
+                    <input type="hidden" id="appointment_type" name="appointment_type" value="counseling" required>
+                    <div style="display: flex; gap: 20px;">
+                        <div class="calendar-container">
+                            <div class="calendar-header">
+                                <button class="btn-sched" type="button" onclick="prevMonth()">&#8249;</button>
+                                <h2 id="calendarMonth">January 2025</h2>
+                                <button class="btn-sched" type="button" onclick="nextMonth()">&#8250;</button>
+                            </div>
+                            <div class="calendar-grid" id="calendarDays">
+                                <!-- Calendar days will be generated here -->
+                            </div>
+                        </div>
+                        <div class="time-slot-container">
+                         <h2 style="text-align: center; margin-bottom: 20px;">Time</h2>
+                         <div class="time-slot-section">
+                             <h3>Schedule for Morning</h3>
+                             <div class="time-slot" data-time="8am - 9am" onclick="selectTimeSlot('8am - 9am')">8am - 9am</div>
+                             <div class="time-slot" data-time="9am - 10am" onclick="selectTimeSlot('9am - 10am')">9am - 10am</div>
+                             <div class="time-slot" data-time="10am - 11am" onclick="selectTimeSlot('10am - 11am')">10am - 11am</div>
+                         </div>
+                         <div class="time-slot-section">
+                             <h3>Schedule for Afternoon</h3>
+                             <div class="time-slot" data-time="2pm - 3pm" onclick="selectTimeSlot('2pm - 3pm')">2pm - 3pm</div>
+                             <div class="time-slot" data-time="3pm - 4pm" onclick="selectTimeSlot('3pm - 4pm')">3pm - 4pm</div>
+                             <div class="time-slot" data-time="4pm - 5pm" onclick="selectTimeSlot('4pm - 5pm')">4pm - 5pm</div>
+                         </div>
+                         <button type="submit" class="save-record">
+                        Save Record
+                    </button>
+                    </div>
+                </form>
+            <?php endif; ?>
          </div>
-         <?php if ($error): ?>
-             <div class="error"><?php echo $error; ?></div>
-         <?php endif; ?>
-         <?php if ($message): ?>
-             <div class="success"><?php echo $message; ?></div>
-         <?php endif; ?>
+         </div>
+         <div class="message-container">
+             <?php if ($message): ?>
+                 <div class="success"><?php echo htmlspecialchars($message); ?></div>
+             <?php endif; ?>
+             <?php if ($error): ?>
+                 <div class="error"><?php echo htmlspecialchars($error); ?></div>
+             <?php endif; ?>
+         </div>
          <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
             <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
-            <div style="margin-right: 20px;"><img src="../../../../gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
+            <div style="margin-right: 20px;"><img src="/gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
          </footer>
   </div>
 
-<script src="/gcc/js/sidebar.js"></script>
-<script>
+    <script src="/gcc/js/sidebar.js"></script>
+    <script>
 const calendarDays = document.getElementById('calendarDays');
 const calendarMonth = document.getElementById('calendarMonth');
 let currentMonth = new Date().getMonth();
@@ -206,9 +202,9 @@ let selectedTimeSlot = null;
 let selectedDate = null;
 
 // Convert PHP data to JS
-const bookedAppointments = <?php echo json_encode($bookedAppointments ?? []); ?>;
-const fullyBookedDates = <?php echo json_encode($fullyBookedDates ?? []); ?>;
-const allTimeSlots = ['8am - 9am', '9am - 10am', '10am - 11am', '2pm - 3pm', '3pm - 4pm', '4pm - 5pm'];
+const bookedAppointments = <?php echo json_encode($bookedAppointments); ?>;
+const fullyBookedDates = <?php echo json_encode($fullyBookedDates); ?>;
+const allTimeSlots = <?php echo json_encode($allTimeSlots); ?>;
 
 function generateCalendar(month, year) {
     const date = new Date(year, month, 1);
@@ -290,7 +286,7 @@ function updateTimeSlotsAvailability(date) {
     if (bookedAppointments[date]) {
         const bookedTimes = bookedAppointments[date];
         timeSlots.forEach(slot => {
-            const slotTime = slot.textContent.trim();
+            const slotTime = slot.getAttribute('data-time');
             if (bookedTimes.includes(slotTime)) {
                 slot.classList.add('booked');
                 slot.style.pointerEvents = 'none';
@@ -305,7 +301,7 @@ function selectTimeSlot(time) {
         const timeSlots = document.querySelectorAll('.time-slot');
         let clickedElement = null;
         timeSlots.forEach(slot => {
-            if (slot.textContent.trim() === time) {
+            if (slot.getAttribute('data-time') === time) {
                 clickedElement = slot;
             }
         });
@@ -316,16 +312,8 @@ function selectTimeSlot(time) {
         return;
     }
 
-    // Don't allow selection if the slot is booked
-    const timeSlots = document.querySelectorAll('.time-slot');
-    let clickedSlot = null;
-    timeSlots.forEach(slot => {
-        if (slot.textContent.trim() === time) {
-            clickedSlot = slot;
-        }
-    });
-    
-    if (clickedSlot && clickedSlot.classList.contains('booked')) {
+    const clickedSlot = document.querySelector(`.time-slot[data-time="${time}"]`);
+    if (clickedSlot.classList.contains('booked')) {
         showTooltip('This time slot is already booked!', clickedSlot);
         return;
     }
@@ -338,15 +326,13 @@ function selectTimeSlot(time) {
     }
 
     // Select the new time slot
-    if (clickedSlot) {
-        clickedSlot.classList.add('selected');
-        clickedSlot.style.backgroundColor = '#11AD64';
-        clickedSlot.style.color = 'white';
-        selectedTimeSlot = clickedSlot;
+    clickedSlot.classList.add('selected');
+    clickedSlot.style.backgroundColor = '#11AD64';
+    clickedSlot.style.color = 'white';
+    selectedTimeSlot = clickedSlot;
 
-        document.getElementById('requested_time').value = time;
-        hideTooltip();
-    }
+    document.getElementById('requested_time').value = time;
+    hideTooltip();
 }
 
 function clearTimeSelection() {
@@ -438,6 +424,6 @@ document.getElementById('appointmentForm').addEventListener('submit', function(e
 });
 
 generateCalendar(currentMonth, currentYear);
-</script>
+    </script>
 </body>
 </html>

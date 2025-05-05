@@ -38,32 +38,30 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     <link rel="stylesheet" href="https://cdn.datatables.net/responsive/2.5.0/css/responsive.dataTables.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
     <link rel="stylesheet" href="css/staff-shifting.css">
-    <style>
-        /* Add all your CSS styles here */
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            background-color: #f5f5f5;
-        }
-        .nav {
-            background-color: #2c3e50;
-            color: white;
-            padding: 15px 20px;
-            display: flex;
-            align-items: center;
-            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-        }
-        /* Add remaining CSS styles from your original file */
-    </style>
 </head>
 <body>
-<div class="nav">
-    <img src="/gcc/img/gcc-logo.png" alt="Logo" width="56" height="56">
-    <a href="#" class="website">Guidance and Counseling Center</a>
-</div>
+<div class="sidebar">
+        <div class="sidebar-header">
+            <h3 style="text-decoration: underline; text-decoration-color: red; text-underline-offset: 0.3125rem;">GCC <?php echo $_SESSION['role']; ?></h3>
+        </div>
+        <div class="menu-items">
+            <a href="staff.php"><i class="fa-solid fa-home"></i> Home </a>
+            <a href="staff-counseling.php"><i class="fa-regular fa-calendar-days"></i>Counseling Table</a>
+            <a href="staff-assessment.php"><i class="fa-regular fa-calendar"></i> Assessment Table</a>           
+            <a href="staff-shifting.php" style=" background-color: rgb(255, 255, 255); color: #236641;"><i class="fa-solid fa-envelope"></i> Shifting Table</a>
+            <!-- <a href="settings.php"><i class="fa-solid fa-cog"></i> Settings</a> -->
+            <a href="../../auth/sign-out.php"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+        </div>
+        <div class="sidebar-footer">
+        <small>© 2025 WMSU </small>
+        <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+        <img src="/gcc/img/wmsu-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+    </div>
+    </div>
 <div class="container">
-    <h2>Shifting Exam Registration</h2>
+<div style="background-color:rgb(20, 72, 48); width: 1300px; height: 150px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center; border-radius: 10px; margin-bottom: 15px;">
+            Check Shifting Requests
+        </div>
     <table id="examTable" class="display responsive nowrap" style="width:100%;">
         <thead>
             <tr>

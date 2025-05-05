@@ -23,3 +23,15 @@ document.querySelectorAll('.sidebar a').forEach(link => {
         }
     });
 });
+
+document.addEventListener("DOMContentLoaded", function () {
+        const dropdowns = document.querySelectorAll(".dropdown-btn");
+
+    dropdowns.forEach(btn => {
+                btn.addEventListener("click", function () {
+                    const parent = btn.parentElement;
+                    parent.classList.toggle("active");
+        
+             });
+        });
+    });

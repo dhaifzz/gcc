@@ -3,7 +3,7 @@ require_once '../../database/database.php';
 require_once '../../font/font.php';
 session_start();
 
-if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Staff') {
+if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Staff' && $_SESSION['role'] !== 'Director') {
     header('Content-Type: application/json');
     echo json_encode(['error' => 'Unauthorized access']);
     exit();

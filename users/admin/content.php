@@ -88,16 +88,10 @@ try {
     </div>
     </div>
 
-    <!-- <h2>Upload New Carousel Image</h2>
-
-<form action="content.php" method="post" enctype="multipart/form-data">
-    <label for="image">Select Image:</label>
-    <input type="file" name="image" id="image" required>
-
-    <input type="hidden" name="type" value="carousel">
-
-    <button type="submit" name="upload">Upload</button>
-</form> -->
+    <div class="container">
+    <h1 style="color: #236641"> CMS Page</h1>
+    <h2> Coming Soon...</h2>
+    </div>
 
 </body>
 </html>

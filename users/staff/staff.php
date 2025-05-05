@@ -8,6 +8,26 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Staff') {
     header("Location: ../../auth/sign-in.php");
     exit();
 }
+
+$user_email = $_SESSION['email'];
+
+try {
+    $stmt = $pdo->prepare("SELECT first_name FROM users WHERE email = :email");
+    $stmt->bindParam(':email', $user_email, PDO::PARAM_STR);
+    $stmt->execute();
+    $first_name = $stmt->fetchColumn(); // Get the first_name value directly
+
+    if (!$first_name) {
+        $first_name = "User"; 
+    }
+
+    $text = "Welcome to GCC Staff Page, $first_name!";
+    $text_length = strlen($text);
+    $name_length = strlen($first_name) + 17; 
+
+} catch (PDOException $e) {
+    echo "Error: " . $e->getMessage();
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -19,50 +39,61 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Staff') {
     <link rel="stylesheet" type="text/css" href="css/staff.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
     <!-- STUDENT -->
+    <style>
+    .typing-text {
+         display: inline-block;
+         white-space: nowrap;
+         overflow: hidden;
+         border-right: 0.1875rem solid rgb(29, 215, 129); /* 3px */
+         padding-right: 0.1875rem; /* 3px */
+         animation: typing 2s steps(<?php echo $text_length; ?>) forwards, 
+                    blink-caret 0.75s step-end infinite;
+     }
+     .vertical-border {
+         position: absolute;
+         top: 0;
+         right: 0;
+         width: 0.125rem; /* 2px */
+         background-color: black;
+         animation: move-border 2s steps(<?php echo $text_length; ?>) forwards;
+     }
+    </style>
 </head>
 <body>
-    <!-- Navbar -->
-    <div class="navbar">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 56px; height: 56px; margin-left: 10px;">
-       <a class="website" href="#">Guidance and Counseling Center</a>
-       <!-- Sidebar -->
-       <div class="burger-icon" onclick="toggleSidebar()">
-         <i class="fas fa-bars"></i>
-       </div>
-       <div class="sidebar" id="sidebar">
-        <span class="close-btn" onclick="toggleSidebar()">
-            <i class="fa-solid fa-bars-staggered"></i>
-        </span>
-            <a href="../../auth/sign-out.php" class="logout"><i class="fas fa-sign-out-alt"></i>Log Out</a>
+        <!-- Sidebar -->
+        <div class="sidebar">
+        <div class="sidebar-header">
+            <h3 style="text-decoration: underline; text-decoration-color: red; text-underline-offset: 0.3125rem;">GCC <?php echo $_SESSION['role']; ?></h3>
         </div>
-       </div>
-    </div>   
+        <div class="menu-items">
+            <a href="staff.php" style="background-color: rgb(255, 255, 255); color: #236641;">
+                <i class="fa-solid fa-home"></i> Home
+            </a>
+        
+            <div class="dropdown">
+                <button class="dropdown-btn"><i class="fa-regular fa-calendar-days"></i> Appointments</button>
+                <div class="dropdown-content">
+                    <a href="staff-counseling.php"><i class="fa-regular fa-calendar-days"></i> Counseling Table</a>
+                    <a href="staff-assessment.php"><i class="fa-regular fa-calendar"></i> Assessment Table</a>
+                </div>
+            </div>
+        
+            <a href="staff-shifting.php"><i class="fa-solid fa-envelope"></i> Shifting Table</a>
+            <a href="../../auth/sign-out.php"><i class="fa-solid fa-sign-out-alt"></i> Logout</a>
+        </div>
 
+        <div class="sidebar-footer">
+        <small>© 2025 WMSU </small>
+        <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+        <img src="/gcc/img/wmsu-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 2rem; height: 2rem;">
+    </div>
+    </div>
+    <div class="container">
     <div class="main-content">
-    <div id="carousel" class="carousel">
-          <div class="carousel-inner"> 
-             <div class="carousel-item active"> 
-                 <div style="position: relative; text-align: center;">
-                     <img src="/gcc/img/carousel-img/test.png" alt="Slide 1">
-                 </div>
-             </div>
-             <div class="carousel-item active">
-                 <div style="position: relative; text-align: center;">
-                     <img src="/gcc/img/carousel-img/test2.png" alt="Slide 2">
-                 </div>
-             </div>
-             <div class="carousel-item active">
-                 <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">
-             </div>
-          </div>
-          <div class="welcome-text">
-             <span>Welcome to GCC Website!</span>
-          </div>
-    </div>
-    <div id="motto" class="motto" style="background-color: #F1F1F1; padding: 80px 0 80px;">
-       <p style="margin: 0 20px; text-align: center; font-size: 28px; font-weight: 500;">The <span style="color: #095D36; font-weight: 600;">Guidance and Counseling Center</span> at Western Mindanao State University offers free, 
-       confidential counseling, student assessments, and support for the shifting exam, along with workshops for academic and personal growth.</p>
-    </div>
+    <div class="typing-container">
+            <span class="typing-text">Welcome to WMSU GCC Staff, <span style="color:rgb(11, 178, 100);"><?php echo $first_name; ?></span>.</span>
+            <span class="vertical-border"></span>
+        </div>
     <div class="contents">
        <div class="image-gallery">
             <div class="image-item">
@@ -83,13 +114,7 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Staff') {
         </div>
     </div>
     </div>
-    <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
-        <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
-        <div style="margin-right: 20px;"><img src="/gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
-    </footer>
-    </div> 
 </body>
 </html>
 
-<script src="/gcc/js/carousel.js"></script>
 <script src="/gcc/js/sidebar.js"></script>

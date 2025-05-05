@@ -307,14 +307,8 @@
    .add-btn:hover {
        background-color: #0B5D37;
    }
-   
    /* @media (max-width: 768px) {
        .sidebar {
            position: relative;
            width: 100%;
        }
-   
-       .container {
-           margin-left: 0;
-       }
-   } */
