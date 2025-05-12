@@ -17,7 +17,7 @@ try {
     $stmt = $pdo->prepare("SELECT a.*, u.first_name, u.last_name 
                           FROM appointments a
                           JOIN users u ON a.Staff_id = u.id
-                          WHERE a.status = 'approved' AND a.appointment_type = 'counseling'");
+                          WHERE a.status = 'evaluated' AND a.appointment_type = 'counseling'");
     $stmt->execute();
     $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
 } catch (PDOException $e) {
@@ -30,8 +30,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     $action = $_POST['action'];
     
     try {
-        if ($action == 'final_approve') {
-            $stmt = $pdo->prepare("UPDATE appointments SET status = 'final_approved', Director_id = ? WHERE appointment_id = ?");
+        if ($action == 'approve') {
+            $stmt = $pdo->prepare("UPDATE appointments SET status = 'approved', Director_id = ? WHERE appointment_id = ?");
             $stmt->execute([$_SESSION['user_id'], $appointment_id]);
             $message = "Appointment finally approved successfully.";
         } elseif ($action == 'reject') {
@@ -44,7 +44,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
         $stmt = $pdo->prepare("SELECT a.*, u.first_name, u.last_name 
                               FROM appointments a
                               JOIN users u ON a.Staff_id = u.id
-                              WHERE a.status = 'approved' AND a.appointment_type = 'counseling'");
+                              WHERE a.status = 'evaluated' AND a.appointment_type = 'counseling'");
         $stmt->execute();
         $appointments = $stmt->fetchAll(PDO::FETCH_ASSOC);
         
@@ -139,7 +139,7 @@ $pdo = null;
                             <div class="action-buttons">
                                 <form method="post" style="display: inline;">
                                     <input type="hidden" name="appointment_id" value="<?php echo $appointment['appointment_id']; ?>">
-                                    <button type="submit" name="action" value="final_approve" class="approve-btn" style="padding: 8px 12px; color: white; border: none; cursor: pointer;">
+                                    <button type="submit" name="action" value="approve" class="approve-btn" style="padding: 8px 12px; color: white; border: none; cursor: pointer;">
                                         <i class="fas fa-check"></i> Approve
                                     </button>
                                 </form>

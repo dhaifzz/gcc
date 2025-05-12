@@ -1,4 +1,5 @@
 <?php
+require_once '../client/navbar.php';
 require_once '../font/font.php';
 require_once '../database/database.php';
 // include('users\admin\content.php');
@@ -18,58 +19,8 @@ require_once '../database/database.php';
     <!-- PUBLIC PAGE -->
 </head>
 <body>
-    <!-- Navbar -->
-    <div class="navbar">
-        <div class="navbar-items">
-       <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
-       <img src="/gcc/img/wmsu-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
-       <a class="website" href="public-page.php">WMSU Guidance and Counseling Center</a>
-       </div>
-       <div class="navbar-content">
-    <a href="public-page.php">Home</a>
-    <div class="dropdown">
-        <a href="#" class="dropbtn">Appointments <i class="fas fa-caret-down"></i></a>
-        <div class="dropdown-content">
-        <a class="h" data-section="Counseling"><i class="fas fa-calendar-check"></i> Counseling</a>
-        <a class="h" data-section="Assessments"><i class="fas fa-file-alt"></i> Assessments</a>
-        <a class="h" data-section="Shifting Exam"><i class="fas fa-edit"></i> Shifting Exam</a>
-        </div>
-    </div>
-    <div class="dropdown">
-        <a href="#" class="dropbtn">About <i class="fas fa-caret-down"></i></a>
-        <div class="dropdown-content">
-            <a href="contact.php"><i class="fas fa-envelope"></i> Contact Us</a>
-            <a href="about.php"><i class="fas fa-info-circle"></i> About Us</a>
-            <a href="team.php"><i class="fas fa-users"></i> Our Team</a>
-        </div>
-    </div>
-
-    <button class="btn-sign-in" onclick="window.location.href='../auth/sign-in.php'"> Sign In</button>
-
-</div>
-    <div class="sidebar-overlay"></div>
-    <div class="burger-icon" onclick="toggleSidebar()">
-        <i class="fas fa-bars"></i>
-    </div>
-    
-    <div class="sidebar" id="sidebar">
-        <span class="close-btn" onclick="toggleSidebar()">
-            <i class="fa-solid fa-xmark"></i>
-        </span>
-    <div class="menu-items">
-            <a href="public-page.php"><i class="fas fa-home"></i>Home</a>
-            <a class="h" data-section="Appointments"><i class="fas fa-calendar-check"></i> Appointments</a>
-            <a class="h" data-section="Assessments"><i class="fas fa-file-alt"></i> Assessments</a>
-            <a class="h" data-section="Shifting Exam"><i class="fas fa-edit"></i> Shifting Exam</a>
-            <hr>
-            <a href="contact.php"><i class="fas fa-envelope"></i> Contact Us</a>
-            <a href="about.php"><i class="fas fa-info-circle"></i> About Us</a>
-            <a href="team.php"><i class="fas fa-users"></i> Our Team</a>
-            <hr>
-            <a href="../auth/sign-in.php" class="logout"><i class="fas fa-sign-out-alt"></i>Sign In</a>
-        </div>
-       </div> 
-    </div>   
+  <!-- Navbar -->
+    <?php renderPublicNavbar(); ?>  
 
     <div class="main-content">
     <div id="carousel" class="carousel">
@@ -102,18 +53,18 @@ require_once '../database/database.php';
 </div>
     <div class="container-sign">
     <div class="content-sign" style="align-items: baseline;">
-  <div style="text-align: center; font-size: 2.5rem; font-weight: bold; margin-bottom: 1.875rem; color:rgb(255, 255, 255); text-decoration: underline;">
-    To Access Website
-  </div>
-  <p style="font-size: 1.125rem; color: #ffffff; font-weight: 600; text-align: center; margin: 0 2rem 2rem;">
-    In order to access the full features of the Guidance and Counseling Center website, including setting appointments for counseling, assessments, and shifting examinations, users are required to log in to their respective accounts. This ensures that all services are personalized, securely documented, and handled with confidentiality. If you already have an account, please proceed to sign in. Otherwise, kindly register to create one and gain access to our wide range of support services.
+    <div class="floating-heading">
+      Getting Started with WMSU GCC Site
+    </div>
+  <p style="font-size: 1.25rem; color: #ffffff; font-weight: 600; text-align: center; margin: 0 2rem 2rem;">
+    In order to access the full features of the <span style="color:rgb(0, 255, 153); font-weight: 700;">Guidance and Counseling Center</span> website, including setting appointments for counseling, assessments, and shifting examinations, users are required to log in to their respective accounts. This ensures that all services are personalized, securely documented, and handled with confidentiality. If you already have an account, please proceed to sign in. Otherwise, kindly register to create one and gain access to our wide range of support services.
 </p>
   <div style="display: flex; justify-content: center; gap: 1.875rem; align-items:last baseline;">
     <div class="card">
       <div style="font-size: 1.875rem; font-weight: 600;">Sign In Here.</div>
       <div style="font-size: 1.25rem;">Sign In, If you already have an existing account.</div>
       <button class="btn-hi-col" onclick="location.href='../auth/sign-in.php'" style="background-color: #11AD64; color: white; border: 0.125rem solid rgb(14, 121, 73); padding: 0.9375rem 0; margin-bottom: -1.25rem; border-radius: 0.3125rem; cursor: pointer; font-size: 1.375rem; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
-        <i class="fas fa-arrow-right" style="margin-right: 0.625rem;"></i>Sign In 
+        <i class="fas fa-arrow-right" style="margin-right: 0.625rem;"></i>Continue 
       </button>
     </div>
 
@@ -121,7 +72,7 @@ require_once '../database/database.php';
       <div style="font-size: 1.875rem; font-weight: 600;">Sign Up Here.</div>
       <div style="font-size: 1.25rem;">Sign Up, If you still don't have an account.</div>
       <button class="btn-hi-col" onclick="location.href='../auth/sign-up.php'" style="background-color: #11AD64; color: white; border: 0.125rem solid rgb(14, 121, 73); padding: 0.9375rem 0; margin-bottom: -1.25rem; border-radius: 0.3125rem; cursor: pointer; font-size: 1.375rem; font-weight: 500; transition: background-color 0.3s, transform 0.3s;">
-        <i class="fas fa-arrow-right" style="margin-right: 0.625rem;"></i>Sign Up
+        <i class="fas fa-arrow-right" style="margin-right: 0.625rem;"></i>Get Started
       </button>
     </div>
   </div>
@@ -146,13 +97,52 @@ require_once '../database/database.php';
             </div>
         </div>
     </div>
-    <div class="gcc-pages">
+    <!-- LAST 3 CARDS -->
+    <div class="about-section">
+        <div class="section-header">
+            <h2>Know More About The GCC!</h2>
+            <p class="section-intro">Discover what makes the GCC team special and how we can support your journey.</p>
+        </div>
+        
+        <div class="about-cards">
+            <!-- Card 1 -->
+            <div class="about-card">
+                <div class="card-icon">
+                    <i class="fas fa-users"></i>
+                </div>
+                <h3>Our Team</h3>
+                <p>Meet our dedicated professionals committed to your growth and well-being.</p>
+                <a href="../shared/sub-pages/our-team.php" class="card-link">Meet Us →</a>
+            </div>
+            
+            <!-- Card 2 -->
+            <div class="about-card">
+                <div class="card-icon">
+                    <i class="fas fa-info-circle"></i>
+                </div>
+                <h3>About Us</h3>
+                <p>Learn about our commitment to student development and mental health.</p>
+                <a href="../shared/sub-pages/about-us.php" class="card-link">Learn More →</a>
+            </div>
+            
+            <!-- Card 3 -->
+            <div class="about-card">
+                <div class="card-icon">
+                    <i class="fas fa-envelope"></i>
+                </div>
+                <h3>Contact Us</h3>
+                <p>Have questions? Reach out to our team for assistance.</p>
+                <a href="../shared/sub-pages/contact-us.php" class="card-link">Get in Touch →</a>
+            </div>
+        </div>
+    </div>
+    <!-- <div class="gcc-pages">
         <div class="pages-to-go">
             <div class="pages"><a href="about.php" style="color: white; text-decoration: none;">About Us</a></div>
             <div class="pages"><a href="team.php" style="color: white; text-decoration: none;">Our Team</a></div>
-            <div class="pages"><a href="contact.php" style="color: white; text-decoration: none;">Contact Us</a></div>
+            <div class="pages"><a href="../shared/sub-pages/contact-us.php" style="color: white; text-decoration: none;">Contact Us</a></div>
         </div>
-    </div>
+    </div> -->
     <footer style="background-color: #DC143C; color: white; padding-top: 0.3125rem; display: flex; justify-content: space-between; align-items: center;">
   <div style="margin-left: 1.25rem;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
   <div style="margin-right: 1.25rem;">

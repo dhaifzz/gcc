@@ -23,7 +23,7 @@
         <p style="margin: 18px 0 3px 0; padding: 0; font-size: 17px;">Are you sure you want to delete user</p>
         <p style="margin: 0 0 18px 0; padding: 0;"><strong id="deleteUserName"></strong>?</p>
         <input type="hidden" id="delete_user_id">
-        <button id="confirmDeleteBtn">Yes, Delete</button>
+        <button id="confirmDeleteBtn" class="delete-confirm-btn">Yes, Delete</button>
         <button class="cancel-btn">Cancel</button>
     </div>
 </div>

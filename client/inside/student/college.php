@@ -64,9 +64,9 @@ if ($user) {
                  <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">
              </div>
           </div>
-          <div class="carousel-overlay"></div>
+          <!-- <div class="carousel-overlay"></div> -->
           <div class="welcome-text">
-             <span>Welcome to GCC Website!</span>
+              <span class="typing-container">Welcome to GCC Website, <span class="first-name"><?php echo htmlspecialchars($user['first_name']); ?></span>!</span>
           </div>
     </div>
     <div id="motto" class="motto" style="background-color: #F1F1F1; padding: 5rem 0 5rem;">
@@ -90,11 +90,16 @@ if ($user) {
                    <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="../../../shared/main/shifting.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Shifting Exam</a></p>
                    <span class="description"> Students changing programs. Applicants must schedule an appointment and complete the required forms before taking the exam.</span>
             </div>
+            <!-- <div class="image-item">
+                   <img src="/gcc/img/consultation-img.jpg" alt="Image 4">
+                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="../../../shared/main/shifting.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Consultation</a></p>
+                   <span class="description"> Consultation services are available for students who need academic guidance, course planning, or assistance with program-related concerns. Appointments must be scheduled in advance</span>
+            </div> -->
         </div>
     </div>
     <div class="gcc-pages">
         <div class="pages-to-go">
-            <div class="pages"><a href="../../../shared/sub-pages/about-us.php" style="color: white; text-decoration: none;">About Us</a></div>
+            <div class="pages"></i><a href="../../../shared/sub-pages/about-us.php" style="color: white; text-decoration: none;">About Us</a></div>
             <div class="pages"><a href="../../../shared/sub-pages/our-team.php" style="color: white; text-decoration: none;">Our Team</a></div>
             <div class="pages"><a href="../../../shared/sub-pages/contact-us.php" style="color: white; text-decoration: none;">Contact Us</a></div>
         </div>

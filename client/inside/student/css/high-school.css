@@ -245,39 +245,42 @@
        margin: 0.625rem 0.9375rem; /* 10px 15px */
    }
    
-   .welcome-text {
-       position: absolute;
-       top: 50%;
-       left: 50%;
-       text-align: center;
-       transform: translate(-50%, -50%);
-       color: white;
-       font-size: 32px;
-       font-weight: bold;
-       overflow: hidden;
-       white-space: nowrap;
-       text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-       pointer-events: none;
-   }
-   
-   .welcome-text span {
-       display: inline-block;
-       border-right: 3px solid rgb(53, 255, 181);
-       animation:
-           typing 2s steps(20, end) forwards,
-           blink-caret 0.75s step-end infinite;
-   }
-   
-   @keyframes typing {
-       from { width: 0ch; }
-       to { width: 19.5ch; }
-   }
-   
-   @keyframes blink-caret {
-       from, to { border-color: transparent; }
-       50% { border-color: rgb(0, 255, 136); }
-   }
-   
+.welcome-text {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    text-align: center;
+    transform: translate(-50%, -50%);
+    color: white;
+    font-size: 32px;
+    font-weight: bold;
+    pointer-events: none;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
+}
+
+.welcome-text .typing-container {
+    display: inline-block;
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid rgb(0, 255, 136);
+    animation: 
+        typing 2.5s steps(40, end) forwards,
+        blink-caret 0.75s step-end infinite;
+}
+
+.welcome-text .first-name {
+    color: #42ffa7;
+}
+
+@keyframes typing {
+    from { width: 0; }
+    to { width: 100%; }
+}
+
+@keyframes blink-caret {
+    from, to { border-color: transparent; }
+    50% { border-color: rgb(0, 255, 136); }
+}
    .carousel {
        position: relative;
        overflow: hidden;
@@ -320,34 +323,37 @@
        background-color: rgba(0, 128, 49, 0.214); 
        pointer-events: none;
      }
-   .image-gallery {
-       display: flex;
-       justify-content: space-evenly;
-       gap: 0.625rem; /* 10px */
-       max-width: 18.75rem; /* 300px */
-       width: 100%;
-       max-width: 100%;
-       flex-direction: row;
-       padding: 2.5rem 0 3.75rem; /* 40px 0 60px */
-       margin: 2.5rem 0 3.75rem; /* 40px 0 60px */
-       flex-wrap: wrap;
-   }
-      
-   .image-gallery img {
-       height: auto;
-       width: 100%;
-       border: 0.125rem solid #046d38; /* 2px */
-       border-radius: 0.4375rem; /* 7px */
-       height: 13.0625rem; /* 209px */
-       width: 19.375rem; /* 310px */
-       max-width: 19.375rem; /* 310px */
-       flex: 1 1 calc(33.333% - 1.25rem); /* 20px gap */
-       box-sizing: border-box;
-   }
-      
-   .image-item {
+.image-gallery {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
+    gap: 0.625rem; /* 10px */
+    max-width: 18.75rem; /* 300px */
+    width: 100%;
+    max-width: 100%;
+    flex-direction: row;
+    padding: 2.5rem 0 3.75rem; /* 40px 0 60px */
+    margin: 2.5rem 0 3.75rem; /* 40px 0 60px */
+    flex-wrap: wrap;
+}
+   
+.image-gallery img {
+    width: 100%; /* Ensure the image takes the full width of its container */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 310px; /* Set a consistent maximum width */
+    max-height: 209px; /* Set a consistent maximum height */
+    object-fit: cover; /* Ensure the image fills the container without distortion */
+    border: 0.125rem solid #046d38; /* 2px border */
+    border-radius: 0.4375rem; /* 7px rounded corners */
+}
+   
+.image-item {
     text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
     font-size: 1.5625rem; /* 25px */
+    padding: 1rem;
     font-weight: 600;
     transition: transform 0.3s ease; /* Smooth transition */
 }
@@ -359,20 +365,20 @@
 .image-item p:hover {
     text-decoration: underline;
 }
-      
-   .description {
-       width: 19.375rem; /* 310px */
-       text-align: center;
-       display: block;
-       font-size: 1.125rem; /* 18px */
-       color: rgb(0, 0, 0);
-       line-height: 1.4;
-       white-space: nowrap;
-       white-space: normal;
-       font-weight: 100;
-       overflow: hidden;
-       overflow-wrap: break-word;
-   }
+   
+.description {
+    width: 19.375rem; /* 310px */
+    text-align: center;
+    display: grid;
+    font-size: 1.125rem; /* 18px */
+    color: rgb(0, 0, 0);
+    line-height: 1.4;
+    white-space: nowrap;
+    white-space: normal;
+    font-weight: 100;
+    overflow: hidden;
+    overflow-wrap: break-word;
+}
    
    .gcc-pages {
        background-color: #F1F1F1;

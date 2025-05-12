@@ -49,54 +49,64 @@ document.addEventListener("DOMContentLoaded", function () {
     });
 
     // Handle Delete Button Click
-    document.querySelectorAll(".delete-btn").forEach(button => {
-        button.addEventListener("click", function () {
-            let userId = this.getAttribute("data-id");
-    
-            // Fetch user's details
-            fetch(`/gcc/users/admin/backend/fetch-user.php?id=` + userId)
-                .then(response => response.text())
-                .then(data => {
-                    console.log("Fetched Data:", data); // Debugging output
-    
-                    let userData = data.split("|"); // Split response into array
-    
-                    if (userData[0] === "Error") {
-                        alert("User not found!");
-                        return;
-                    }
-    
-                    // Extract full name (First Middle Last)
-                    let fullName = `${userData[1]} ${userData[2]} ${userData[3]}`.trim();
-    
-                    // Update modal text with the full name
-                    document.getElementById("deleteUserName").textContent = fullName;
-    
-                    // Store the user ID for deletion
-                    document.getElementById("delete_user_id").value = userId;
-    
-                    // Show the modal
-                    openModal("deleteUserModal");
-                })
-                .catch(error => console.error("Fetch error:", error));
-        });
+// Delete User Functionality with AJAX
+document.querySelectorAll(".delete-btn").forEach(button => {
+    button.addEventListener("click", function() {
+        const userId = this.getAttribute("data-id");
+        const row = this.closest("tr"); // Get the table row
+        
+        // Show confirmation modal
+        document.getElementById("deleteUserName").textContent = 
+            this.closest("tr").querySelector("td:nth-child(3)").textContent;
+        document.getElementById("delete_user_id").value = userId;
+        openModal("deleteUserModal");
     });
+});
 
-    document.getElementById("confirmDeleteBtn").addEventListener("click", function () {
-        if (!deleteUserId) return;
+// Confirm delete with AJAX
+document.getElementById("confirmDeleteBtn").addEventListener("click", function() {
+    const userId = document.getElementById("delete_user_id").value;
+    const row = document.querySelector(`button[data-id="${userId}"]`).closest("tr");
+    
+    if (!userId) return;
 
-        fetch(`/gcc/users/admin/backend/delete-user.php`, {
-            method: "POST",
-            body: new URLSearchParams({ id: deleteUserId }),
-        })
-        .then(response => response.text())
-        .then(response => {
-            alert(response);
-            document.querySelector(`button[data-id='${deleteUserId}']`).closest("tr").remove();
-            closeModal("deleteUserModal");
-        })
-        .catch(error => console.error("Delete error:", error));
+    // Show loading state
+    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Deleting...';
+    this.disabled = true;
+
+    fetch(`/gcc/users/admin/backend/delete-user.php`, {
+        method: "POST",
+        headers: {
+            'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: `id=${userId}`
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.text();
+    })
+    .then(response => {
+        // Remove the row from table
+        row.remove();
+        
+        // Show success message (you can use a toast notification)
+        alert(response);
+        
+        // Close modal
+        closeModal("deleteUserModal");
+    })
+    .catch(error => {
+        console.error("Delete error:", error);
+        alert("Error deleting user: " + error.message);
+    })
+    .finally(() => {
+        // Reset button state
+        this.innerHTML = 'Yes, Delete';
+        this.disabled = false;
     });
+});
 
 
     document.getElementById("confirmAddAccountBtn").addEventListener("click", function () {

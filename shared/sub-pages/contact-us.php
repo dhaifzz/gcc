@@ -4,28 +4,28 @@ require_once '../../client/navbar.php';
 require_once '../../database/database.php';
 
 session_start();
-if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty'])) {
-    header("Location: ../../auth/sign-in.php");
-    exit();
-}
 
-$email = $_SESSION['email'];
-$query = "SELECT * FROM users WHERE email = :email";
-$stmt = $pdo->prepare($query);
-$stmt->execute(['email' => $email]);
-$user = $stmt->fetch(PDO::FETCH_ASSOC);
+$profile_image = '/gcc/img/profiles/default-profile.png';
 
-$profile_image = '/gcc/img/profiles/default-profile.png'; 
+$isLoggedIn = isset($_SESSION['email']) && in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty']);
 
-if ($user) {
-    $user_id = $user['id'];
-    $profileQuery = "SELECT profile_image FROM profiles WHERE user_id = :user_id";
-    $profileStmt = $pdo->prepare($profileQuery);
-    $profileStmt->execute(['user_id' => $user_id]);
-    $profile = $profileStmt->fetch(PDO::FETCH_ASSOC);
+if ($isLoggedIn) {
+    $email = $_SESSION['email'];
+    $query = "SELECT * FROM users WHERE email = :email";
+    $stmt = $pdo->prepare($query);
+    $stmt->execute(['email' => $email]);
+    $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-    if ($profile && !empty($profile['profile_image'])) {
-        $profile_image = '/gcc/img/profiles/' . htmlspecialchars($profile['profile_image']);
+    if ($user) {
+        $user_id = $user['id'];
+        $profileQuery = "SELECT profile_image FROM profiles WHERE user_id = :user_id";
+        $profileStmt = $pdo->prepare($profileQuery);
+        $profileStmt->execute(['user_id' => $user_id]);
+        $profile = $profileStmt->fetch(PDO::FETCH_ASSOC);
+
+        if ($profile && !empty($profile['profile_image'])) {
+            $profile_image = '/gcc/img/profiles/' . htmlspecialchars($profile['profile_image']);
+        }
     }
 }
 ?>
@@ -43,8 +43,14 @@ if ($user) {
     <!-- CONTACT US -->
 </head>
 <body>
-    <!-- Navbar -->
-    <?php contactNavbar($profile_image); ?>    
+  <!-- Navbar -->
+    <?php 
+    if ($isLoggedIn) {
+        contactNavbar($profile_image);
+    } else {
+        contactPublicNavbar();
+    }
+    ?>   
     
        <div class="container">
          <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 45px; font-weight: 500; color: white; display: flex; justify-content: left; align-items: center; padding-left: 70px;"> Contact Us </div>

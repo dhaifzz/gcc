@@ -64,9 +64,8 @@ if ($user) {
                  <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">
              </div>
           </div>
-          <div class="carousel-overlay"></div>
           <div class="welcome-text">
-             <span>Welcome to GCC Website!</span>
+              <span class="typing-container">Welcome to GCC Website, <span class="first-name"><?php echo htmlspecialchars($user['first_name']); ?></span>!</span>
           </div>
     </div>
     <div id="motto" class="motto" style="background-color: #F1F1F1; padding: 5rem 0 5rem;">

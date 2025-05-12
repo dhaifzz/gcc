@@ -63,7 +63,7 @@ if ($user) {
              </div>
           </div>
           <div class="welcome-text">
-             <span>Welcome to GCC Website!</span>
+              <span class="typing-container">Welcome to GCC Website, <span class="first-name"><?php echo htmlspecialchars($user['first_name']); ?></span>!</span>
           </div>
             </div>
       <div id="motto" class="motto" style="background-color: #F1F1F1; padding: 80px 0 80px;">

@@ -1,5 +1,7 @@
+* {
+    font-family: "Instrument Sans", sans-serif;
+}
 html, body {
-       font-family: "Instrument Sans", sans-serif;
        margin: 0;
        padding: 0;
        overflow-x: hidden;
@@ -276,6 +278,26 @@ hr {
 .dropdown-btn-form.active .dropdown-icon {
     transform: rotate(180deg);
 }
+
+/* FOR NON-USERS */
+.btn-sign-in {
+    margin-left: auto;
+    background-color: #146e43;
+    color: white;
+    padding: 0.625rem 0.9375rem; /* 10px 15px */
+    font-size: 1rem; /* 16px */
+    font-weight: 600;
+    border-radius: 0.625rem; /* 10px */
+    border: none;
+    cursor: pointer;
+    transition: background-color 0.3s, transform 0.2s;
+}
+
+.btn-sign-in:hover {
+    background-color: rgb(12, 76, 47);
+    transform: scale(1.03);
+}
+/* // */
 
 @media (max-width: 47.9375rem) { /* 767px */
     .burger-icon {

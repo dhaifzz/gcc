@@ -1,4 +1,171 @@
 <?php
+
+// PUBLIC / NON-USERS
+function renderPublicNavbar() {
+    ?>
+    <div class="navbar">
+        <div class="navbar-items">
+            <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+            <img src="/gcc/img/wmsu-logo.png" alt="WMSU Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+            <a class="website" href="public-page.php">WMSU Guidance and Counseling Center</a>
+        </div>
+        <div class="navbar-content">
+            <a href="public-page.php">Home</a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">About <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="../shared/sub-pages/contact-us.php"><i class="fas fa-envelope"></i> Contact Us</a>
+                    <a href="../shared/sub-pages/about-us.php"><i class="fas fa-info-circle"></i> About Us</a>
+                    <a href="../shared/sub-pages/our-team.php"><i class="fas fa-users"></i> Our Team</a>
+                </div>
+            </div>
+            <button class="btn-sign-in" onclick="window.location.href='../auth/sign-in.php'">Sign In</button>
+        </div>
+        <div class="sidebar-overlay"></div>
+        <div class="burger-icon" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="sidebar" id="sidebar">
+            <span class="close-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <div class="menu-items">
+                <a href="public-page.php"><i class="fas fa-home"></i>Home</a>
+                <hr>
+                <a href="contact.php"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="about.php"><i class="fas fa-info-circle"></i> About Us</a>
+                <a href="team.php"><i class="fas fa-users"></i> Our Team</a>
+                <hr>
+                <a href="../auth/sign-in.php" class="logout"><i class="fas fa-sign-out-alt"></i>Sign In</a>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
+function aboutPublicNavbar() {
+    ?>
+    <div class="navbar">
+        <div class="navbar-items">
+            <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+            <img src="/gcc/img/wmsu-logo.png" alt="WMSU Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+            <a class="website" href="../../public/public-page.php">WMSU Guidance and Counseling Center</a>
+        </div>
+        <div class="navbar-content">
+            <a href="../../public/public-page.php">Home</a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">About <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="../../shared/sub-pages/contact-us.php"><i class="fas fa-envelope"></i> Contact Us</a>
+                    <a href="../../shared/sub-pages/our-team.php"><i class="fas fa-users"></i> Our Team</a>
+                </div>
+            </div>
+            <button class="btn-sign-in" onclick="window.location.href='../../auth/sign-in.php'">Sign In</button>
+        </div>
+        <div class="sidebar-overlay"></div>
+        <div class="burger-icon" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="sidebar" id="sidebar">
+            <span class="close-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <div class="menu-items">
+                <a href="public-page.php"><i class="fas fa-home"></i>Home</a>
+                <hr>
+                <a href="contact.php"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="about.php"><i class="fas fa-info-circle"></i> About Us</a>
+                <a href="team.php"><i class="fas fa-users"></i> Our Team</a>
+                <hr>
+                <a href="../auth/sign-in.php" class="logout"><i class="fas fa-sign-out-alt"></i>Sign In</a>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
+function contactPublicNavbar() {
+    ?>
+    <div class="navbar">
+        <div class="navbar-items">
+            <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+            <img src="/gcc/img/wmsu-logo.png" alt="WMSU Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+            <a class="website" href="../../public/public-page.php">WMSU Guidance and Counseling Center</a>
+        </div>
+        <div class="navbar-content">
+            <a href="../../public/public-page.php">Home</a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">About <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="../../shared/sub-pages/about-us.php"><i class="fas fa-envelope"></i> About Us</a>
+                    <a href="../../shared/sub-pages/our-team.php"><i class="fas fa-users"></i> Our Team</a>
+                </div>
+            </div>
+            <button class="btn-sign-in" onclick="window.location.href='../../auth/sign-in.php'">Sign In</button>
+        </div>
+        <div class="sidebar-overlay"></div>
+        <div class="burger-icon" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="sidebar" id="sidebar">
+            <span class="close-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <div class="menu-items">
+                <a href="public-page.php"><i class="fas fa-home"></i>Home</a>
+                <hr>
+                <a href="contact.php"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="about.php"><i class="fas fa-info-circle"></i> About Us</a>
+                <a href="team.php"><i class="fas fa-users"></i> Our Team</a>
+                <hr>
+                <a href="../auth/sign-in.php" class="logout"><i class="fas fa-sign-out-alt"></i>Sign In</a>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
+function teamPublicNavbar() {
+    ?>
+    <div class="navbar">
+        <div class="navbar-items">
+            <img src="/gcc/img/gcc-logo.png" alt="GCC Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+            <img src="/gcc/img/wmsu-logo.png" alt="WMSU Logo" style="vertical-align: middle; width: 3.25rem; height: 3.25rem;">
+            <a class="website" href="../../public/public-page.php">WMSU Guidance and Counseling Center</a>
+        </div>
+        <div class="navbar-content">
+            <a href="../../public/public-page.php">Home</a>
+            <div class="dropdown">
+                <a href="#" class="dropbtn">About <i class="fas fa-caret-down"></i></a>
+                <div class="dropdown-content">
+                    <a href="../../shared/sub-pages/contact-us.php"><i class="fas fa-envelope"></i> Contact Us</a>
+                    <a href="../../shared/sub-pages/about-us.php"><i class="fas fa-users"></i> About Us</a>
+                </div>
+            </div>
+            <button class="btn-sign-in" onclick="window.location.href='../../auth/sign-in.php'">Sign In</button>
+        </div>
+        <div class="sidebar-overlay"></div>
+        <div class="burger-icon" onclick="toggleSidebar()">
+            <i class="fas fa-bars"></i>
+        </div>
+        <div class="sidebar" id="sidebar">
+            <span class="close-btn" onclick="toggleSidebar()">
+                <i class="fa-solid fa-xmark"></i>
+            </span>
+            <div class="menu-items">
+                <a href="public-page.php"><i class="fas fa-home"></i>Home</a>
+                <hr>
+                <a href="contact.php"><i class="fas fa-envelope"></i> Contact Us</a>
+                <a href="about.php"><i class="fas fa-info-circle"></i> About Us</a>
+                <a href="team.php"><i class="fas fa-users"></i> Our Team</a>
+                <hr>
+                <a href="../auth/sign-in.php" class="logout"><i class="fas fa-sign-out-alt"></i>Sign In</a>
+            </div>
+        </div>
+    </div>
+    <?php
+}
+
 // STUDENTS, FACULTY, OUTSIDE CLIENT
 function renderNavbar($profile_image) {
     ?>

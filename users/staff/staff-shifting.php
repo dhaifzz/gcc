@@ -9,9 +9,9 @@ if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Staff') {
 }
 
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
-    if (isset($_POST['approve'])) {
+    if (isset($_POST['evaluate'])) {
         $id = $_POST['id'];
-        $status = 'approved';
+        $status = 'evaluated';
     } elseif (isset($_POST['reschedule'])) {
         $id = $_POST['id'];
         $status = 'rescheduled';
@@ -85,7 +85,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                 <button class='view-btn' onclick='viewRegistration({$row['id']})'><i class='fas fa-eye'></i> View</button>
                 <form method='POST' style='display:inline;'>
                     <input type='hidden' name='id' value='{$row['id']}'>
-                    <button type='submit' name='approve' class='approve-btn'><i class='fas fa-check'></i> Approve</button>
+                    <button type='submit' name='evaluate' class='approve-btn'><i class='fas fa-check'></i> Evaluate </button>
                 </form>
                 <form method='POST' style='display:inline;'>
                     <input type='hidden' name='id' value='{$row['id']}'>

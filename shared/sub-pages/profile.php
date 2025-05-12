@@ -167,7 +167,7 @@ switch ($user['role']) {
                 <thead>
                     <tr>
                         <th style="border: 1px solid #ddd; padding: 8px;">Type</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Date</th>
+                        <th style="border: 1px solid #ddd; padding: 8px;"> Requested Date</th>
                         <th style="border: 1px solid #ddd; padding: 8px;">Time</th>
                         <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
                     </tr>
@@ -175,39 +175,158 @@ switch ($user['role']) {
                 <tbody>
                     <?php foreach ($appointments as $appointment): ?>
                         <tr>
-                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($appointment['appointment_type'])); ?></td>
+                            <?php
+                                // Set color for appointment type
+                                $type = strtolower($appointment['appointment_type']);
+                                switch ($type) {
+                                    case 'counseling':
+                                        $typeBg = '#e6f9ed'; // light green
+                                        $typeColor = '#17b968'; // dark green
+                                        break;
+                                    case 'assessment':
+                                        $typeBg = '#e3f7f0'; // lighter green
+                                        $typeColor = '#117864'; // teal green
+                                        break;
+                                    default:
+                                        $typeBg = '#f8f9fa';
+                                        $typeColor = '#333';
+                                        break;
+                                }
+                            ?>
+                            <td style="border: 1px solid #ddd; padding: 8px;">
+                                <span style="
+                                    display: inline-block;
+                                    padding: 4px 16px;
+                                    border-radius: 999px;
+                                    background: <?php echo $typeBg; ?>;
+                                    color: <?php echo $typeColor; ?>;
+                                    font-weight: bold;
+                                    font-size: 1em;
+                                    ">
+                                    <?php echo ucfirst(htmlspecialchars($appointment['appointment_type'])); ?>
+                                </span>
+                            </td>
                             <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($appointment['requested_date'])); ?></td>
                             <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($appointment['requested_time'])); ?></td>
-                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($appointment['status'])); ?></td>
+                            <?php
+                                $status = strtolower($appointment['status']);
+                                switch ($status) {
+                                    case 'pending':
+                                        $bgColor = '#fff3cd';
+                                        $color = '#856404';
+                                        $border = '1px solid #ffeeba';
+                                        break;
+                                    case 'approved':
+                                        $bgColor = '#d4edda'; // light green
+                                        $color = '#155724';   // dark green
+                                        $border = '1px solid #c3e6cb';
+                                        break;
+                                    case 'completed':
+                                        $bgColor = '#e3f0fd'; // light blue
+                                        $color = '#1743b9';   // blue
+                                        $border = '1px solid #1743b9';
+                                        break;
+                                    case 'cancelled':
+                                        $bgColor = '#f8d7da'; // light maroon
+                                        $color = '#800000';   // maroon
+                                        $border = '1px solid #800000';
+                                        break;
+                                    case 'rescheduled':
+                                    case 'rejected':
+                                        $bgColor = '#f8d7da'; // light red
+                                        $color = '#721c24';   // dark red
+                                        $border = '1px solid #f5c6cb';
+                                        break;
+                                    case 'evaluated':
+                                        $bgColor = '#e2f7e2'; // light greenish
+                                        $color = '#218838';   // green
+                                        $border = '1px solid #218838';
+                                        break;
+                                    default:
+                                        $bgColor = '#e2e3e5'; // light gray
+                                        $color = '#383d41';   // dark gray
+                                        $border = '1px solid #d6d8db';
+                                        break;
+                                }
+                            ?>
+                            <td style="border: <?php echo $border; ?>; padding: 8px; background-color: <?php echo $bgColor; ?>; color: <?php echo $color; ?>; font-weight: bold;">
+                                <?php echo ucfirst(htmlspecialchars($appointment['status'])); ?>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
 
-        <div style="margin-top: 40px;">
-            <h3>Recent Shifting Requests</h3>
-            <table style="width: 100%; border-collapse: collapse; background-color: white; border-radius: 9px;">
-                <thead>
-                    <tr>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Current Course</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Course to Shift</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Date/Time</th>
-                        <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($shiftingRequests as $request): ?>
+        <?php if ($user['role'] === 'College Student' && !empty($shiftingRequests)): ?>
+            <div style="margin-top: 40px;">
+                <h3>Recent Shifting Requests</h3>
+                <table style="width: 100%; border-collapse: collapse; background-color: white; border-radius: 9px;">
+                    <thead>
                         <tr>
-                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['current_course'])); ?></td>
-                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['course_to_shift'])); ?></td>
-                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['submitted_at'])); ?></td>
-                            <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['status'])); ?></td>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Current Course</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Course to Shift</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Date/Time</th>
+                            <th style="border: 1px solid #ddd; padding: 8px;">Status</th>
                         </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
-        </div>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($shiftingRequests as $request): ?>
+                            <tr>
+                                <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['current_course'])); ?></td>
+                                <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['course_to_shift'])); ?></td>
+                                <td style="border: 1px solid #ddd; padding: 8px;"><?php echo ucfirst(htmlspecialchars($request['submitted_at'])); ?></td>
+                            <?php
+                                $status = strtolower($appointment['status']);
+                                $status = strtolower($request['status']);
+                                switch ($status) {
+                                    case 'pending':
+                                        $bgColor = '#fff3cd';
+                                        $color = '#856404';
+                                        $border = '1px solid #ffeeba';
+                                        break;
+                                    case 'approved':
+                                        $bgColor = '#d4edda'; // light green
+                                        $color = '#155724';   // dark green
+                                        $border = '1px solid #c3e6cb';
+                                        break;
+                                    case 'completed':
+                                        $bgColor = '#e3f0fd'; // light blue
+                                        $color = '#1743b9';   // blue
+                                        $border = '1px solid #1743b9';
+                                        break;
+                                    case 'cancelled':
+                                        $bgColor = '#f8d7da'; // light maroon
+                                        $color = '#800000';   // maroon
+                                        $border = '1px solid #800000';
+                                        break;
+                                    case 'rescheduled':
+                                    case 'rejected':
+                                        $bgColor = '#f8d7da'; // light red
+                                        $color = '#721c24';   // dark red
+                                        $border = '1px solid #f5c6cb';
+                                        break;
+                                    case 'evaluated':
+                                        $bgColor = '#e2f7e2'; // light greenish
+                                        $color = '#218838';   // green
+                                        $border = '1px solid #218838';
+                                        break;
+                                    default:
+                                        $bgColor = '#e2e3e5'; // light gray
+                                        $color = '#383d41';   // dark gray
+                                        $border = '1px solid #d6d8db';
+                                        break;
+                                }
+                            ?>
+                            <td style="border: <?php echo $border; ?>; padding: 8px; background-color: <?php echo $bgColor; ?>; color: <?php echo $color; ?>; font-weight: bold;">
+                                <?php echo ucfirst(htmlspecialchars($appointment['status'])); ?>
+                            </td>                            
+                        </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        <?php endif; ?>
     </div>
 </div>
          <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">

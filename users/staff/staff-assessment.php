@@ -28,10 +28,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action'])) {
     $action = $_POST['action'];
     
     try {
-        if ($action == 'approve') {
-            $stmt = $pdo->prepare("UPDATE appointments SET status = 'approved', Staff_id = ? WHERE appointment_id = ?");
+        if ($action == 'evaluate') {
+            $stmt = $pdo->prepare("UPDATE appointments SET status = 'evaluated', Staff_id = ? WHERE appointment_id = ?");
             $stmt->execute([$_SESSION['user_id'], $appointment_id]);
-            $message = "Appointment approved successfully.";
+            $message = "Appointment evaluated successfully.";
         } elseif ($action == 'reschedule') {
             // Automatically set status to rescheduled without changing date/time
             $stmt = $pdo->prepare("UPDATE appointments SET status = 'rescheduled', Staff_id = ? WHERE appointment_id = ?");
@@ -139,7 +139,7 @@ $pdo = null;
                         <td style="padding: 12px; border: 1px solid #ddd;">
                             <form method="post" style="display: inline;">
                                 <input type="hidden" name="appointment_id" value="<?php echo $appointment['appointment_id']; ?>">
-                                <button type="submit" name="action" value="approve" style="padding: 8px 12px; margin-right: 5px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Approve</button>
+                                <button type="submit" name="action" value="evaluate" style="padding: 8px 12px; margin-right: 5px; background-color: #4CAF50; color: white; border: none; cursor: pointer;">Evaluate</button>
                             </form>
                             
                             <form method="post" style="display: inline;">

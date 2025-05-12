@@ -31,16 +31,22 @@ if ($user) {
 
 // Check if user has an active assessment appointment (Pending or Approved)
 $activeAppointment = false;
-$appointmentCheckQuery = "SELECT status FROM appointments WHERE client_id = :user_id AND appointment_type = 'assessment' AND status IN ('Pending', 'Approved', 'Rescheduled')";
+$appointmentCheckQuery = "SELECT status FROM appointments WHERE client_id = :user_id AND appointment_type = 'assessment' ORDER BY appointment_id DESC LIMIT 1";
 $appointmentCheckStmt = $pdo->prepare($appointmentCheckQuery);
 $appointmentCheckStmt->execute(['user_id' => $user_id]);
-if ($appointmentCheckStmt->fetch()) {
-    $activeAppointment = true;
+$latestAppointment = $appointmentCheckStmt->fetch(PDO::FETCH_ASSOC);
+
+if ($latestAppointment) {
+    $status = strtolower($latestAppointment['status']);
+    // User can appoint again if status is cancelled or completed
+    if (!in_array($status, ['cancelled', 'completed', 'rescheduled'])) {
+        $activeAppointment = true;
+    }
 }
 
 // Fetch all booked appointments
 $bookedAppointments = [];
-$appointmentQuery = "SELECT requested_date, requested_time FROM appointments WHERE status != 'Cancelled' AND appointment_type = 'assessment'";
+$appointmentQuery = "SELECT requested_date, requested_time FROM appointments WHERE status != 'cancelled' AND appointment_type = 'assessment'";
 $appointmentStmt = $pdo->query($appointmentQuery);
 while ($row = $appointmentStmt->fetch(PDO::FETCH_ASSOC)) {
     $bookedAppointments[$row['requested_date']][] = $row['requested_time'];
@@ -68,10 +74,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['a
         $appointment_type = 'assessment';
         $requested_date = $_POST['requested_date'];
         $requested_time = $_POST['requested_time']; 
-        $status = 'Pending';
+        $status = 'pending';
 
         try {
-            $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE requested_date = ? AND requested_time = ? AND status != 'Cancelled' AND appointment_type = 'assessment'");
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE requested_date = ? AND requested_time = ? AND status != 'cancelled' AND appointment_type = 'assessment'");
             $stmt->execute([$requested_date, $requested_time]);
             $count = $stmt->fetchColumn();
 
@@ -126,7 +132,10 @@ $pdo = null;
     <?php appointPageNavbar($profile_image); ?> 
 
     <div class="container">
-         <div style="background-color: #16633F; width: 100%; height: 150px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Schedule your Appointment </div>
+        <div style="background-color: #16633F; width: 100%; height: 120px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 2000">
+            <i class="fa-regular fa-calendar-days" style="margin-right: 15px;"></i>
+            Schedule your Assessment!
+        </div>
          <div style="padding: 40px; display: flex; justify-content: center; gap: 20px;">
             <?php if ($activeAppointment): ?>
                 <div style="text-align: center; padding: 20px; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 100%; max-width: 600px;">

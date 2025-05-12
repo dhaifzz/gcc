@@ -17,7 +17,7 @@ try {
     $first_name = $stmt->fetchColumn(); // Get the first_name value directly
 
     if (!$first_name) {
-        $first_name = "User"; 
+        $first_name = "404 User"; 
     }
 
     $text = "Welcome to GCC Admin, $first_name!";

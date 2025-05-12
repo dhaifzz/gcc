@@ -254,23 +254,27 @@ hr {
     color: white;
     font-size: 32px;
     font-weight: bold;
-    overflow: hidden;
-    white-space: nowrap;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
     pointer-events: none;
+    text-shadow: 2px 2px 8px rgba(0, 0, 0, 0.7);
 }
 
-.welcome-text span {
+.welcome-text .typing-container {
     display: inline-block;
-    border-right: 3px solid rgb(53, 255, 181);
-    animation:
-        typing 2s steps(20, end) forwards,
+    overflow: hidden;
+    white-space: nowrap;
+    border-right: 3px solid rgb(0, 255, 136);
+    animation: 
+        typing 2.5s steps(40, end) forwards,
         blink-caret 0.75s step-end infinite;
 }
 
+.welcome-text .first-name {
+    color: #42ffa7;
+}
+
 @keyframes typing {
-    from { width: 0ch; }
-    to { width: 19.5ch; }
+    from { width: 0; }
+    to { width: 100%; }
 }
 
 @keyframes blink-caret {
@@ -321,8 +325,9 @@ hr {
     pointer-events: none;
   }
 .image-gallery {
-    display: flex;
-    justify-content: space-evenly;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    justify-content: center;
     gap: 0.625rem; /* 10px */
     max-width: 18.75rem; /* 300px */
     width: 100%;
@@ -334,36 +339,38 @@ hr {
 }
    
 .image-gallery img {
-    height: auto;
-    width: 100%;
-    border: 0.125rem solid #046d38; /* 2px */
-    border-radius: 0.4375rem; /* 7px */
-    height: 13.0625rem; /* 209px */
-    width: 19.375rem; /* 310px */
-    max-width: 19.375rem; /* 310px */
-    flex: 1 1 calc(33.333% - 1.25rem); /* 20px gap */
-    box-sizing: border-box;
+    width: 100%; /* Ensure the image takes the full width of its container */
+    height: auto; /* Maintain aspect ratio */
+    max-width: 310px; /* Set a consistent maximum width */
+    max-height: 209px; /* Set a consistent maximum height */
+    object-fit: cover; /* Ensure the image fills the container without distortion */
+    border: 0.125rem solid #046d38; /* 2px border */
+    border-radius: 0.4375rem; /* 7px rounded corners */
 }
    
 .image-item {
- text-align: center;
- font-size: 1.5625rem; /* 25px */
- font-weight: 600;
- transition: transform 0.3s ease; /* Smooth transition */
+    text-align: center;
+    align-items: center;
+    display: flex;
+    flex-direction: column;
+    font-size: 1.5625rem; /* 25px */
+    padding: 1rem;
+    font-weight: 600;
+    transition: transform 0.3s ease; /* Smooth transition */
 }
 
 .image-item:hover {
- transform: scale(1.03) translateY(-5px); /* Scale + move up */
+    transform: scale(1.03) translateY(-5px); /* Scale + move up */
 }
 
 .image-item p:hover {
- text-decoration: underline;
+    text-decoration: underline;
 }
    
 .description {
     width: 19.375rem; /* 310px */
     text-align: center;
-    display: block;
+    display: grid;
     font-size: 1.125rem; /* 18px */
     color: rgb(0, 0, 0);
     line-height: 1.4;

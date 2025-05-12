@@ -115,9 +115,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $stmt = $pdo->prepare($email_check_query);
         $stmt->execute([':email' => $email]);
     
-        if ($stmt->rowCount() > 0) {
-            $error_messages['email'] = "This email is already registered. Please use another email.";
-        }
+        // if ($stmt->rowCount() > 0) {
+        //     $error_messages['email'] = "This email is already registered. Please use another email.";
+        // }
     
         if (strpos($email, '@wmsu.edu.ph') !== false && !empty($wmsu_id)) {
             $wmsu_id_check_query = "SELECT * FROM users WHERE wmsu_id = :wmsu_id";
@@ -253,18 +253,18 @@ function getFormValue($field) {
         <div class="form-step">
             <div class="form-group">
                 <label for="first-name">First Name</label>
-                <input type="text" id="first-name" name="first_name" required value="<?= getFormValue('first_name') ?>">
+                <input type="text" id="first-name" name="first_name" required value="<?= getFormValue('first_name') ?>" class="upper-input">
                 <?php if (isset($error_messages['first_name'])): ?>
                     <span class="error-message"><?= $error_messages['first_name'] ?></span>
                 <?php endif; ?>
             </div>
             <div class="form-group">
                 <label for="middle-name">Middle Name (optional)</label>
-                <input type="text" id="middle-name" name="middle_name" value="<?= getFormValue('middle_name') ?>">
+                <input type="text" id="middle-name" name="middle_name" value="<?= getFormValue('middle_name') ?>" class="upper-input">
             </div>
             <div class="form-group">
                 <label for="last-name">Last Name</label>
-                <input type="text" id="last-name" name="last_name" required value="<?= getFormValue('last_name') ?>">
+                <input type="text" id="last-name" name="last_name" required value="<?= getFormValue('last_name') ?>" class="upper-input">
                 <?php if (isset($error_messages['last_name'])): ?>
                     <span class="error-message"><?= $error_messages['last_name'] ?></span>
                 <?php endif; ?>
@@ -503,5 +503,6 @@ function getFormValue($field) {
     </script>
     <script src="/gcc/js/stepper-form.js"></script>
     <script src="/gcc/js/validation-signup.js"></script>
+    <script src="/gcc/js/auto-capslock.js"></script>
 </body>
 </html>
