@@ -1,0 +1,658 @@
+/* General Styles */
+* {
+    font-family: "Instrument Sans", sans-serif;
+}
+
+html, body {
+    height: 100%; 
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden; 
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #f5f5f5;
+}
+
+.main-content {
+    flex-grow: 1;
+    margin-left: 13.75rem; /* Match sidebar width */
+    width: calc(100% - 13.75rem);
+    padding: 1rem;
+}
+
+/* Sidebar Styles */
+.sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 13.75rem;
+    height: 100%;
+    background-color: #236641;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    z-index: 1000;
+}
+
+.sidebar-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14.5%;
+    background-color: #17442b;
+    background: 
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+}
+
+.sidebar-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #ffffff;
+}
+
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3125rem;
+    padding: 0.9375rem 1.5625rem 1.5625rem 1.5625rem;
+    border-top: 0.125rem solid #065027;
+    color: #ccc;
+    font-size: 0.85rem;
+}
+
+.sidebar-footer::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 18.5%;
+    background-color: #17442b;
+    background:
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+}
+
+.sidebar-footer img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.sidebar .menu-items a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .menu-items a:hover {
+    background-color: #098c4f;
+}
+
+/* Main Content Styles */
+.container {
+    margin-left: 15.625rem;
+    padding: 1rem;
+}
+
+.menu-items {
+    flex-grow: 1;
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.dropdown-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+    width: 100%;
+    text-align: left;
+}
+
+.dropdown-btn:hover {
+    background-color: #098c4f;
+}
+
+.dropdown-content {
+    display: none;
+    flex-direction: column;
+}
+
+.dropdown.active .dropdown-content {
+    display: flex;
+}
+
+.dropdown-content a {
+    text-decoration: none;
+    color: rgb(181, 15, 15);
+    font-size: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem 0.5rem 0.5rem 2rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.dropdown-content a:hover {
+    background-color: #098c4f;
+}
+
+/* Page Header */
+.page-header {
+    margin: 2.5rem 0 2rem 0;
+    text-align: center;
+}
+
+.page-header h1 {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #236641;
+}
+
+/* Table Styles */
+.data-table-container {
+    margin-top: 1rem;
+    background-color: white;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+#shiftingTable {
+    width: 100%;
+    border-collapse: collapse;
+    background-color: white;
+}
+
+#shiftingTable th,
+#shiftingTable td {
+    padding: 1rem;
+    text-align: left;
+    border-bottom: 1px solid #ddd;
+}
+
+#shiftingTable th {
+    background-color: #236641;
+    color: white;
+    font-weight: bold;
+}
+
+#shiftingTable tr:hover {
+    background-color: #f5f5f5;
+    transition: background-color 0.3s ease;
+}
+
+/* Filter and Search Styles */
+.filters-section {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.filter-btn {
+    padding: 0.5rem 1rem;
+    background-color: #236641;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1rem;
+}
+
+.filter-btn:hover {
+    background-color: #1a4d31;
+}
+
+.search-container {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    background-color: white;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    padding: 0.5rem;
+}
+
+.search-container input {
+    border: none;
+    outline: none;
+    font-size: 1rem;
+    width: 200px;
+}
+
+.search-container i {
+    color: #236641;
+}
+
+/* Action Buttons */
+.action-buttons {
+    display: flex;
+    gap: 0.5rem;
+    justify-content: flex-start;
+}
+
+.action-btn {
+    padding: 0.5rem 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.view-btn {
+    background-color: #236641;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: #1a4d31;
+}
+
+.approve-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.approve-btn:hover {
+    background-color: #218838;
+}
+
+.reject-btn {
+    background-color: #dc3545;
+    color: white;
+}
+
+.reject-btn:hover {
+    background-color: #c82333;
+}
+
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+}
+
+.modal-content {
+    position: relative;
+    background-color: white;
+    margin: 5% auto;
+    padding: 2rem;
+    width: 80%;
+    max-width: 800px;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+}
+
+.close {
+    position: absolute;
+    right: 1rem;
+    top: 1rem;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #666;
+}
+
+.close:hover {
+    color: #333;
+}
+
+.modal-header {
+    margin-bottom: 1.5rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid #ddd;
+}
+
+.modal-header h2 {
+    color: #236641;
+    margin: 0;
+}
+
+.detail-section {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+    gap: 1rem;
+    margin-bottom: 2rem;
+}
+
+.detail-group {
+    padding: 1rem;
+    background-color: #f8f9fa;
+    border-radius: 4px;
+}
+
+.detail-label {
+    color: #666;
+    font-size: 0.875rem;
+    margin-bottom: 0.5rem;
+}
+
+.detail-value {
+    color: #333;
+    font-weight: 500;
+}
+
+.files-section {
+    margin-top: 2rem;
+}
+
+.file-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 1rem;
+    margin-top: 1rem;
+}
+
+.file-preview-card {
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s ease;
+}
+
+.file-preview-card:hover {
+    transform: translateY(-2px);
+}
+
+.preview-container {
+    position: relative;
+    padding-top: 75%;
+    background-color: #f8f9fa;
+}
+
+.preview-thumbnail {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.pdf-preview {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.pdf-preview i {
+    font-size: 2rem;
+    color: #dc3545;
+}
+
+.preview-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+}
+
+.file-preview-card:hover .preview-overlay {
+    opacity: 1;
+}
+
+.preview-button {
+    padding: 0.5rem 1rem;
+    background-color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 0.875rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+}
+
+.file-info {
+    padding: 0.5rem;
+    text-align: center;
+    font-size: 0.875rem;
+    color: #666;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    color: #666;
+}
+
+.empty-state i {
+    font-size: 3rem;
+    color: #ddd;
+    margin-bottom: 1rem;
+}
+
+.empty-state h3 {
+    margin: 0 0 0.5rem 0;
+    color: #333;
+}
+
+.empty-state p {
+    margin: 0;
+    color: #666;
+}
+
+/* DataTables Customization */
+.dataTables_wrapper .dataTables_paginate .paginate_button {
+    padding: 0.5rem 1rem;
+    margin: 0 0.25rem;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    background-color: white;
+    color: #236641 !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background-color: #236641 !important;
+    border-color: #236641;
+    color: white !important;
+}
+
+.dataTables_wrapper .dataTables_paginate .paginate_button:hover {
+    background-color: #f5f5f5 !important;
+    border-color: #236641;
+    color: #236641 !important;
+}
+
+.dataTables_wrapper .dataTables_info {
+    color: #666;
+    padding-top: 1rem;
+}
+
+.dataTables_wrapper .dataTables_paginate {
+    padding-top: 1rem;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+    .container {
+        margin-left: 0;
+        padding: 1rem;
+    }
+
+    .sidebar {
+        transform: translateX(-100%);
+        transition: transform 0.3s ease;
+    }
+
+    .sidebar.active {
+        transform: translateX(0);
+    }
+
+    .detail-section {
+        grid-template-columns: 1fr;
+    }
+
+    .filters-section {
+        flex-direction: column;
+        gap: 1rem;
+    }
+
+    .search-container {
+        max-width: 100%;
+    }
+
+    .action-buttons {
+        flex-direction: column;
+    }
+
+    .modal-content {
+        width: 95%;
+        margin: 1rem auto;
+    }
+}
+
+/* Filter Modal Styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0,0,0,0.5);
+    z-index: 1000;
+}
+
+.filter-modal {
+    display: none;
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background-color: white;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 0 20px rgba(0,0,0,0.2);
+    z-index: 1001;
+    width: 400px;
+    max-width: 90%;
+}
+
+.filter-modal h3 {
+    margin-top: 0;
+    color: #236641;
+    margin-bottom: 1.5rem;
+}
+
+.filter-modal-content {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.filter-modal-content input,
+.filter-modal-content select {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+    font-size: 14px;
+}
+
+.filter-modal-content label {
+    font-weight: 500;
+    margin-bottom: 4px;
+    display: block;
+    color: #333;
+}
+
+.filter-modal-buttons {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    margin-top: 1.5rem;
+}
+
+.filter-modal-buttons button {
+    padding: 8px 16px;
+    border-radius: 4px;
+    cursor: pointer;
+    border: none;
+    font-size: 14px;
+    transition: background-color 0.3s ease;
+}
+
+.filter-modal-buttons button[type="submit"] {
+    background-color: #236641;
+    color: white;
+}
+
+.filter-modal-buttons button[type="submit"]:hover {
+    background-color: #1a4d31;
+}
+
+.filter-modal-buttons button[type="button"] {
+    background-color: #e9ecef;
+    color: #333;
+}
+
+.filter-modal-buttons button[type="button"]:hover {
+    background-color: #dee2e6;
+}

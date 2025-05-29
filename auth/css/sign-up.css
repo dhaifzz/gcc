@@ -13,15 +13,66 @@ body {
     height: 100vh;
     margin: 0;
 }
-.error-message {
-    color: #da0e23;
-    font-size: 0.875rem;
-    margin-top: 0.25rem;
+.error-popup {
+    position: fixed;
+    top: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #ff4444;
+    color: white;
+    padding: 15px 25px;
+    border-radius: 10px;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    opacity: 0;
+    transition: opacity 0.3s ease;
     font-weight: 600;
-    display: block;
+    max-width: 80%;
+    text-align: center;
 }
+
+.error-popup.show {
+    opacity: 1;
+}
+
+.error-message {
+    color: #ff4444;
+    font-size: 12px;
+    display: block;
+    margin-top: -8px;
+    margin-bottom: 8px;
+    font-weight: 500;
+}
+
 .invalid {
-    border-color: #da0e23 !important;
+    border: 1px solid #da0e23 !important;
+}
+
+/* Styles for disabled fields */
+input:disabled, 
+select:disabled {
+    background-color: rgba(0, 0, 0, 0.05) !important;
+    color: white !important;
+    cursor: not-allowed;
+    border: 1px dashed #999 !important;
+}
+
+/* Make sure inputs retain their styling even when focused */
+input.invalid:focus, 
+select.invalid:focus {
+    border: 1px solid #da0e23 !important;
+    outline: none;
+}
+
+/* Error highlight animation */
+@keyframes errorShake {
+    0%, 100% { transform: translateX(0); }
+    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+    20%, 40%, 60%, 80% { transform: translateX(5px); }
+}
+
+.error-shake {
+    animation: errorShake 0.6s cubic-bezier(.36,.07,.19,.97) both;
 }
 
 form {
@@ -34,10 +85,26 @@ form {
     text-align: center; 
     border-left: 8px solid #DC143C;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    animation: formExtend 0.6s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    opacity: 0;
+    transform: scaleX(0.8) translateX(-40px);
+    overflow: hidden;
+    position: relative;
 }
 
-form div {
-    margin-bottom: 15px;
+@keyframes formExtend {
+    0% {
+        opacity: 0;
+        transform: scaleX(0.8) translateX(-40px);
+    }
+    70% {
+        opacity: 1;
+        transform: scaleX(1.02) translateX(5px);
+    }
+    100% {
+        opacity: 1;
+        transform: scaleX(1) translateX(0);
+    }
 }
 
 label {
@@ -55,6 +122,7 @@ input[type="text"],
 input[type="email"],
 input[type="password"],
 input[type="number"],
+input[type="date"], 
 select {
     width: 100%;
     color: black;
@@ -62,6 +130,7 @@ select {
     border: 1px solid #ccc;
     border-radius: 4.41px;
     font-size: 12px;
+    margin-bottom: 10px; 
 }
 
 .header-container {
@@ -125,6 +194,7 @@ img#gcc-logo {
     justify-content: space-between;
     gap: 5px;
   }
+
   .button-group {
     display: flex;
     justify-content: space-between;
@@ -245,12 +315,12 @@ button:hover {
 
 .signin-text {
     text-align: center;
-    font-size: 15px;
+    font-size: 16px;
 }
 
 .signin-text p {
     font-weight: normal;
-    margin: 7px;
+    margin: 50px 7px 7px 7px;
 }
 
 .signin-text a {
@@ -306,6 +376,29 @@ button:hover {
 .form-step.active {
     display: block;
 }
+  #suggestions {
+    border: 1px solid rgba(17, 137, 81, 0.88);     
+    max-height: 150px;
+    overflow-y: auto;
+    position: absolute;
+    background: rgb(11, 128, 73);
+    z-index: 999; 
+    width: 100%;
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  #suggestions li {
+    padding: 5px;
+    cursor: pointer;
+  }
+
+  #suggestions li:hover {
+    background-color: #f3f3f3;
+    color: #1f7246;
+    font-weight: 600;
+  }
 
 @keyframes fadeIn {
     from {

@@ -47,6 +47,7 @@ if ($user) {
     <!-- Navbar -->
     <?php assessNavbar($profile_image); ?>
 
+    <div class="main-content">
        <div class="container">
          <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Assessment for Students </div>
            <div id="motto" class="motto" style="padding: 60px 0 60px;">
@@ -108,7 +109,7 @@ if ($user) {
        <p style="margin: 15px 30px; text-align: left; font-size: 25px;"> Student Assesments at the WMSU Guidance and Counseling Center starts with an initial appointment. Appointments can be booked on the same day or for the next day, available Monday – Friday, 8 AM – 5 PM. During peak times, appointment availability may vary.</p>
       </div>
       <div style="background-color: #F1F1F1; padding: 50px 0 50px;">
-            <p style="margin: 0 30px; text-align: start; font-size: 23px; font-weight: 500;">If you cannot find an appointment <a id="contact" class="contact" href="../../shared/sub-pages/contact-us.php">contact us</a> during business hours. We can arrange for a counselor to provide a brief triage phone call to discuss support options. You can also check out what you can do while you are waiting, or if you need urgent support.</p>
+            <p style="margin: 0 30px; text-align: start; font-size: 23px; font-weight: 500;">If you cannot find an appointment <a id="contact" class="contact" href="../../shared/sub-pages/contact-us.php">contact us</a> during business hours. We can arrange for a counselor to provide a brief triage phone call to discuss support options. You can also check out what you can do while you are waiting, or if you need urgent support.</p>
       </div>
       
       <div style="background-image: url('/gcc/img/gcc-bg.png'); background-size: cover; width: 100%; height: 1000px; border-top: solid 1px rgba(124, 124, 124, 0.91)"></div>
@@ -116,7 +117,8 @@ if ($user) {
             <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
             <div style="margin-right: 20px;"><img src="/gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
          </footer>
-  </div>
+       </div>
+    </div>
 </body>
 </html>
 

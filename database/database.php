@@ -20,12 +20,10 @@ try {
     $school = "WMSU";
     $courseGrade = "N/A";
 
-    // First delete any existing admin account
     $stmt = $pdo->prepare("DELETE FROM users WHERE email = :email");
     $stmt->bindParam(':email', $adminEmail);
     $stmt->execute();
 
-    // Insert new admin account
     $stmt = $pdo->prepare("INSERT INTO users 
                           (email, password, first_name, last_name, role, contact_number, school, course_grade) 
                           VALUES 
@@ -42,15 +40,12 @@ try {
     
     $stmt->execute();
     
-    // Get the inserted user ID
     $adminId = $pdo->lastInsertId();
     
-    // Delete any existing profile
     $stmt = $pdo->prepare("DELETE FROM profiles WHERE user_id = :user_id");
     $stmt->bindParam(':user_id', $adminId);
     $stmt->execute();
     
-    // Create new profile entry
     $stmt = $pdo->prepare("INSERT INTO profiles (user_id) VALUES (:user_id)");
     $stmt->bindParam(':user_id', $adminId);
     $stmt->execute();

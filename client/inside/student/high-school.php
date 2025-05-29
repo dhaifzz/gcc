@@ -1,7 +1,10 @@
 <?php
-require_once '../../navbar.php';
+require_once '../../../client/navbar.php';
 require_once '../../../font/font.php';
 require_once '../../../database/database.php';
+
+// Get carousel images
+$carousel_images = array_diff(scandir("../../../img/carousel-img"), array('.', '..'));
 
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'High School Student') {
@@ -48,7 +51,7 @@ if ($user) {
     <?php renderNavbar($profile_image); ?>
 
     <div class="main-content">
-    <div id="carousel" class="carousel">
+           <div id="carousel" class="carousel">
           <div class="carousel-inner"> 
              <div class="carousel-item active"> 
                  <div style="position: relative; text-align: center;">
@@ -64,6 +67,7 @@ if ($user) {
                  <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">
              </div>
           </div>
+          <div class="carousel-overlay"></div>
           <div class="welcome-text">
               <span class="typing-container">Welcome to GCC Website, <span class="first-name"><?php echo htmlspecialchars($user['first_name']); ?></span>!</span>
           </div>

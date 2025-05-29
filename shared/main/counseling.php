@@ -46,6 +46,7 @@ if ($user) {
     <!-- Navbar -->
     <?php counselingNavbar($profile_image); ?>
     
+    <div class="main-content">
        <div class="container">
          <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;"> Appointments for Counseling </div>
            <div id="motto" class="motto" style="padding: 60px 0 60px;">
@@ -75,11 +76,11 @@ if ($user) {
        <p style="margin: 15px 30px; text-align: left; font-size: 25px;"> Counseling at the WMSU Guidance and Counseling Center starts with an initial appointment. Appointments can be booked on the same day or for the next day, available Monday – Friday, 8 AM – 5 PM. During peak times, appointment availability may vary.</p>
       </div>
       <div style="background-color: #F1F1F1; padding: 40px 0 40px;">
-            <p style="margin: 0 30px; text-align: start; font-size: 23px; font-weight: 500;">If you cannot find an appointment <a id="contact" class="contact" href="sub-pages/contact-us.php">contact us</a> during business hours. We can arrange for a counselor to provide a brief triage phone call to discuss support options. You can also check out what you can do while you are waiting, or if you need urgent support.</p>
+            <p style="margin: 0 30px; text-align: start; font-size: 23px; font-weight: 500;">If you cannot find an appointment <a id="contact" class="contact" href="sub-pages/contact-us.php">contact us</a> during business hours. We can arrange for a counselor to provide a brief triage phone call to discuss support options. You can also check out what you can do while you are waiting, or if you need urgent support.</p>
       </div>
       <div style="background-color:rgb(255, 255, 255); padding: 55px 0 55px;">
             <p style="margin: 0 30px; text-align: start; font-size: 25px;">All appointments are up to 50 minutes. For your initial appointment, you'll be asked to arrive 10 minutes before your appointment to complete questionnaires about your health and well being.</p>
-            <p style="margin: 25px 30px; text-align: start; font-size: 25px; font-weight: 400;">If you feel more comfortable speaking with a male or female counselor, or have particular preferences of counselor, see our staff page for more details. We will endevour to place you with someone of your choice, although this may not always be possible.</p>
+            <p style="margin: 25px 30px; text-align: start; font-size: 25px; font-weight: 400;">If you feel more comfortable speaking with a male or female counselor, or have particular preferences of counselor, see our staff page for more details. We will endevour to place you with someone of your choice, although this may not always be possible.</p>
       </div>
       <div style="background-image: url('/gcc/img/counselling-bg.png'); background-size: cover; width: 100%; height: 700px; border-top: solid 1px rgba(124, 124, 124, 0.91)"></div>
          <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
@@ -87,6 +88,8 @@ if ($user) {
             <div style="margin-right: 20px;"><img src="/gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
          </footer>
   </div>
+</div>
+</div>
 </body>
 </html>
 

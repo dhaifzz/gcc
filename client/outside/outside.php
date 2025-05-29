@@ -1,7 +1,10 @@
 <?php
-require_once '../navbar.php';
+require_once '../../client/navbar.php';
 require_once '../../font/font.php';
 require_once '../../database/database.php';
+
+// Get carousel images
+$carousel_images = array_diff(scandir("../../img/carousel-img"), array('.', '..'));
 
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'Outside Client') {
@@ -47,7 +50,7 @@ if ($user) {
     <?php renderNavbar($profile_image); ?>
 
     <div class="container">
-    <div id="carousel" class="carousel">
+           <div id="carousel" class="carousel">
           <div class="carousel-inner"> 
              <div class="carousel-item active"> 
                  <div style="position: relative; text-align: center;">
@@ -63,10 +66,11 @@ if ($user) {
                  <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">
              </div>
           </div>
+          <div class="carousel-overlay"></div>
           <div class="welcome-text">
               <span class="typing-container">Welcome to GCC Website, <span class="first-name"><?php echo htmlspecialchars($user['first_name']); ?></span>!</span>
           </div>
-            </div>
+    </div>
       <div id="motto" class="motto" style="background-color: #F1F1F1; padding: 80px 0 80px;">
        <p style="margin: 0 20px; text-align: center; font-size: 28px; font-weight: 500;">The <span style="color: #095D36; font-weight: 600;">Guidance and Counseling Center</span> at Western Mindanao State University provides free, confidential counseling services for outside clients, 
        ensuring a respectful and professional environment for personal support and guidance.</p>

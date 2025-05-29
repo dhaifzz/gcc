@@ -83,7 +83,28 @@ html, body {
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.15);
   }
   
+.appointment-button {
+  display: inline-block;
+  margin-top: 15px;
+  padding: 10px 20px;
+  font-size: 1.25rem;
+  background-color: #16633F;
+  color: white;
+  text-decoration: none;
+  border-radius: 4px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
 
+.appointment-button:hover {
+  background-color: #0E8C4F; 
+  box-shadow: 0 2px 5px rgba(0,0,0,0.2); 
+}
+
+.appointment-button:active {
+  transform: translateY(2px); /* Slight push effect when clicked */
+}
 .dropbtn {
     text-decoration: none;
     color: white;
@@ -260,17 +281,18 @@ hr {
           color: #16633F;
           text-decoration: underline;
    }
-   .calendar-container {
-       display: flex;
-       width: 80%;
-       flex-direction: column;
-       align-items: center;
-       padding: 20px;
-       background-color: #F1F1F1;
-       border-radius: 10px;
-       border: 2px solid #11AD64;
-       box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-   }
+    .calendar-container {
+        display: flex;
+        width: 80%;
+        flex-direction: column;
+        align-items: center;
+        padding: 20px;
+        background-color: #F1F1F1;
+        border-radius: 10px;
+        border: 2px solid #11AD64;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        opacity: 1;
+    }
    .calendar-header {
        display: flex;
        justify-content: space-between;
@@ -306,8 +328,10 @@ hr {
        gap: 10px;
    }
    .calendar-grid div {
-       background-color: white;
+       background-color: rgb(255, 255, 255);
        padding: 20px;
+       width: 30px;
+       height: 25px;
        border-radius: 5px;
        text-align: center;
        cursor: pointer;
@@ -341,7 +365,7 @@ hr {
       color: white;
       border: 1px solid black;
  }
-   .time-slot-container {
+      .time-slot-container {
        display: flex;
        width: 40%;
        flex-direction: column;
@@ -351,6 +375,7 @@ hr {
        border-radius: 10px;
        border: 2px solid #11AD64;
        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+       opacity: 1;
    }
    .time-slot-section {
        margin-bottom: 20px;
@@ -364,14 +389,38 @@ hr {
        transition: background-color 0.3s;
        border: 1px solid #ccc;
    }
-       .error {
-            color: red;
-            margin-top: 10px;
-        }
-        .success {
-            color: green;
-            margin-top: 10px;  
-        }
+@keyframes fadeInOut {
+    0% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    10%, 90% {
+        opacity: 1;
+        transform: translateY(0);
+    }
+    100% {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+}
+
+.error {
+    background-color: red;
+    color: #fff;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    animation: fadeInOut 4s ease-in-out forwards;
+}
+
+.success {
+    background-color: green;
+    color: #fff;
+    margin-top: 10px;
+    padding: 10px;
+    border-radius: 5px;
+    animation: fadeInOut 4s ease-in-out forwards;
+}
         #timeSlotTooltip, #dayTooltip {
             position: absolute;
             background-color: #ff4d4d;
@@ -515,6 +564,322 @@ hr {
     padding: 15px;
     border-radius: 5px;
     margin-top: 15px;
+}
+/* Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1001;
+    left: 0;
+    top: 0;
+    overflow-y: auto;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.4);
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.3s ease-in-out;
+}
+
+.modal.show {
+    display: flex !important;
+    opacity: 1;
+}
+
+.modal.closing {
+    opacity: 0;
+    pointer-events: none;
+}
+
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    padding: 20px;
+    border-radius: 8px;
+    max-width: 600px;
+    width: 100%;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+    transform: translateY(20px);
+    opacity: 0;
+    transition: transform 0.3s cubic-bezier(0.175, 0.885, 0.32, 1.275), 
+                opacity 0.3s ease-in-out;
+}
+
+.modal.show .modal-content {
+    transform: translateY(0);
+    opacity: 1;
+}
+
+.modal.closing .modal-content {
+    transform: translateY(20px);
+    opacity: 0;
+}
+body.modal-open {
+    overflow: auto;
+}
+.modal-box {
+    background-color: #fff;
+    width: 300px;
+    height: 150px;
+    border-radius: 10px; /* Very small radius for a more square look */
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    transition: all 0.3s ease;
+}
+
+.modal-actions {
+    margin-top: 10px;
+    display: flex;
+    gap: 10px;
+}
+/* For browsers that overlay scrollbars (like macOS) */
+@media (hover: none) and (pointer: coarse) {
+    body.modal-open {
+        padding-right: 0;
+    }
+}
+/* Add to your existing CSS */
+input[type="date"]::-webkit-calendar-picker-indicator {
+    cursor: pointer;
+}
+
+input[type="date"]:invalid {
+    border-color: #dc3545;
+}
+
+input[type="date"]:invalid + .date-hint {
+    display: block;
+    color: #dc3545;
+    font-size: 0.8em;
+}
+
+#editForm .form-group {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+}
+
+#edit_date.form-control {
+    width: 100%;
+    max-width: 531.319px; /* Optional max-width */
+}
+#edit_time.form-control {
+    width: 100%;
+    max-width: 550px;
+}
+/* Loading animation styles */
+.time-slot-loading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 5px;
+    font-size: 0.9em;
+    color: #666;
+}
+
+.spinner {
+    width: 16px;
+    height: 16px;
+    border: 2px solid rgba(0,0,0,0.1);
+    border-radius: 50%;
+    border-top-color: #007bff;
+    animation: spin 1s ease-in-out infinite;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+.appointment-carding {
+  text-align: center;
+  padding: 25px;
+  border: 1px solid #1a1a1a;
+  border-left: 7px solid #146e43;
+  background-color: #f8f9fa;
+  border-radius: 8px;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  width: 100%;
+  max-width: 600px;
+  margin: 0 auto; /* Centers the card if it's not full width */
+  transition: all 0.3s ease; /* Smooth transitions for hover effects */
+}
+
+/* Optional hover effect */
+.appointment-carding:hover {
+  box-shadow: 0 4px 8px rgba(0,0,0,0.15);
+  transform: translateY(-2px);
+}
+
+@media (max-width: 768px) {
+  .appointment-carding {
+    padding: 15px;
+    max-width: 100%;
+    border-radius: 0;
+  }
+}
+
+.closing-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    color: black;
+    width: 40px;
+    height: 40px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    font-size: 30px;
+    font-weight: bold;
+    cursor: pointer;
+    transition: all 0.3s ease-in-out;
+}
+
+.closing-btn:hover {
+    color: rgba(0, 0, 0, 0.65);
+    transform: scale(1.1);
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: 500;
+}
+
+.form-control {
+    width: 100%;
+    padding: 8px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+}
+
+/* Button Styles */
+.save-btn, .edit-btn, .cancel-btn, .keep-btn {
+    padding: 10px 15px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: 500;
+}
+
+.save-btn {
+    background-color: #11AD64;
+    color: white;
+}
+
+.edit-btn {
+    background-color: #16633F;
+    color: white;
+}
+.keep-btn {
+    background-color: #0d683e;
+    color: white;
+}
+.cancel-btn {
+    background-color: #DC143C;
+    color: white;
+}
+
+.save-btn:hover, .edit-btn:hover, .cancel-btn:hover, .keep-btn:hover {
+    opacity: 0.9;
+}
+
+/* Appointment Card Styles */
+.appointment-card {
+    background: white;
+    font-size: 15px;
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+}
+
+.appointment-field {
+    margin-bottom: 15px;
+    align-items: baseline;
+    display: flex;
+}
+
+.field-label {
+    font-weight: 600;
+    color: #555;
+    min-width: 120px;
+}
+
+.field-value {
+    color: #333;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 16px;
+    border-radius: 999px;
+    font-weight: bold;
+    /* font-size: 13px; */
+    text-transform: capitalize; 
+    margin-top: 2px;
+    margin-bottom: 2px;
+}
+.status-Pending {
+    background: #fff3cd;
+    color: #856404;
+    border: 1px solid #ffeeba;
+}
+.status-Approved {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+.status-Completed {
+    background: #e3f0fd;
+    color: #1743b9;
+    border: 1px solid #1743b9;
+}
+.status-Cancelled {
+    background: #f8d7da;
+    color: #800000;
+    border: 1px solid #800000;
+}
+.status-Rescheduled,
+.status-Rejected {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+.status-Evaluated {
+    background: #e2f7e2;
+    color: #218838;
+    border: 1px solid rgba(73, 189, 98, 0.7);
+}
+.status-Default {
+    background: #e2e3e5;
+    color: #383d41;
+    border: 1px solid #d6d8db;
+}
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.calendar-container {
+    animation: fadeInUp 0.9s ease-out;
+}
+
+.time-slot-container {
+    animation: fadeInUp 0.9s ease-out 0.1s; /* Slight delay */
 }
 @media (max-width: 47.9375rem) { /* 767px */
     .burger-icon {

@@ -2,7 +2,8 @@
 require_once '../font/font.php';
 require_once('../database/database.php');
 
-$error_messages = []; 
+$error_messages = [];
+
 if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $first_name = trim($_POST['first_name'] ?? '');
     $middle_name = trim($_POST['middle_name'] ?? '');
@@ -10,7 +11,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $school = trim($_POST['school'] ?? '');
     $course_grade = trim($_POST['course_grade'] ?? '');
     $sex = $_POST['sex'] ?? '';
-    $age = trim($_POST['age'] ?? '');
+    $birth_date = trim($_POST['birth_date'] ?? '');
     $contact_number = trim($_POST['contact_number'] ?? '');
     $address = trim($_POST['address'] ?? '');
     $civil_status = trim($_POST['civil_status'] ?? '');
@@ -19,6 +20,23 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $email = trim($_POST['email'] ?? '');
     $password = $_POST['password'] ?? '';
     $confirm_password = $_POST['confirm_password'] ?? '';
+
+    // WMSU-specific validations
+    if ($school === 'Western Mindanao State University') {
+        if (!empty($email) && !str_ends_with(strtolower($email), '@wmsu.edu.ph')) {
+            $error_messages['email'] = "Non-WMSU email addresses cannot select Western Mindanao State University";
+            // Reset school to force user to select another school
+            $school = '';
+        }
+    } else {
+        if (!empty($wmsu_id) && $wmsu_id !== 'Guest ID') {
+            $error_messages['wmsu_id'] = "Only WMSU students/staff can input a School ID";
+        }
+        
+        if (!empty($email) && str_ends_with(strtolower($email), '@wmsu.edu.ph')) {
+            $error_messages['email'] = "WMSU email can only be used if the school is Western Mindanao State University";
+        }
+    }
 
     // Basic validations
     if (empty($first_name)) {
@@ -54,9 +72,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $hashed_password = password_hash($password, PASSWORD_DEFAULT);
     }
 
-    // if ($age < 12) {
-    //     $error_messages['age'] = "Must be at least 12+ to sign up.";
-    // }
+    if (empty($birth_date)) {
+        $error_messages['birth_date'] = "Birth date is required.";
+    } else {
+        $min_age = 10;
+        $birth_date = DateTime::createFromFormat('Y-m-d', $birth_date);
+        $current_date = new DateTime();
+        $interval = $current_date->diff($birth_date);
+
+        $age = $interval->y;
+
+        if ($age < $min_age) {
+            $error_messages['birth_date'] = "You must be at least 10 years old to sign up.";
+        }
+    }
 
     if (empty($course_grade) || $course_grade === 'None') {
         $course_grade = '';
@@ -102,28 +131,28 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     if ($school !== 'Western Mindanao State University' && strpos($email, '@wmsu.edu.ph') === false) {
         $role = 'Outside Client';
     }
-    
+
     if (empty($course_grade) && $role === 'Outside Client') {
         if (strpos($email, '@wmsu.edu.ph') !== false) {
             $error_messages['email'] = "Outside clients cannot use a WMSU email address.";
         }
         $wmsu_id = "Guest ID";
     }
-    
+
     if (empty($error_messages)) {
         $email_check_query = "SELECT * FROM users WHERE email = :email";
         $stmt = $pdo->prepare($email_check_query);
         $stmt->execute([':email' => $email]);
-    
-        // if ($stmt->rowCount() > 0) {
-        //     $error_messages['email'] = "This email is already registered. Please use another email.";
-        // }
-    
+
+        if ($stmt->rowCount() > 0) {
+            $error_messages['email'] = "This email is already registered. Please use another email.";
+        }
+
         if (strpos($email, '@wmsu.edu.ph') !== false && !empty($wmsu_id)) {
             $wmsu_id_check_query = "SELECT * FROM users WHERE wmsu_id = :wmsu_id";
             $stmt = $pdo->prepare($wmsu_id_check_query);
             $stmt->execute([':wmsu_id' => $wmsu_id]);
-    
+
             if ($stmt->rowCount() > 0) {
                 $error_messages['wmsu_id'] = "This WMSU ID is already registered. Please use another ID.";
             }
@@ -136,11 +165,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         if ($stmt->rowCount() > 0) {
             $error_messages['contact_number'] = "This contact number is already registered. Please use another contact number.";
         }
-    
+
         if (empty($error_messages)) {
             $sql = "INSERT INTO users (first_name, middle_name, last_name, school, course_grade, sex, age, contact_number, address, civil_status, occupation, wmsu_id, email, password, role) 
                     VALUES (:first_name, :middle_name, :last_name, :school, :course_grade, :sex, :age, :contact_number, :address, :civil_status, :occupation, :wmsu_id, :email, :password, :role)";
-    
+
             try {
                 $stmt = $pdo->prepare($sql);
                 $stmt->execute([
@@ -150,7 +179,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                     ':school' => $school ?: 'None',
                     ':course_grade' => $course_grade ?: 'None',
                     ':sex' => $sex,
-                    ':age' => $age,
+                    ':age' => $age, 
                     ':contact_number' => $contact_number,
                     ':address' => $address,
                     ':civil_status' => $civil_status,
@@ -188,6 +217,17 @@ function getFormValue($field) {
     <link rel="stylesheet" type="text/css" href="css/sign-up.css">
 </head>
 <body>
+    <?php if (!empty($error_messages)): ?>
+        <div class="error-popup" id="errorPopup">
+            <?php 
+            // Display all error messages
+            foreach($error_messages as $error) {
+                echo htmlspecialchars($error) . "<br>";
+            }
+            ?>
+        </div>
+    <?php endif; ?>
+
     <form method="POST" action="sign-up.php" id="multiStepForm">
         <div class="header-container">
             <img id="gcc-logo" src="/gcc/img/gcc-logo.png" alt="GCC Logo">
@@ -283,12 +323,15 @@ function getFormValue($field) {
         <!-- Step 3: Additional Info -->
         <div class="form-step">
             <div class="form-group">
-                <label for="sex">Gender</label>
+                <label for="sex">Sex</label>
                 <select id="sex" name="sex" required>
                     <option value="Male" <?= (getFormValue('sex') === 'Male') ? 'selected' : '' ?>>Male</option>
                     <option value="Female" <?= (getFormValue('sex') === 'Female') ? 'selected' : '' ?>>Female</option>
                     <option value="Prefer not to say" <?= (getFormValue('sex') === 'Prefer not to say') ? 'selected' : '' ?>>Prefer not to say</option>
                 </select>
+                <?php if (isset($error_messages['sex'])): ?>
+                    <span class="error-message"><?= $error_messages['sex'] ?></span>
+                <?php endif; ?>
             </div>
             <div class="form-group">
                 <label for="civil-status">Civil Status</label>
@@ -299,12 +342,16 @@ function getFormValue($field) {
                     <option value="Divorced" <?= (getFormValue('civil_status') === 'Divorced') ? 'selected' : '' ?>>Divorced</option>
                     <option value="Separated" <?= (getFormValue('civil_status') === 'Separated') ? 'selected' : '' ?>>Separated</option>
                 </select>
+                <?php if (isset($error_messages['civil_status'])): ?>
+                    <span class="error-message"><?= $error_messages['civil_status'] ?></span>
+                <?php endif; ?>
             </div>
             <div class="form-group">
-                <label for="age">Age</label>
-                <input type="number" id="age" name="age" required value="<?= getFormValue('age') ?>">
-                <?php if (isset($error_messages['age'])): ?>
-                    <span class="error-message"><?= $error_messages['age'] ?></span>
+                <label for="birth-date">Birthdate</label>
+                <input type="date" id="birth-date" name="birth_date" required value="<?= getFormValue('birth_date') ?>"
+                max="<?= date('Y-m-d', strtotime('-10 years')) ?>">
+                <?php if (isset($error_messages['birth_date'])): ?>
+                    <span class="error-message"><?= $error_messages['birth_date'] ?></span>
                 <?php endif; ?>
             </div>
             <div class="form-group">
@@ -316,6 +363,9 @@ function getFormValue($field) {
                     <option value="Unemployed" <?= (getFormValue('occupation') === 'Unemployed') ? 'selected' : '' ?>>Unemployed</option>
                     <option value="Other" <?= (getFormValue('occupation') === 'Other') ? 'selected' : '' ?>>Other</option>
                 </select>
+                <?php if (isset($error_messages['occupation'])): ?>
+                    <span class="error-message"><?= $error_messages['occupation'] ?></span>
+                <?php endif; ?>
             </div>
             <div class="button-group">
                 <button type="button" class="prev-btn">
@@ -364,17 +414,17 @@ function getFormValue($field) {
                 </optgroup>
             
                 <optgroup label="College of Agriculture">
-                  <option value="BSA" <?= (getFormValue('course_grade') === 'BSA') ? 'selected' : '' ?>>Bachelor of Science in Agriculture (BSA)</option>
-                  <option value="BSFT" <?= (getFormValue('course_grade') === 'BSFT') ? 'selected' : '' ?>>Bachelor of Science in Food Technology (BSFT)</option>
-                  <option value="BSBA" <?= (getFormValue('course_grade') === 'BSBA') ? 'selected' : '' ?>>Bachelor of Science in Agribusiness (BSBA)</option>
-                  <option value="BAT" <?= (getFormValue('course_grade') === 'BAT') ? 'selected' : '' ?>>Bachelor of Agricultural Technology (BAT)</option>
+                  <option value="BSA" <?= (getFormValue('course_grade') === 'BSA') ? 'selected' : '' ?>>Bachelor of Science in Agriculture</option>
+                  <option value="BSFT" <?= (getFormValue('course_grade') === 'BSFT') ? 'selected' : '' ?>>Bachelor of Science in Food Technology</option>
+                  <option value="BSBA" <?= (getFormValue('course_grade') === 'BSBA') ? 'selected' : '' ?>>Bachelor of Science in Agribusiness</option>
+                  <option value="BAT" <?= (getFormValue('course_grade') === 'BAT') ? 'selected' : '' ?>>Bachelor of Agricultural Technology</option>
                 </optgroup>
             
                 <optgroup label="College of Liberal Arts">
                   <option value="ACCTANCY" <?= (getFormValue('course_grade') === 'ACCTANCY') ? 'selected' : '' ?>>Bachelor of Science in Accountancy</option>
                   <option value="BAH" <?= (getFormValue('course_grade') === 'BAH') ? 'selected' : '' ?>>Bachelor of Arts in History</option>
                   <option value="BAELS" <?= (getFormValue('course_grade') === 'BAELS') ? 'selected' : '' ?>>Bachelor of Arts in English</option>
-                  <option value="POLSCI" <?= (getFormValue('course_grade') === 'POLSCI') ? 'selected' : '' ?>>Bachelor of Arts in Political Science</option>
+                  <option value="POLSCI" <?= (getFormValue('course  _grade') === 'POLSCI') ? 'selected' : '' ?>>Bachelor of Arts in Political Science</option>
                   <option value="JOURNALISM" <?= (getFormValue('course_grade') === 'JOURNALISM') ? 'selected' : '' ?>>BA Mass Communication – Journalism</option>
                   <option value="BROADCASTING" <?= (getFormValue('course_grade') === 'BROADCASTING') ? 'selected' : '' ?>>BA Mass Communication – Broadcasting</option>
                   <option value="ECON" <?= (getFormValue('course_grade') === 'ECON') ? 'selected' : '' ?>>Bachelor of Science in Economics</option>
@@ -479,10 +529,21 @@ function getFormValue($field) {
                     <span class="error-message"><?= $error_messages['contact_number'] ?></span>
                 <?php endif; ?>
             </div>
-            <div class="form-group">
-                <label for="address">Address</label>
-                <input type="text" id="address" name="address" required value="<?= getFormValue('address') ?>">
+
+            <div class="form-group" style="position: relative;">
+              <label for="address">Address</label>
+              <input type="text" id="address" name="address" required value="<?= getFormValue('address') ?>" placeholder="Enter your address" autocomplete="off">
+              <ul id="suggestions"></ul>
+              <?php if (isset($error_messages['address'])): ?>
+                  <span class="error-message"><?= $error_messages['address'] ?></span>
+              <?php endif; ?>
             </div>
+            
+            <!-- Hidden fields if you want to store parts -->
+            <input type="hidden" id="city" name="city" value="<?= getFormValue('city') ?>">
+            <input type="hidden" id="province" name="province" value="<?= getFormValue('province') ?>">
+            <input type="hidden" id="country" name="country" value="<?= getFormValue('country') ?>">
+
             <div class="button-group">
                 <button type="button" class="prev-btn">
                     <i class="fa-solid fa-circle-chevron-left"></i> Previous
@@ -496,13 +557,17 @@ function getFormValue($field) {
         </div>
     </form>
 
+    <!-- JS -->
     <script>
-        <?php if (!empty($error_messages)): ?>
-            var errorMessages = <?= json_encode($error_messages) ?>;
-        <?php endif; ?>
+    <?php if (!empty($error_messages)): ?>
+        var errorMessages = <?= json_encode($error_messages) ?>;
+    <?php endif; ?>
     </script>
     <script src="/gcc/js/stepper-form.js"></script>
+    <script src="/gcc/js/error-message.js"></script>
     <script src="/gcc/js/validation-signup.js"></script>
     <script src="/gcc/js/auto-capslock.js"></script>
+    <script src="/gcc/js/address-autocomplete.js"></script>
+    <script src="/gcc/js/school-validation.js"></script>
 </body>
 </html>

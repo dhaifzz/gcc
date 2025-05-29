@@ -1,3 +1,6 @@
+* {
+    font-family: "Instrument Sans", sans-serif;
+}
 html, body {
        height: 100%; 
        margin: 0;
@@ -16,7 +19,6 @@ html, body {
    }
    
    body {
-       font-family: "Instrument Sans", sans-serif;
        margin: 0;
        padding: 0;
    }
@@ -276,12 +278,12 @@ hr {
        color: #16633F;
    }
    
-   .modal-body {
+   /* .modal-body {
        width: 100%;
        max-width: 100%;
        padding: 20px;
        box-sizing: border-box;
-   }
+   } */
    
    .detail-group {
        margin-bottom: 15px;

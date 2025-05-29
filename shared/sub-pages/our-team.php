@@ -28,6 +28,46 @@ if ($isLoggedIn) {
         }
     }
 }
+
+// Fetch team members from the database
+try {
+    // Get main campus team members
+    $mainStmt = $pdo->prepare("SELECT * FROM team_members WHERE campus = 'main' ORDER BY category, display_order");
+    $mainStmt->execute();
+    $mainTeamMembers = $mainStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Group main campus members by category
+    $mainDirectors = [];
+    $mainCounselors = [];
+    $mainStaff = [];
+    $mainCoordinators = [];
+    
+    foreach ($mainTeamMembers as $member) {
+        switch ($member['category']) {
+            case 'director':
+                $mainDirectors[] = $member;
+                break;
+            case 'counselor':
+                $mainCounselors[] = $member;
+                break;
+            case 'staff':
+                $mainStaff[] = $member;
+                break;
+            case 'coordinator':
+                $mainCoordinators[] = $member;
+                break;
+        }
+    }
+    
+    // Get ESU campus team members
+    $esuStmt = $pdo->prepare("SELECT * FROM team_members WHERE campus = 'esu' ORDER BY display_order");
+    $esuStmt->execute();
+    $esuTeamMembers = $esuStmt->fetchAll(PDO::FETCH_ASSOC);
+    
+} catch (PDOException $e) {
+    // Handle error silently - empty arrays will show "No team members found" messages
+    $mainDirectors = $mainCounselors = $mainStaff = $mainCoordinators = $esuTeamMembers = [];
+}
 ?>
 
 <!DOCTYPE html>
@@ -68,167 +108,90 @@ if ($isLoggedIn) {
         </div>
 
         <!-- Director Section -->
+        <?php if (!empty($mainDirectors)): ?>
         <div style="justify-content: center; align-items: center; display: flex; margin: 50px 0;">
             <div class="profile">
                 <p class="role"> Director</p>
                 <div class="profile-container">
                     <div class="profile-text">
-                        <p class="name">Dr. Fini Joy P. Buenafe</p>
-                        <p class="status"> RGC, LPT </p>
-                        <p class="title">Director, Guidance and Counseling Center</p>
+                        <p class="name"><?php echo htmlspecialchars($mainDirectors[0]['name']); ?></p>
+                        <?php if (!empty($mainDirectors[0]['status'])): ?>
+                        <p class="status"> <?php echo htmlspecialchars($mainDirectors[0]['status']); ?> </p>
+                        <?php endif; ?>
+                        <?php if (!empty($mainDirectors[0]['title'])): ?>
+                        <p class="title"><?php echo htmlspecialchars($mainDirectors[0]['title']); ?></p>
+                        <?php endif; ?>
                     </div> 
-                    <img src="/gcc/img/team-gcc/MA'AM.FINI.png" alt="Dr. Fini Joy P. Buenafe" class="profile-img-role">
+                    <img src="/gcc/img/team-gcc/<?php echo htmlspecialchars($mainDirectors[0]['image_path']); ?>" alt="<?php echo htmlspecialchars($mainDirectors[0]['name']); ?>" class="profile-img-role" style="border: 1px solid black; border-radius: 50%;">
                 </div>
             </div>
         </div>
+        <?php endif; ?>
 
         <!-- Guidance Counselors Section -->
+        <?php if (!empty($mainCounselors)): ?>
         <div style="text-align: center;">
             <p class="role">Guidance Counselor</p>
         </div>
         <div id="guidance-counselors" class="guidance-counselors" style="display: flex; justify-content: center; gap: 100px; margin-bottom: 50px;">
+            <?php foreach ($mainCounselors as $counselor): ?>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MS.GLENDA.png" alt="Ms. Glenda P. Acedo" class="profile-img-role">
-                <p class="name">Ms. Glenda P. Acedo</p>
-                <p class="status"> RGC, RPm, LPT </p>
-                <p class="title">Guidance Counselor III</p>
+                <img src="/gcc/img/team-gcc/<?php echo htmlspecialchars($counselor['image_path']); ?>" alt="<?php echo htmlspecialchars($counselor['name']); ?>" class="profile-img-role" style="border: 1px solid #ccc; border-radius: 50%;">
+                <p class="name"><?php echo htmlspecialchars($counselor['name']); ?></p>
+                <?php if (!empty($counselor['status'])): ?>
+                <p class="status"> <?php echo htmlspecialchars($counselor['status']); ?> </p>
+                <?php endif; ?>
+                <?php if (!empty($counselor['title'])): ?>
+                <p class="title"><?php echo htmlspecialchars($counselor['title']); ?></p>
+                <?php endif; ?>
             </div>
-
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.MELTA.png" alt="Melta A. Villarta" class="profile-img-role">
-                <p class="name">Melta A. Villarta</p>
-                <p class="status"> RPm, RGC </p>
-                <p class="title">Assistant Professor</p>
-            </div>
+            <?php endforeach; ?>
         </div>
+        <?php endif; ?>
 
         <!-- Staff Section -->
+        <?php if (!empty($mainStaff)): ?>
         <div style="text-align: center;">
             <p class="role">Guidance Staff</p>
         </div>
         <div id="staff" class="staff" style="display: flex; justify-content: center; gap: 100px;">
+            <?php foreach ($mainStaff as $staff): ?>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MS.AKEMI.png" alt="Ms. Glenda P. Acedo" class="profile-img-role">
-                <p class="name">Ms. Akemi Lim</p>
-                <p class="status"> MPA </p>
+                <img src="/gcc/img/team-gcc/<?php echo htmlspecialchars($staff['image_path']); ?>" alt="<?php echo htmlspecialchars($staff['name']); ?>" class="profile-img-role" style="border: 1px solid #ccc; border-radius: 50%;">
+                <p class="name"><?php echo htmlspecialchars($staff['name']); ?></p>
+                <?php if (!empty($staff['status'])): ?>
+                <p class="status"> <?php echo htmlspecialchars($staff['status']); ?> </p>
+                <?php endif; ?>
+                <?php if (!empty($staff['title'])): ?>
+                <p class="title"><?php echo htmlspecialchars($staff['title']); ?></p>
+                <?php endif; ?>
             </div>
-
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MR.ROMEL.png" alt="Melta A. Villarta" class="profile-img-role">
-                <p class="name">Mr. Romel L. San Juan</p>
-            </div>
+            <?php endforeach; ?>
         </div>
+        <?php endif; ?>
 
         <!-- Coordinators -->
+        <?php if (!empty($mainCoordinators)): ?>
         <div style="text-align: center;">
             <p class="role" style="margin-top: 100px"> Guidance Coordinators</p>
         </div>
         <div id="coords" class="coords" style="display: flex; justify-content: center; gap: 50px; margin-bottom: 50px;">
+            <?php foreach ($mainCoordinators as $coordinator): ?>
             <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LEAN.png" alt="Lean A. Legarde" class="profile-img-role">
-                <p class="name">Lean A. Legarde</p>
-                <p class="status"> MPA </p>
-                <p class="title" style="max-width: 300px;">College of Public Administration and Development Studies</p>
+                <img src="/gcc/img/team-gcc/<?php echo htmlspecialchars($coordinator['image_path']); ?>" alt="<?php echo htmlspecialchars($coordinator['name']); ?>" class="profile-img-role" style="border: 1px solid #ccc; border-radius: 50%;">
+                <p class="name"><?php echo htmlspecialchars($coordinator['name']); ?></p>
+                <?php if (!empty($coordinator['status'])): ?>
+                <p class="status"> <?php echo htmlspecialchars($coordinator['status']); ?> </p>
+                <?php endif; ?>
+                <?php if (!empty($coordinator['title'])): ?>
+                <p class="title"<?php if (strlen($coordinator['title']) > 20): ?> style="max-width: 300px;"<?php endif; ?>><?php echo htmlspecialchars($coordinator['title']); ?></p>
+                <?php endif; ?>
             </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.NADINE.png" alt="Nadine Evangelista" class="profile-img-role">
-                <p class="name">Nadine Evangelista</p>
-                <p class="status"> CpE </p>
-                <p class="title">College of Engineering</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.JIEMAR.png" alt="Jiemar A. Arabani" class="profile-img-role">
-                <p class="name">Jiemar A. Arabani</p>
-                <p class="title" style="max-width: 250px;">College of Criminal Justice Education</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.CLARISSA.png" alt="Clarissa B. Miranda" class="profile-img-role">
-                <p class="name">Clarissa B. Miranda</p>
-                <p class="title">College of Liberal Arts</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.CARPIZO.png" alt="Marcelina Carpizo" class="profile-img-role">
-                <p class="name">Marcelina Carpizo</p>
-                <p class="status"> Ph.D., RSW </p>
-                <p class="title" style="max-width: 300px;">College of Social Work and Community Development</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.UCOL.png" alt="Arlene B. Ucol" class="profile-img-role">
-                <p class="name">Arlene B. Ucol</p>
-                <p class="status"> LPT, MSPE </p>
-                <p class="title" style="max-width: 300px;">College of Sports Science and Physical Education</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.PERFECTO.png" alt="Perfecto B. Cimafranca III." class="profile-img-role">
-                <p class="name">Perfecto B. Cimafranca III.</p>
-                <p class="status"> Ph.D., RGC, RTsy, LPT </p>
-                <p class="title"> College of Teacher Education</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.COROS.png" alt="Aurea T. Coros" class="profile-img-role">
-                <p class="name">Aurea T. Coros</p>
-                <p class="title">College of Science and Mathematics</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.CARMEN.png" alt="Carmen Theresa V. Dickina" class="profile-img-role">
-                <p class="name">Carmen Theresa V. Dickina</p>
-                <p class="status">  Arch., UAP, PICAM </p>
-                <p class="title">College of Architecture</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.SANDRA.png" alt="Sandra M. Covarrubias" class="profile-img-role">
-                <p class="name">Sandra M. Covarrubias</p>
-                <p class="status"> RN, MN </p>
-                <p class="title">College of Nursing</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.MARJ.png" alt="Marjorie A. Rojas" class="profile-img-role">
-                <p class="name">Marjorie A. Rojas</p>
-                <p class="status"> CpE </p>
-                <p class="title">College of Computing Studies</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LIM.png" alt="Ruby M. Lim" class="profile-img-role">
-                <p class="name">Ruby M. Lim</p>
-                <p class="status"> RND </p>
-                <p class="title">College of Home Economics</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.SITTIRASMA.png" alt="Sittirasma I. Jalilula" class="profile-img-role">
-                <p class="name">Sittirasma I. Jalilula</p>
-                <p class="status"> RF </p>
-                <p class="title" style="max-width: 300px;">College of Forestry and Environmental Studies</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.NURMIA.png" alt="Nurmia L. Ticao" class="profile-img-role">
-                <p class="name">Nurmia L. Ticao</p>
-                <p class="status"> MA </p>
-                <p class="title" style="max-width: 200px;">College of Asian and Islamic Studies</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.TOTO.png" alt="Sitti Aisha G. Toto" class="profile-img-role">
-                <p class="name">Sitti Aisha G. Toto</p>
-                <p class="status"> LPT </p>
-                <p class="title">College of Agriculture</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.SHERYL.png" alt="Sheryl P. Ramirez" class="profile-img-role">
-                <p class="name">Sheryl P. Ramirez</p>
-                <p class="status"> Ph.D., LPT </p>
-                <p class="title" style="max-width: 250px;">Integrated Laboratory School (Secondary)</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.ALICE.png" alt="Alice A. Calahat" class="profile-img-role">
-                <p class="name">Alice A. Calahat</p>
-                <p class="title" style="max-width: 250px;">Integrated Laboratory School (Elementary)</p>
-            </div>
-            <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.CECILE.png" alt="Cecile G. Miang" class="profile-img-role">
-                <p class="name">Cecile G. Miang</p>
-                <p class="title" style="max-width: 250px;">Department of Extension Services and Community Development</p>
-            </div>
+            <?php endforeach; ?>
         </div>
-        <!-- BUTTON  TO PAGE 2 -->
+        <?php endif; ?>
+
+        <!-- BUTTON TO PAGE 2 -->
         <div class="button-container">
              <button class="go-to-page" onclick="showPage('esu-campus')">
                  <i class="fas fa-arrow-right"></i> 
@@ -238,80 +201,41 @@ if ($isLoggedIn) {
     </div>
 
     <!-- ESU Campus -->
-         <div id="esu-campus" class="page">
-            <div style="padding: 40px 0 40px;">
-               <p style="color: #16633F; display: flex; justify-content: center; align-items: center; font-size: 35px; font-weight: 600; margin: 0;">
-                   Guidance Coordinators
-               </p>     
-               <p style="color: #727070; display: flex; justify-content: center; align-items: center; font-size: 25px; font-weight: 600; margin: 0;">
-                   (ESU Campus)
-               </p>     
-            </div>
-            <div id="coords" class="coords" style="display: flex; justify-content: center; gap: 100px; margin-bottom: 50px;">
-              <div class="profile-card">
-                  <img src="/gcc/img/team-gcc/MA'AM.DECENA.png" alt="Rowee Joy S. Decena" class="profile-img-role">
-                  <p class="name">Rowee Joy S. Decena</p>
-                  <p class="title"> Ipil/Naga Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LAGUNA.png" alt="Erjorie A. Laguna" class="profile-img-role">
-                <p class="name">Erjorie A. Laguna</p>
-                <p class="title">Diplahan Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.PACAMALAN.png" alt="Myco Leo B. Pacamalan" class="profile-img-role">
-                <p class="name">Myco Leo B. Pacamalan</p>
-                <p class="title">Siay Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.NOSCA.png" alt="Nosca Bonna Ar Taasin" class="profile-img-role">
-                <p class="name">Nosca Bonna Ar Taasin</p>
-                <p class="title">Tungawan Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LUNA.png" alt="Loribel A. Luna" class="profile-img-role">
-                <p class="name">Loribel A. Luna</p>
-                <p class="title">Curuan Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.ANTOLIN.png" alt="Antolin Sialana" class="profile-img-role">
-                <p class="name">Antolin Sialana</p>
-                <p class="title">Alicia Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.BIHAG.png" alt="Cristie Bihag" class="profile-img-role">
-                <p class="name">Cristie Bihag</p>
-                <p class="title">Imelda Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.DELACRUZ.png" alt="Maria Celeste B. Dela Cruz" class="profile-img-role">
-                <p class="name">Maria Celeste B. Dela Cruz</p>
-                <p class="title">Malangas Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.LOLITA.png" alt="Lolita Lacao-Lacao" class="profile-img-role">
-                <p class="name">Lolita Lacao-Lacao</p>
-                <p class="title">Olutanga Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/MA'AM.MICHELLE.png" alt="Michelle Paderan" class="profile-img-role">
-                <p class="name">Michelle Paderan</p>
-                <p class="title">Mabuhay Campus</p>
-              </div>
-              <div class="profile-card">
-                <img src="/gcc/img/team-gcc/SIR.NOEL.png" alt="Noel Pugosa" class="profile-img-role">
-                <p class="name">Noel Pugosa</p>
-                <p class="title">Pagadian Campus</p>
-              </div>
-            </div>
-            <!-- BUTTON  TO PAGE 1 -->
+    <div id="esu-campus" class="page">
+        <div style="padding: 40px 0 40px;">
+            <p style="color: #16633F; display: flex; justify-content: center; align-items: center; font-size: 35px; font-weight: 600; margin: 0;">
+                Guidance Coordinators
+            </p>     
+            <p style="color: #727070; display: flex; justify-content: center; align-items: center; font-size: 25px; font-weight: 600; margin: 0;">
+                (ESU Campus)
+            </p>     
+        </div>
+        <div id="coords" class="coords" style="display: flex; justify-content: center; gap: 100px; margin-bottom: 50px;">
+            <?php if (!empty($esuTeamMembers)): ?>
+                <?php foreach ($esuTeamMembers as $member): ?>
+                <div class="profile-card">
+                    <img src="/gcc/img/team-gcc/<?php echo htmlspecialchars($member['image_path']); ?>" alt="<?php echo htmlspecialchars($member['name']); ?>" class="profile-img-role" style="border: 1px solid #ccc; border-radius: 50%;">
+                    <p class="name"><?php echo htmlspecialchars($member['name']); ?></p>
+                    <?php if (!empty($member['status'])): ?>
+                    <p class="status"> <?php echo htmlspecialchars($member['status']); ?> </p>
+                    <?php endif; ?>
+                    <?php if (!empty($member['title'])): ?>
+                    <p class="title"><?php echo htmlspecialchars($member['title']); ?></p>
+                    <?php endif; ?>
+                </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No team members found for ESU campus.</p>
+            <?php endif; ?>
+        </div>
+        <!-- BUTTON TO PAGE 1 -->
         <div class="button-container">
              <button class="go-to-page" onclick="showPage('main-campus')">
                  <i class="fas fa-arrow-left"></i> 
                  <p class="text-esu"> Return to Main Campus! </p>
              </button>
          </div>
-          </div>
+    </div>
         <div style="background-color: rgb(255, 255, 255); padding: 40px 0;"></div>
         <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
             <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>

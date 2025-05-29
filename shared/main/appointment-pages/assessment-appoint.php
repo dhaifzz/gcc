@@ -1,24 +1,33 @@
 <?php
+session_start();
+
 require_once '../../../font/font.php';
 require_once '../../../client/navbar.php';
 require_once '../../../database/database.php';
 
-session_start();
-
-if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student'])) {
+// Redirect if not logged in or invalid role
+if (!isset($_SESSION['email']) || !in_array($_SESSION['role'], ['College Student', 'High School Student', 'Outside Client', 'Faculty'])) {
     header("Location: ../../../../auth/sign-in.php");
     exit();
 }
+
+// Initialize variables
 $email = $_SESSION['email'];
+$profile_image = '/gcc/img/profiles/default-profile.png';
+$message = '';
+$error = '';
+
+// Get user data
 $query = "SELECT * FROM users WHERE email = :email";
 $stmt = $pdo->prepare($query);
 $stmt->execute(['email' => $email]);
 $user = $stmt->fetch(PDO::FETCH_ASSOC);
 
-$profile_image = '/gcc/img/profiles/default-profile.png'; 
-
 if ($user) {
     $user_id = $user['id'];
+    $_SESSION['user_id'] = $user_id;
+    
+    // Get profile image
     $profileQuery = "SELECT profile_image FROM profiles WHERE user_id = :user_id";
     $profileStmt = $pdo->prepare($profileQuery);
     $profileStmt->execute(['user_id' => $user_id]);
@@ -29,7 +38,7 @@ if ($user) {
     }
 }
 
-// Check if user has an active assessment appointment (Pending or Approved)
+// Check for active appointments
 $activeAppointment = false;
 $appointmentCheckQuery = "SELECT status FROM appointments WHERE client_id = :user_id AND appointment_type = 'assessment' ORDER BY appointment_id DESC LIMIT 1";
 $appointmentCheckStmt = $pdo->prepare($appointmentCheckQuery);
@@ -38,21 +47,23 @@ $latestAppointment = $appointmentCheckStmt->fetch(PDO::FETCH_ASSOC);
 
 if ($latestAppointment) {
     $status = strtolower($latestAppointment['status']);
-    // User can appoint again if status is cancelled or completed
-    if (!in_array($status, ['cancelled', 'completed', 'rescheduled'])) {
+    if (!in_array($status, ['cancelled', 'completed', 'rescheduled', 'declined'])) {
         $activeAppointment = true;
     }
 }
 
-// Fetch all booked appointments
+// Get booked appointments
 $bookedAppointments = [];
-$appointmentQuery = "SELECT requested_date, requested_time FROM appointments WHERE status != 'cancelled' AND appointment_type = 'assessment'";
-$appointmentStmt = $pdo->query($appointmentQuery);
+$appointment_type = $_POST['appointment_type'] ?? 'assessment';
+$appointmentQuery = "SELECT requested_date, requested_time FROM appointments WHERE status != 'Cancelled' AND appointment_type = :appointment_type";
+$appointmentStmt = $pdo->prepare($appointmentQuery);
+$appointmentStmt->execute(['appointment_type' => $appointment_type]);
+
 while ($row = $appointmentStmt->fetch(PDO::FETCH_ASSOC)) {
     $bookedAppointments[$row['requested_date']][] = $row['requested_time'];
 }
 
-// Define all available time slots
+// Time slots
 $allTimeSlots = ['8am - 9am', '9am - 10am', '10am - 11am', '2pm - 3pm', '3pm - 4pm', '4pm - 5pm'];
 
 // Calculate fully booked dates
@@ -63,58 +74,78 @@ foreach ($bookedAppointments as $date => $times) {
     }
 }
 
-$message = '';
-$error = '';
+// Handle form submission
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['action']) && $_POST['action'] == 'book') {
-    // Check if user already has an active assessment appointment
     if ($activeAppointment) {
-        $error = "You already have an active assessment appointment. Please wait until it's completed or cancelled before booking another one.";
+        $_SESSION['error'] = "You already have an active appointment. Please wait until it's completed or cancelled before booking another one.";
+        header("Location: " . $_SERVER['PHP_SELF']);
+        exit();
     } else {
         $client_id = $_SESSION['user_id'];
-        $appointment_type = 'assessment';
+        $appointment_type = $_POST['appointment_type'] ?? 'assessment';
         $requested_date = $_POST['requested_date'];
-        $requested_time = $_POST['requested_time']; 
+        $requested_time = $_POST['requested_time'];
         $status = 'pending';
 
         try {
-            $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE requested_date = ? AND requested_time = ? AND status != 'cancelled' AND appointment_type = 'assessment'");
-            $stmt->execute([$requested_date, $requested_time]);
+            // Check for existing rescheduled appointment
+            $stmt = $pdo->prepare("SELECT appointment_id FROM appointments WHERE client_id = ? AND appointment_type = ? AND status = 'rescheduled' ORDER BY appointment_id DESC LIMIT 1");
+            $stmt->execute([$client_id, $appointment_type]);
+            $rescheduled = $stmt->fetch(PDO::FETCH_ASSOC);
+
+            // Check slot availability
+            $stmt = $pdo->prepare("SELECT COUNT(*) FROM appointments WHERE requested_date = ? AND requested_time = ? AND status NOT IN ('cancelled', 'declined') AND appointment_type = ?");
+            $stmt->execute([$requested_date, $requested_time, $appointment_type]);
             $count = $stmt->fetchColumn();
 
             if ($count > 0) {
+                $_SESSION['error'] = "The selected time slot is no longer available.";
                 header("Location: " . $_SERVER['PHP_SELF']);
                 exit();
-            } else {
-                $stmt = $pdo->prepare("INSERT INTO appointments (client_id, appointment_type, requested_date, requested_time, status) VALUES (?, ?, ?, ?, ?)");
-                $stmt->bindParam(1, $client_id);
-                $stmt->bindParam(2, $appointment_type);
-                $stmt->bindParam(3, $requested_date);
-                $stmt->bindParam(4, $requested_time);
-                $stmt->bindParam(5, $status);
-
-                if ($stmt->execute()) {
-                    $message = "Assessment appointment booked successfully";
-                    // Add the new booking to our array to immediately reflect in UI
-                    $bookedAppointments[$requested_date][] = $requested_time;
-                    // Update fully booked dates if needed
-                    if (count($bookedAppointments[$requested_date]) >= count($allTimeSlots)) {
-                        $fullyBookedDates[] = $requested_date;
-                    }
-                    // Update active appointment status
-                    $activeAppointment = true;
-                } else {
-                    $error = "Error booking appointment: " . implode(" ", $stmt->errorInfo());
-                }
             }
+
+            if ($rescheduled) {
+                // Update existing appointment
+                $stmt = $pdo->prepare("UPDATE appointments SET requested_date = ?, requested_time = ?, status = 'pending' WHERE appointment_id = ?");
+                $stmt->execute([$requested_date, $requested_time, $rescheduled['appointment_id']]);
+                $_SESSION['success'] = 2;
+            } else {
+                // Create new appointment
+                $stmt = $pdo->prepare("INSERT INTO appointments (client_id, appointment_type, requested_date, requested_time, status) VALUES (?, ?, ?, ?, ?)");
+                $stmt->execute([$client_id, $appointment_type, $requested_date, $requested_time, $status]);
+                $_SESSION['success'] = 1;
+            }
+            
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
+            
         } catch (PDOException $e) {
-            $error = "Database error: " . $e->getMessage();
+            $_SESSION['error'] = "Database error: " . $e->getMessage();
+            header("Location: " . $_SERVER['PHP_SELF']);
+            exit();
         }
     }
-
-    $stmt = null;
 }
+
+// Retrieve messages from session
+if (isset($_SESSION['success'])) {
+    if ($_SESSION['success'] == 1) {
+        $message = "Assessment appointment booked successfully";
+    } elseif ($_SESSION['success'] == 2) {
+        $message = "Assessment appointment rescheduled successfully";
+    }
+    unset($_SESSION['success']);
+}
+
+if (isset($_SESSION['error'])) {
+    $error = $_SESSION['error'];
+    unset($_SESSION['error']);
+}
+
+// Close database connection
 $pdo = null;
 ?>
+
 
 <!DOCTYPE html>
 <html>
@@ -125,27 +156,34 @@ $pdo = null;
     <title>GCC Website</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" type="text/css" href="../../css/appoint-assess.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/flatpickr/dist/flatpickr.min.css">
     <script src="https://kit.fontawesome.com/3c9d5fece1.js" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/flatpickr"></script>
 </head>
 <body>
     <!-- Navbar -->
     <?php appointPageNavbar($profile_image); ?> 
 
     <div class="container">
-        <div style="background-color: #16633F; width: 100%; height: 120px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center; position: sticky; top: 0; z-index: 2000">
-            <i class="fa-regular fa-calendar-days" style="margin-right: 15px;"></i>
-            Schedule your Assessment!
-        </div>
-         <div style="padding: 40px; display: flex; justify-content: center; gap: 20px;">
-            <?php if ($activeAppointment): ?>
-                <div style="text-align: center; padding: 20px; background-color: #f8f9fa; border-radius: 8px; box-shadow: 0 2px 4px rgba(0,0,0,0.1); width: 100%; max-width: 600px;">
-                <div style="padding: 50px; background-color: #f8f9fa;"></div>
-                    <h2 style="color: #dc3545;">You already have an active appointment</h2>
-                    <p>You can only book one appointment at a time. Please wait until your current appointment is completed or cancelled before booking another one.</p>
-                    <a href="../../../shared/sub-pages/profile.php" style="display: inline-block; margin-top: 15px; padding: 10px 20px; background-color: #16633F; color: white; text-decoration: none; border-radius: 4px;">View My Appointments</a>
-                    <div style="padding: 50px; background-color: #f8f9fa;"></div>
-                </div>
-            <?php else: ?>
+        <div style="background-color: #16633F; width: 100%; height: 120px; font-size: 40px; font-weight: 500; color: white; display: flex; justify-content: center; align-items: center;">
+            <i class="fa-solid fa-calendar-days" style="margin-right: 15px;"></i>
+            Book Your Assessment Today!
+        </div>         
+        <div style="padding: 40px; display: flex; justify-content: center; gap: 20px;">
+                <?php if ($activeAppointment): ?>
+                    <div class="appointment-carding">
+                        <div style="padding: 50px; background-color: #f8f9fa; display: flex; justify-content: center; align-items: center;">
+                           <i class="fa-solid fa-calendar" style="font-size: 5rem; color: #16633F;"></i>
+                         </div>
+                        <h2 style="color: #dc3545;">You already have an active appointment for Assessment</h2>
+                        <p>You can only book one appointment at a time. Please wait until your current appointment is completed or cancelled before booking another one.</p>
+                        <p>However, you may book again if your current appointment has been rescheduled..</p>
+                        <button onclick="loadAppointmentDetails('assessment')" class="appointment-button">
+                            <i class="fas fa-eye"></i> View My Appointment
+                        </button>
+                        <div style="padding: 50px; background-color: #f8f9fa;"></div>
+                    </div>
+                <?php else: ?>
                 <form id="appointmentForm" style="display: flex; flex-direction: column; align-items: center; gap: 20px;" method="post">
                     <input type="hidden" name="action" value="book">
                     <input type="hidden" id="requested_date" name="requested_date" required>
@@ -184,256 +222,128 @@ $pdo = null;
             <?php endif; ?>
          </div>
          </div>
-         <div class="message-container">
+           <div class="message-container">
              <?php if ($message): ?>
-                 <div class="success"><?php echo htmlspecialchars($message); ?></div>
+                 <div class="success"><?= $message ?></div>
              <?php endif; ?>
              <?php if ($error): ?>
-                 <div class="error"><?php echo htmlspecialchars($error); ?></div>
+                 <div class="error"><?= $error ?></div>
              <?php endif; ?>
-         </div>
+            </div>
          <footer style="background-color: #DC143C; color: white; padding-top: 5px; display: flex; justify-content: space-between; align-items: center;">
             <div style="margin-left: 20px;">Copyright © 2025 Western Mindanao State University. All rights reserved.</div>
             <div style="margin-right: 20px;"><img src="/gcc/img/wmsu-logo.png" alt="Logo" style="height: 40px;"></div>
          </footer>
   </div>
 
+  <!-- View/Edit Appointment Modal -->
+<div id="appointmentModal" class="modal">
+    <div class="modal-content" style="max-width: 600px;">
+        <span class="closing-btn" onclick="closeModal('appointmentModal')">&times;</span>
+        <h2>Active Assessment Appointment</h2>
+        
+        <div id="appointmentDetails" style="margin-bottom: 20px;">
+            <!-- Appointment details will be loaded here -->
+        </div>
+
+        <div id="slipButton" style="display: none; text-align: center; margin-bottom: 20px;">
+            <button onclick="viewAppointmentSlip()" class="slip-btn">
+                <i class="fas fa-file-alt"></i> View Appointment Slip
+            </button>
+        </div>
+        
+        <div id="editForm" style="display: none;">
+            <form id="updateAppointmentForm">
+                <input type="hidden" id="edit_appointment_id">
+                <div class="form-group">
+                    <label for="edit_date">Requested Date:</label>
+                    <input type="text" id="edit_date" class="form-control" required>
+                </div>
+                <div class="form-group">
+                    <label for="edit_time">Time:</label>
+                    <select id="edit_time" class="form-control" required>
+                        <option value="" disabled selected>Select a date first</option>
+                    </select>
+                    <div id="timeSlotError" style="color: #dc3545; display: none; margin-top: 5px;"></div>
+                </div>
+                <div style="display: flex; gap: 10px; margin-top: 20px; justify-content: center;">
+                    <button type="submit" class="save-btn">
+                        <span class="btn-text"><i class="fas fa-save"></i> Save Changes</span>
+                        <span class="loading-spinner" style="display: none;">
+                            <i class="fas fa-spinner fa-spin"></i> Saving...
+                        </span>
+                    </button>
+                    <button type="button" class="cancel-btn" onclick="toggleEditForm(false)">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                </div>
+            </form>
+        </div>
+        
+        <div id="actionButtons" style="display: flex; gap: 10px; margin-top: 20px; justify-content: center;">
+            <button onclick="toggleEditForm(true)" class="edit-btn">
+                <i class="fas fa-edit"></i> Edit Appointment
+            </button>
+            <button onclick="cancelAppointment('assessment')" class="cancel-btn">
+                <i class="fas fa-ban"></i> Cancel Appointment
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- Confirmation Appointment -->
+<div id="confirmationModal" class="modal">
+    <div class="modal-box">
+        <h2>Confirm Cancellation?</h2>
+        <div class="modal-actions">
+            <button id="confirmCancelBtn" class="cancel-btn">Yes, Cancel</button>
+            <button onclick="closeModal('confirmationModal')" class="keep-btn">No, Keep It</button>
+        </div>
+    </div>
+</div>
+
     <script src="/gcc/js/sidebar.js"></script>
+    <script> const bookedAppointments = <?php echo json_encode($bookedAppointments); ?>; const fullyBookedDates = <?php echo json_encode($fullyBookedDates); ?>; const allTimeSlots = <?php echo json_encode($allTimeSlots); ?>;</script>
+    <script src="/gcc/js/calendar.js"></script>
+    <script src="/gcc/js/edit-view-appointments.js"></script>
     <script>
-const calendarDays = document.getElementById('calendarDays');
-const calendarMonth = document.getElementById('calendarMonth');
-let currentMonth = new Date().getMonth();
-let currentYear = new Date().getFullYear();
-const today = new Date();
-
-let isDaySelected = false;
-let selectedTimeSlot = null;
-let selectedDate = null;
-
-// Convert PHP data to JS
-const bookedAppointments = <?php echo json_encode($bookedAppointments); ?>;
-const fullyBookedDates = <?php echo json_encode($fullyBookedDates); ?>;
-const allTimeSlots = <?php echo json_encode($allTimeSlots); ?>;
-
-function generateCalendar(month, year) {
-    const date = new Date(year, month, 1);
-    const daysInMonth = new Date(year, month + 1, 0).getDate();
-    const firstDay = date.getDay();
-    calendarDays.innerHTML = '';
-
-    const weekdays = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
-    weekdays.forEach(day => {
-        const dayCell = document.createElement('div');
-        dayCell.textContent = day;
-        dayCell.classList.add('weekdays');
-        calendarDays.appendChild(dayCell);
-    });
-
-    for (let i = 0; i < firstDay; i++) {
-        const emptyCell = document.createElement('div');
-        calendarDays.appendChild(emptyCell);
-    }
-
-    for (let i = 1; i <= daysInMonth; i++) {
-        const dayCell = document.createElement('div');
-        dayCell.textContent = i;
-        const dayOfWeek = new Date(year, month, i).getDay();
-        const cellDate = new Date(year, month, i);
-        const formattedDate = `${year}-${(month + 1).toString().padStart(2, '0')}-${i.toString().padStart(2, '0')}`;
+function openModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        // Store scroll position
+        const scrollY = window.scrollY;
+        document.body.style.top = `-${scrollY}px`;
         
-        if (dayOfWeek === 0 || dayOfWeek === 6 || cellDate < today) {
-            dayCell.classList.add('disabled');
-        } else if (fullyBookedDates.includes(formattedDate)) {
-            dayCell.classList.add('fully-booked');
-            dayCell.onmouseenter = (e) => showDayTooltip('Day is fully booked, please choose another day.', e.target);
-            dayCell.onmouseleave = hideDayTooltip;
-        } else {
-            dayCell.onclick = () => selectDay(i);
-        }
-        calendarDays.appendChild(dayCell);
+        // Add modal-open class
+        document.body.classList.add('modal-open');
+        
+        // Show modal
+        modal.style.display = 'flex';
+        
+        // Trigger reflow for animation
+        void modal.offsetWidth;
+        modal.classList.add('show');
     }
-
-    const monthNames = ["January", "February", "March", "April", "May", "June",
-        "July", "August", "September", "October", "November", "December"];
-    calendarMonth.innerHTML = `${monthNames[month]}<br><span style="color:rgb(17, 147, 87); font-size: 22px;">${year}</span>`;
 }
 
-function selectDay(day) {
-    clearTimeSelection();
-    
-    const selectedDay = document.querySelector('.calendar-grid .selected');
-    if (selectedDay) {
-        selectedDay.classList.remove('selected');
-    }
-    
-    const dayCells = calendarDays.children;
-    for (let cell of dayCells) {
-        if (cell.textContent == day && !cell.classList.contains('disabled') && !cell.classList.contains('fully-booked')) {
-            cell.classList.add('selected');
-            selectedDate = `${currentYear}-${(currentMonth + 1).toString().padStart(2, '0')}-${day.toString().padStart(2, '0')}`;
-            document.getElementById('requested_date').value = selectedDate;
-            isDaySelected = true;
-            hideTooltip();
+function closeModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        modal.classList.add('closing');
+        
+        setTimeout(() => {
+            modal.classList.remove('show', 'closing');
+            modal.style.display = 'none';
             
-            // Update time slots availability for the selected date
-            updateTimeSlotsAvailability(selectedDate);
-            break;
-        }
+            // Restore scroll position
+            const scrollY = Math.abs(parseInt(document.body.style.top || '0'));
+            document.body.classList.remove('modal-open');
+            document.body.style.top = '';
+            window.scrollTo(0, scrollY);
+        }, 300);
     }
 }
 
-function updateTimeSlotsAvailability(date) {
-    // Reset all time slots
-    const timeSlots = document.querySelectorAll('.time-slot');
-    timeSlots.forEach(slot => {
-        slot.classList.remove('booked');
-        slot.style.pointerEvents = 'auto';
-        slot.style.cursor = 'pointer';
-    });
-
-    // If there are booked appointments for this date, disable those time slots
-    if (bookedAppointments[date]) {
-        const bookedTimes = bookedAppointments[date];
-        timeSlots.forEach(slot => {
-            const slotTime = slot.getAttribute('data-time');
-            if (bookedTimes.includes(slotTime)) {
-                slot.classList.add('booked');
-                slot.style.pointerEvents = 'none';
-                slot.style.cursor = 'not-allowed';
-            }
-        });
-    }
-}
-
-function selectTimeSlot(time) {
-    if (!isDaySelected) {
-        const timeSlots = document.querySelectorAll('.time-slot');
-        let clickedElement = null;
-        timeSlots.forEach(slot => {
-            if (slot.getAttribute('data-time') === time) {
-                clickedElement = slot;
-            }
-        });
-        
-        if (clickedElement) {
-            showTooltip('Please select a date first!', clickedElement);
-        }
-        return;
-    }
-
-    // Don't allow selection if the slot is booked
-    const clickedSlot = document.querySelector(`.time-slot[data-time="${time}"]`);
-    if (clickedSlot.classList.contains('booked')) {
-        showTooltip('This time slot is already booked!', clickedSlot);
-        return;
-    }
-
-    // Remove selection from previously selected time slot
-    if (selectedTimeSlot) {
-        selectedTimeSlot.classList.remove('selected');
-        selectedTimeSlot.style.backgroundColor = '';
-        selectedTimeSlot.style.color = '';
-    }
-
-    // Select the new time slot
-    clickedSlot.classList.add('selected');
-    clickedSlot.style.backgroundColor = '#11AD64';
-    clickedSlot.style.color = 'white';
-    selectedTimeSlot = clickedSlot;
-
-    document.getElementById('requested_time').value = time;
-    hideTooltip();
-}
-
-function clearTimeSelection() {
-    if (selectedTimeSlot) {
-        selectedTimeSlot.classList.remove('selected');
-        selectedTimeSlot.style.backgroundColor = '';
-        selectedTimeSlot.style.color = '';
-        selectedTimeSlot = null;
-    }
-    document.getElementById('requested_time').value = '';
-}
-
-function showTooltip(message, element) {
-    let tooltip = document.getElementById('timeSlotTooltip');
-    if (!tooltip) {
-        tooltip = document.createElement('div');
-        tooltip.id = 'timeSlotTooltip';
-        document.body.appendChild(tooltip);
-    }
-
-    tooltip.textContent = message;
-    tooltip.style.display = 'block';
-
-    const rect = element.getBoundingClientRect();
-    tooltip.style.top = `${rect.top - 40}px`;
-    tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`;
-}
-
-function showDayTooltip(message, element) {
-    let tooltip = document.getElementById('dayTooltip');
-    if (!tooltip) {
-        tooltip = document.createElement('div');
-        tooltip.id = 'dayTooltip';
-        document.body.appendChild(tooltip);
-    }
-
-    tooltip.textContent = message;
-    tooltip.style.display = 'block';
-
-    const rect = element.getBoundingClientRect();
-    tooltip.style.top = `${rect.top - 40}px`;
-    tooltip.style.left = `${rect.left + (rect.width / 2) - (tooltip.offsetWidth / 2)}px`;
-}
-
-function hideTooltip() {
-    const tooltip = document.getElementById('timeSlotTooltip');
-    if (tooltip) {
-        tooltip.style.display = 'none';
-    }
-}
-
-function hideDayTooltip() {
-    const tooltip = document.getElementById('dayTooltip');
-    if (tooltip) {
-        tooltip.style.display = 'none';
-    }
-}
-
-function prevMonth() {
-    if (currentMonth > 0) {
-        currentMonth--;
-    } else {
-        currentMonth = 11;
-        currentYear--;
-    }
-    if (currentYear >= today.getFullYear()) {
-        generateCalendar(currentMonth, currentYear);
-    }
-}
-
-function nextMonth() {
-    if (currentMonth < 11) {
-        currentMonth++;
-    } else {
-        currentMonth = 0;
-        currentYear++;
-    }
-    generateCalendar(currentMonth, currentYear);
-}
-
-document.getElementById('appointmentForm').addEventListener('submit', function(event) {
-    const dateSelected = document.getElementById('requested_date').value;
-    const timeSelected = document.getElementById('requested_time').value;
-    
-    if (!dateSelected || !timeSelected) {
-        alert('Please select both a date and a time for your appointment.');
-        event.preventDefault(); 
-    }
-});
-
-generateCalendar(currentMonth, currentYear);
-    </script>
+</script>
 </body>
 </html>

@@ -41,13 +41,13 @@ switch ($_SESSION['role']) {
         header("Location: ../../client/inside/faculty/faculty.php"); 
         break;
     case 'Director':
-        header("Location: ../../users/director/director.php");
+        header("Location: ../../users/director/director-dashboard.php");
         break;
     case 'Admin':
-        header("Location: ../../users/admin/admin.php"); 
+        header("Location: ../../users/admin/dashboard.php"); 
         break;
     case 'Staff':
-        header("Location: ../../users/staff/staff.php"); 
+        header("Location: ../../users/staff/staff-dashboard.php"); 
         break;
     default:
         header("Location: ./sign-in.php");

@@ -28,6 +28,38 @@ if ($isLoggedIn) {
         }
     }
 }
+
+// Fetch about content from the database
+try {
+    $stmt = $pdo->query("SELECT * FROM about_content ORDER BY display_order ASC");
+    $aboutContents = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Initialize variables with default values in case the database query fails
+    $description = "The Guidance and Counseling Center at Western Mindanao State University is a vital support unit dedicated to addressing the psychological, emotional, and personal development needs of students and staff. It is one of the key services that contribute to the overall health and well-being of the WMSU community.";
+    $vision = "By 2040, WMSU is a Smart Research University generating competent professionals and global citizens engendered by the knowledge from sciences and liberal education, empowering communities, promoting peace, harmony, and cultural diversity.";
+    $mission = "WMSU commits to create a vibrant atmosphere of learning where science, technology, innovation, research, the arts and humanities, and community engagement flourish, and produce world-class professionals committed to sustainable development and peace.";
+    $quality_policy = "The Western Mindanao State University is committed to deliver academic excellence, to produce globally competitive human resources, and to conduct innovative research for sustainable development beyond the ASEAN region. It is defined as a Smart Research University, that adapts to the changing landscape of the stakeholders' needs.\n\nWMSU also commits to continually enhance its Quality Management System by integrating risk-based thinking into all processes to achieve intended results and guarantee customer satisfaction in compliance with applicable quality assurance standards.";
+    
+    // Map database content to variables
+    foreach ($aboutContents as $content) {
+        switch ($content['title']) {
+            case 'Description':
+                $description = $content['content'];
+                break;
+            case 'Vision':
+                $vision = $content['content'];
+                break;
+            case 'Mission':
+                $mission = $content['content'];
+                break;
+            case 'Quality Policy':
+                $quality_policy = $content['content'];
+                break;
+        }
+    }
+} catch (PDOException $e) {
+    // If error, the default values will be used
+}
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +87,7 @@ if ($isLoggedIn) {
        <div class="container">
          <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 45px; font-weight: 500; color: white; display: flex; justify-content: left; align-items: center; padding-left: 70px;"> About Us </div>
          <div id="motto" class="motto" style="padding: 70px 0 70px;">
-            <p style="margin: 0 20px; text-align: center; font-size: 26px; font-weight: 500;">The <span style="color: #095D36; font-weight: 600;">Guidance and Counseling Center</span> at Western Mindanao State University is a vital support unit dedicated to addressing the psychological, emotional, and personal development needs of students and staff. It is one of the key services that contribute to the overall health and well-being of the WMSU community.</p>
+            <p style="margin: 0 20px; text-align: center; font-size: 26px; font-weight: 500;"><?php echo nl2br(htmlspecialchars($description)); ?></p>
          </div>
          <div class="dropdown-form">
         <button class="dropdown-btn-form" onclick="toggleDropdown(0)">
@@ -63,7 +95,7 @@ if ($isLoggedIn) {
             <i class="fas fa-chevron-down dropdown-icon"></i>
         </button>
         <div class="dropdown-content-form">
-            <p>By 2040, WMSU is a Smart Research University generating competent professionals and global citizens engendered by the knowledge from sciences and liberal education, empowering communities, promoting peace, harmony, and cultural diversity.</p>
+            <p><?php echo nl2br(htmlspecialchars($vision)); ?></p>
         </div>
     </div>
 
@@ -73,7 +105,7 @@ if ($isLoggedIn) {
             <i class="fas fa-chevron-down dropdown-icon"></i>
         </button>
         <div class="dropdown-content-form">
-            <p>WMSU commits to create a vibrant atmosphere of learning where science, technology, innovation, research, the arts and humanities, and community engagement flourish, and produce world-class professionals committed to sustainable development and peace.</p>
+            <p><?php echo nl2br(htmlspecialchars($mission)); ?></p>
         </div>
     </div>
 
@@ -83,9 +115,7 @@ if ($isLoggedIn) {
             <i class="fas fa-chevron-down dropdown-icon"></i>
         </button>
         <div class="dropdown-content-form">
-            <p> The Western Mindanao State University is committed to deliver academic excellence, to produce globally competitive
-            human resources, and to conduct innovative research for sustainable development beyond the ASEAN region. It is defined as a Smart Research University, that adapts to the changing landscape of the stakeholders' needs.</p>
-            <p>WMSU also commits to continually enhance its Quality Management System by integrating risk-based thinking into all processes to achieve intended results and guarantee customer satisfaction in compliance with applicable quality assurance standards.</p>
+            <p><?php echo nl2br(htmlspecialchars($quality_policy)); ?></p>
         </div>
     </div>
     <div style="background-color:rgb(255, 255, 255); padding: 60px 0 60px;"> </div>

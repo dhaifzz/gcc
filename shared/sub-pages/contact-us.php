@@ -28,6 +28,38 @@ if ($isLoggedIn) {
         }
     }
 }
+
+// Fetch contact information from the database
+try {
+    $stmt = $pdo->query("SELECT * FROM contact_info ORDER BY display_order ASC");
+    $contactInfo = $stmt->fetchAll(PDO::FETCH_ASSOC);
+    
+    // Initialize variables with default values
+    $description = "The Guidance and Counseling Center For any concerns, just contact us through our official page or email. Completion of the Personal Data Form and Counseling Form is required before sessions.";
+    $facebook = "WMSU Guidance and Counseling Center";
+    $facebook_link = "https://www.facebook.com/WMSUGCC";
+    $email = "gcc@wmsu.edu.ph";
+    
+    // Map database content to variables
+    foreach ($contactInfo as $info) {
+        switch ($info['type']) {
+            case 'description':
+                $description = $info['value'];
+                break;
+            case 'facebook':
+                $facebook = $info['value'];
+                break;
+            case 'facebook_link':
+                $facebook_link = $info['value'];
+                break;
+            case 'email':
+                $email = $info['value'];
+                break;
+        }
+    }
+} catch (PDOException $e) {
+    // If error, default values will be used
+}
 ?>
 
 <!DOCTYPE html>
@@ -55,7 +87,7 @@ if ($isLoggedIn) {
        <div class="container">
          <div style="background-color: #16633F; width: 100%; height: 200px; font-size: 45px; font-weight: 500; color: white; display: flex; justify-content: left; align-items: center; padding-left: 70px;"> Contact Us </div>
            <div style="padding: 60px 0 60px;">
-            <p style="margin: 0 20px; text-align: center; font-size: 23px; font-weight: 500;">The <span style="color: #095D36; font-weight: 600;">Guidance and Counseling Center</span> For any concerns, just contact us through our official page or email. Completion of the Personal Data Form and Counseling Form is required before sessions.</p>
+            <p style="margin: 0 20px; text-align: center; font-size: 23px; font-weight: 500;"><?php echo nl2br(htmlspecialchars($description)); ?></p>
          </div>
          <div style="background-color: #F1F1F1; padding: 70px 80px 100px; display: flex; flex-direction: column; align-items: center; text-align: center;">
     <div style="font-size: 40px; font-weight: bold; margin-bottom: 30px; color: #16633F; text-decoration: underline;">
@@ -63,17 +95,17 @@ if ($isLoggedIn) {
     </div>
     <div style="display: flex; flex-direction: column; align-items: left; gap: 20px;">
         <!-- Facebook Contact -->
-        <a href="https://www.facebook.com/WMSUGCC" target="_blank" class="gccpage" 
+        <a href="<?php echo htmlspecialchars($facebook_link); ?>" target="_blank" class="gccpage" 
            style="display: flex; align-items: center; text-decoration: none; color: #16633F; font-size: 20px;">
             <i class="fab fa-facebook" style="font-size: 40px; margin-right: 10px;"></i>
-            <span class="gcctext">WMSU Guidance and Counseling Center</span>
+            <span class="gcctext"><?php echo htmlspecialchars($facebook); ?></span>
         </a>
 
         <!-- Email Contact -->
-        <a href="mailto:gcc@wmsu.edu.ph" class="gccemail" 
+        <a href="mailto:<?php echo htmlspecialchars($email); ?>" class="gccemail" 
            style="display: flex; align-items: center; text-decoration: none; color: #16633F; font-size: 20px;">
             <i class="fas fa-envelope" style="font-size: 40px; margin-right: 10px;"></i>
-            <span class="gccetext">gcc@wmsu.edu.ph</span>
+            <span class="gccetext"><?php echo htmlspecialchars($email); ?></span>
         </a>
     </div>
 </div>

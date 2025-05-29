@@ -1,7 +1,10 @@
 <?php
-require_once '../../navbar.php';
+require_once '../../../client/navbar.php';
 require_once '../../../font/font.php';
 require_once '../../../database/database.php';
+
+// Get carousel images
+$carousel_images = array_diff(scandir("../../../img/carousel-img"), array('.', '..'));
 
 session_start();
 if (!isset($_SESSION['email']) || $_SESSION['role'] !== 'College Student') {
@@ -29,6 +32,15 @@ if ($user) {
     }
 }
 
+// Fetch services from database
+try {
+    $stmt = $pdo->query("SELECT * FROM services ORDER BY display_order ASC");
+    $services = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    $services = [];
+    error_log("Error fetching services: " . $e->getMessage());
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -48,7 +60,7 @@ if ($user) {
     <?php renderNavbar($profile_image); ?>
 
     <div class="main-content">
-    <div id="carousel" class="carousel">
+        <div id="carousel" class="carousel">
           <div class="carousel-inner"> 
              <div class="carousel-item active"> 
                  <div style="position: relative; text-align: center;">
@@ -64,7 +76,7 @@ if ($user) {
                  <img src="/gcc/img/carousel-img/test3.png" alt="Slide 3">
              </div>
           </div>
-          <!-- <div class="carousel-overlay"></div> -->
+          <div class="carousel-overlay"></div>
           <div class="welcome-text">
               <span class="typing-container">Welcome to GCC Website, <span class="first-name"><?php echo htmlspecialchars($user['first_name']); ?></span>!</span>
           </div>
@@ -75,26 +87,29 @@ if ($user) {
     </div>
     <div class="contents">
        <div class="image-gallery">
+            <?php foreach ($services as $service): ?>
             <div class="image-item">
-                   <img src="/gcc/img/counseling-img.png" alt="Image 1">
-                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="../../../shared/main/counseling.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Counseling</a></p>
-                   <span class="description"> Counseling services are available for both students and outside clients. Appointments are required for consultations, which include the completion of the Personal Data Form and Counseling Form before sessions.</span>
+                <img src="<?php echo htmlspecialchars($service['image_path']); ?>" alt="<?php echo htmlspecialchars($service['title']); ?>">
+                <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;">
+                    <a href="<?php 
+                        $title = strtolower($service['title']);
+                        $link = '#';
+                        if ($title === 'counseling') {
+                            $link = '../../../shared/main/counseling.php';
+                        } elseif ($title === 'assessment for students') {
+                            $link = '../../../shared/main/assessment.php';
+                        } elseif ($title === 'shifting exam') {
+                            $link = '../../../shared/main/shifting.php';
+                        }
+                        echo htmlspecialchars($link);
+                    ?>" style="text-decoration: none; color: inherit;">
+                        <i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>
+                        <?php echo htmlspecialchars($service['title']); ?>
+                    </a>
+                </p>
+                <span class="description"><?php echo htmlspecialchars($service['description']); ?></span>
             </div>
-            <div class="image-item">
-                   <img src="/gcc/img/assessment-img.png" alt="Image 2">
-                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="../../../shared/main/assessment.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Assessment for Students</a></p>
-                   <span class="description"> Conducts assessments for students taking the DASS-21 Test (College) and DASS-Y Test (High School). Students must schedule an appointment and complete the required forms before the assessment.</span>
-            </div>
-            <div class="image-item">
-                   <img src="/gcc/img/shifting-img.png" alt="Image 3">
-                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="../../../shared/main/shifting.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Shifting Exam</a></p>
-                   <span class="description"> Students changing programs. Applicants must schedule an appointment and complete the required forms before taking the exam.</span>
-            </div>
-            <!-- <div class="image-item">
-                   <img src="/gcc/img/consultation-img.jpg" alt="Image 4">
-                   <p style="margin: 0.9375rem 0.3125rem 1.25rem; cursor: pointer;"><a href="../../../shared/main/shifting.php" style="text-decoration: none; color: inherit;"><i class="fas fa-angle-right" style="margin-right: 0.3125rem; color:rgb(14, 72, 45);"></i>Consultation</a></p>
-                   <span class="description"> Consultation services are available for students who need academic guidance, course planning, or assistance with program-related concerns. Appointments must be scheduled in advance</span>
-            </div> -->
+            <?php endforeach; ?>
         </div>
     </div>
     <div class="gcc-pages">

@@ -29,7 +29,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         header("Location: backend/redirect.php");
         exit();
     } else {
-        $_SESSION['error'] = 'Incorrect password / email or Account does not exist.'; 
+        $_SESSION['error'] = 'Incorrect password / Email or Account does not exist.'; 
         header("Location: sign-in.php"); 
         exit();
     }
@@ -41,13 +41,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <head>
 <link rel="icon" type="image/png" sizes="96x96" href="/gcc/img/favicon.ico">
 <link rel="icon" type="image/x-icon" href="/gcc/img/favicon.ico">
-    <title>Login</title>
+    <title>Sign In</title>
     <?php includeGoogleFonts(); ?>
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <link rel="stylesheet" type="text/css" href="css/sign-in.css">
 </head>
 <body>
+    <?php if ($error): ?>
+        <div class="error-popup" id="errorPopup">
+            <?php echo $error; ?>
+        </div>
+    <?php endif; ?>
+    
     <form method="POST" action="">
         <div>
         <div style="display: flex; justify-content: center; align-items: center; gap: 7px;">
@@ -73,10 +79,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         <div class="signup-text">
             <p>Don't have an account? <a href="../auth/sign-up.php" class="signup">Sign Up</a></p>
         </div>
-        <?php if ($error): ?>
-            <p style="color: red; font-weight: 600;"><?php echo $error; ?></p>
-        <?php endif; ?>
     </form>
     <script src="/gcc/js/eye-icon.js"></script>
+    <script src="/gcc/js/error-message.js"></script>
 </body>
 </html>
