@@ -1,0 +1,380 @@
+html, body {
+       height: 100%; 
+       margin: 0;
+       padding: 0;
+       overflow-x: hidden; 
+   }
+   
+   body {
+       display: flex;
+       flex-direction: column;
+       min-height: 100vh; 
+   }
+   
+   .main-content {
+       flex-grow: 1; 
+   }
+   
+   body {
+       font-family: "Instrument Sans", sans-serif;
+       margin: 0;
+       padding: 0;
+   }
+   
+   .website {
+       font-size: 22px;
+       font-weight: 600;
+   }
+   
+   .navbar {
+       background-color: #11AD64;
+       color: white;
+       padding: 12px 12px;
+       position: sticky;
+       height: 52px;
+       top: 0;
+       z-index: 1000;
+   }
+   
+   .navbar a {
+       color: white;
+       text-decoration: none;
+       padding: 0 5px;
+   }
+   
+   .navbar a:hover {
+       text-decoration: underline;
+   }
+   
+   .burger-icon {
+       float: right;
+       margin: 3px;
+       font-size: 40px;
+       margin-right: 10px;
+       cursor: pointer;
+   }
+   
+   .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 13.75rem;
+    height: 100%;
+    background-color: #236641;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    z-index: 1000;
+}
+.sidebar-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14.5%; /* 1/8 of the sidebar height */
+    background-color: #17442b;
+    background: 
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+}
+.sidebar-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #ffffff;
+}
+
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3125rem; /* 5px */
+    padding: 0.9375rem 1.5625rem 1.5625rem 1.5625rem; /* 15px 25px 25px 25px */
+    border-top: 0.125rem solid #065027; /* 2px */
+    color: #ccc;
+    font-size: 0.85rem;
+}
+.sidebar-footer::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 18.5%; /* Same as top */
+    background-color: #17442b;
+    background:
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+}
+.sidebar-footer img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.sidebar .menu-items a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .menu-items a:hover {
+    background-color: #098c4f;
+}
+/* Main Content Styles */
+.container {
+    margin-left: 15.625rem; /* 250px */
+    padding: 1rem;
+}
+
+.main-content {
+    padding: 1rem;
+}
+
+.menu-items {
+    flex-grow: 1;
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.logout {
+    margin: 0.3125rem 0;
+    font-size: 1.25rem;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+hr {
+    border: 0;
+    height: 0.0625rem;
+    background: #0f6e39;
+    margin: 0.625rem 0.9375rem;
+}
+   
+#appointmentsTable {
+       border-radius: 7px;
+   }
+   #appointmentsTable th {
+       background-color: #2fa966;
+       color: white;
+   }
+   
+   #appointmentsTable th, #appointmentsTable td {
+       text-align: left;
+       border: 1px solid #236641;
+   }
+   #appointmentsTable tbody tr:nth-child(odd) {
+       background-color: #f2f2f2;
+   }
+   
+   #appointmentsTable tbody tr {
+       background-color: white;
+   
+   }
+   #appointmentsTable tbody tr:hover {
+       background-color: #ddf8eb;
+   }
+   #appointmentsTable_paginate, #appointmentsTable_info {
+       margin-top: 10px;
+   }
+   
+   #appointmentsTable thead tr:first-child th:first-child {
+       border-top-left-radius: 7px;
+   }
+   #appointmentsTable thead tr:first-child th:last-child {
+       border-top-right-radius: 7px;
+   }
+   #appointmentsTable tbody tr:last-child td:first-child {
+       border-bottom-left-radius: 7px;
+   }
+   #appointmentsTable tbody tr:last-child td:last-child {
+       border-bottom-right-radius: 7px;
+   }
+   
+   .table-container {
+       margin: 12px;
+       border-radius: 7px;
+       border-left: 7px solid rgb(29, 150, 53);
+       border-bottom: 1px solid #000000;
+       border-right: 1px solid #000000;
+       border-top: 1px solid #000000;
+   }
+   button.delete-btn, button.edit-btn {
+       padding: 6px 10px;
+       border-radius: 15px;
+       font-size: 15px;
+   }
+   button.delete-btn {
+       border: 2px solid rgb(211, 10, 10);
+       color: rgb(211, 10, 10);
+   }
+   button.delete-btn:hover {
+       border: 2px solid rgb(211, 10, 10);
+       color: rgb(255, 255, 255);
+       background-color: rgb(211, 10, 10);
+   }
+   button.edit-btn {
+       border: 2px solid #0f6e39;
+       color: #0f6e39;
+   }
+   button.edit-btn:hover {
+       border: 2px solid #0f6e39;
+       color: #ffffff;
+       background-color: #0f6e39;
+   }
+   .btn-primary {
+       padding: 10px;
+       color: white;
+       background-color: rgb(2, 2, 2);
+       border-radius: 40px;
+       border: none;
+       transition: background-color 0.3s ease;
+   }
+   .btn-primary:hover {
+       background-color: #0B5D37;
+   }
+   .sidebar {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 13.75rem;
+    height: 100%;
+    background-color: #236641;
+    color: white;
+    display: flex;
+    flex-direction: column;
+    padding: 1rem;
+    z-index: 1000;
+}
+.sidebar-header::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 14.5%; /* 1/8 of the sidebar height */
+    background-color: #17442b;
+    background: 
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+    -webkit-mask-image: linear-gradient(to bottom, rgba(0,0,0,1), rgba(0,0,0,0));
+}
+.sidebar-header {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 1rem;
+    text-align: center;
+    color: #ffffff;
+}
+
+.sidebar-footer {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.3125rem; /* 5px */
+    padding: 0.9375rem 1.5625rem 1.5625rem 1.5625rem; /* 15px 25px 25px 25px */
+    border-top: 0.125rem solid #065027; /* 2px */
+    color: #ccc;
+    font-size: 0.85rem;
+}
+.sidebar-footer::before {
+    content: "";
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 18.5%; /* Same as top */
+    background-color: #17442b;
+    background:
+        linear-gradient(135deg, #23664155 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(225deg, #236641 25%, transparent 25%) -20px 0/40px 40px,
+        linear-gradient(315deg, #23664155 25%, transparent 25%) 0px 0/40px 40px,
+        linear-gradient(45deg, #236641 25%, #17442b 25%) 0px 0/40px 40px;
+    opacity: 0.5;
+    z-index: -1;
+    pointer-events: none;
+    mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+    -webkit-mask-image: linear-gradient(to top, rgba(0, 0, 0, 1), rgba(0, 0, 0, 0));
+}
+.sidebar-footer img {
+    width: 2rem;
+    height: 2rem;
+    object-fit: contain;
+}
+
+.sidebar .menu-items a {
+    text-decoration: none;
+    color: white;
+    font-size: 1rem;
+    margin: 1rem 0;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+}
+
+.sidebar .menu-items a:hover {
+    background-color: #098c4f;
+}
+/* Main Content Styles */
+.container {
+    margin-left: 15.625rem; /* 250px */
+}
+
+.main-content {
+    padding: 1rem;
+}
+
+.menu-items {
+    flex-grow: 1;
+    font-size: 1.25rem;
+    font-weight: 400;
+}
+
+.logout {
+    margin: 0.3125rem 0;
+    font-size: 1.25rem;
+    align-items: center;
+    padding-bottom: 1.25rem;
+    font-weight: 600;
+}
+
+hr {
+    border: 0;
+    height: 0.0625rem;
+    background: #0f6e39;
+    margin: 0.625rem 0.9375rem;
+}
